@@ -29,7 +29,7 @@ h2.sec{font-size:15px;font-weight:800;color:var(--mut);letter-spacing:.06em;marg
 .lesson{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 20px;align-items:start;transition:box-shadow .15s}
 .lesson:hover{box-shadow:0 8px 22px rgba(19,35,58,.07)}
 .num{grid-row:1/4;width:64px;height:64px;border-radius:16px;background:var(--ink);color:#fff;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
-.lesson:nth-child(2) .num,.lesson:nth-child(4) .num,.lesson:nth-child(6) .num{background:var(--poor)}.lesson:nth-child(3) .num,.lesson:nth-child(5) .num,.lesson:nth-child(7) .num{background:var(--rich)}
+.lesson:nth-child(2) .num,.lesson:nth-child(4) .num,.lesson:nth-child(6) .num,.lesson:nth-child(8) .num{background:var(--poor)}.lesson:nth-child(3) .num,.lesson:nth-child(5) .num,.lesson:nth-child(7) .num,.lesson:nth-child(9) .num{background:var(--rich)}
 .lesson h3{font-size:clamp(22px,2.6vw,28px);font-weight:800;line-height:1.15}
 .lesson p{color:var(--mut);font-size:16px;max-width:62ch}
 .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
@@ -54,7 +54,7 @@ h2.sec{font-size:15px;font-weight:800;color:var(--mut);letter-spacing:.06em;marg
       <div class="kick">ביולוגיה · כיתה י' · מערכת ההובלה</div>
       <h1>מערכת הדם <span>כצנרת</span></h1>
       <p class="lead">יחידת לימוד מקוונת. בכל שיעור יש מצגת, סימולציה ובוחן, וכל אחד מהם נפתח ישירות מכאן.</p>
-      <div class="stats"><span class="stat"><b>7</b> שיעורים פתוחים</span><span class="stat"><b>7</b> סימולציות</span><span class="stat"><b>2</b> בחנים</span><span class="stat"><b>1</b> מעבדה</span></div>
+      <div class="stats"><span class="stat"><b>9</b> שיעורים פתוחים</span><span class="stat"><b>10</b> סימולציות</span><span class="stat"><b>2</b> בחנים</span><span class="stat"><b>1</b> מעבדה</span></div>
     </div>
     <div class="pic"><img src="assets/circulation.png" alt="איור מחזור הדם: הלב, הריאות ורשתות הנימים בגוף"></div>
   </header>
@@ -131,15 +131,36 @@ h2.sec{font-size:15px;font-weight:800;color:var(--mut);letter-spacing:.06em;marg
       </article>
       <article class="lesson">
         <div class="num">7</div>
-        <h3>כלי הדם: לחץ דם ומהירות זרימה</h3>
-        <p>עורקים, נימים וורידים. מה זה 120/80, למה הזרימה בנימים הכי איטית, ואיך הדם חוזר מהרגליים ללב.</p>
+        <h3>כלי הדם: מבנה ותפקוד</h3>
+        <p>עורקים, ורידים ונימים: שכבות הדופן, חתכי רוחב במיקרוסקופ, מסתמים ומעבר חומרים.</p>
         <div class="acts">
-          <a class="act" href="lesson-7/deck-mivne.html"><i class="i-p">▤</i>מצגת: מבנה ותפקוד</a>
-          <a class="act" href="lesson-7/deck-lachatz.html"><i class="i-p">▤</i>מצגת: לחץ הדם</a>
-          <a class="act" href="lesson-7/deck-mehirut.html"><i class="i-p">▤</i>מצגת: מהירות הזרימה</a>
-          <a class="act" href="lesson-7/sim-zrimat-dam-sim/"><i class="i-s">◎</i>סימולציות</a>
-          <a class="act" href="lesson-7/practice.html"><i class="i-q">✎</i>תרגיל: כלי הדם</a>
-          <a class="act page" href="lesson-7/">דף השיעור ←</a>
+          <a class="act" href="lesson-7/deck-mivne.html"><i class="i-p">▤</i>מצגת</a>
+          <a class="act" href="lesson-7/sim-zrima-chad-kivunit/"><i class="i-s">◎</i>סימולציה: זרימה בוורידים</a>
+          <a class="act" href="lesson-7/practice.html"><i class="i-q">✎</i>תרגיל: שאלות בגרות</a>
+          <a class="act page" href="lesson-7/#mivne">דף השיעור ←</a>
+        </div>
+      </article>
+      <article class="lesson">
+        <div class="num">8</div>
+        <h3>לחץ הדם</h3>
+        <p>מה זה 120/80, איך הלחץ משתנה לאורך כלי הדם, ואיך מודדים לחץ דם.</p>
+        <div class="acts">
+          <a class="act" href="lesson-7/deck-lachatz.html"><i class="i-p">▤</i>מצגת</a>
+          <a class="act" href="lesson-7/sim-lachatz-dam-sim/"><i class="i-s">◎</i>סימולציה: לחץ הדם</a>
+          <a class="act" href="lesson-7/worksheet-lachatz.html"><i class="i-q">✎</i>דף עבודה: לחץ ומהירות</a>
+          <a class="act page" href="lesson-7/#lachatz">דף השיעור ←</a>
+        </div>
+      </article>
+      <article class="lesson">
+        <div class="num">9</div>
+        <h3>מהירות הזרימה</h3>
+        <p>שטח החתך הכולל ומהירות הזרימה: למה הדם כמעט נעצר בנימים.</p>
+        <div class="acts">
+          <a class="act" href="lesson-7/deck-mehirut.html"><i class="i-p">▤</i>מצגת</a>
+          <a class="act" href="lesson-7/sim-zrimat-dam-sim/"><i class="i-s">◎</i>סימולציה: מהירות הזרימה</a>
+          <a class="act" href="lesson-7/simulation.html"><i class="i-s">◎</i>סימולציה: מסע בכלי הדם</a>
+          <a class="act" href="lesson-7/worksheet-lachatz.html"><i class="i-q">✎</i>דף עבודה: לחץ ומהירות</a>
+          <a class="act page" href="lesson-7/#mehirut">דף השיעור ←</a>
         </div>
       </article>
     </div>

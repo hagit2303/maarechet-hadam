@@ -1,0 +1,100 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>דף עבודה: לחץ הדם ומהירות הזרימה</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Gveret Levin';src:url(fonts/GveretLevin.ttf)}
+:root{--bg:#FAF8F4;--ink:#1F2937;--red:#B91C1C;--blue:#1E3A8A;--line:#E5E7EB;--ok:#1E7B4D;--okb:#E6F4EC}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Heebo,Arial,sans-serif;font-size:19px;line-height:1.55;padding:16px}
+.w{max-width:900px;margin:auto;display:flex;flex-direction:column;gap:20px;padding-bottom:40px}
+.homefix{display:flex;gap:8px}
+.homefix a{background:#fff;color:#1B1B2F;border:2px solid #1B1B2F;border-radius:20px;padding:3px 13px;font-weight:800;font-size:14px;text-decoration:none}
+.kick{color:var(--red);font-weight:800;font-size:16px}
+h1{font-family:'Gveret Levin','Heebo',sans-serif;font-weight:400;font-size:clamp(32px,6vw,52px);line-height:1.1}
+h2{font-family:'Gveret Levin','Heebo',sans-serif;font-weight:400;font-size:clamp(24px,4vw,34px);color:var(--red);margin-bottom:6px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.who{display:flex;gap:12px;flex-wrap:wrap}
+.who label{display:flex;flex-direction:column;font-weight:700;font-size:16px;flex:1;min-width:160px}
+input,textarea{font:inherit;border:1.5px solid #CBD5E1;border-radius:10px;padding:8px 10px;background:#fff;width:100%}
+textarea{min-height:96px;resize:vertical;line-height:1.5}
+.fig{position:relative;max-width:560px;margin:8px auto 0}
+.fig img{width:100%;display:block}
+.lb{position:absolute;transform:translate(-50%,-50%);font-weight:800;font-size:clamp(11px,2.2vw,17px);white-space:nowrap;color:#111}
+.lb.v{transform:translate(-50%,-50%) rotate(-90deg)}
+.lb.s{background:rgba(255,255,255,.85);border-radius:6px;padding:0 6px}
+.cr{font-size:13px;color:#6B7280;text-align:center;margin-top:4px}
+.q{border-top:1px dashed var(--line);padding-top:14px;margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.q:first-of-type{border-top:0;margin-top:6px;padding-top:0}
+.qt{font-weight:700}
+.qt b{color:var(--blue)}
+.rev{align-self:flex-start;font:800 16px Heebo;background:#FDECEC;color:var(--red);border:1.5px solid var(--red);border-radius:99px;padding:5px 16px;cursor:pointer}
+.rev:disabled{opacity:.45;cursor:not-allowed}
+.ans{display:none;background:var(--okb);border-right:6px solid var(--ok);border-radius:10px;padding:10px 14px;font-size:17px}
+.ans.show{display:block}
+.hint{font-size:14px;color:#6B7280}
+.print{align-self:center;font:800 18px Heebo;background:var(--ink);color:#fff;border:0;border-radius:99px;padding:10px 26px;cursor:pointer}
+.credit{color:#6B7280;font-size:13px;text-align:center}
+@media print{.homefix,.rev,.print,.hint{display:none}.ans.show{display:block}body{background:#fff}.card{box-shadow:none;break-inside:avoid}}
+</style></head><body><div class="w">
+<nav class="homefix"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
+<div><div class="kick">מערכת הדם · לחץ הדם ומהירות הזרימה · דף עבודה</div><h1>לחץ הדם ומהירות זרימת הדם בכלי הדם השונים</h1></div>
+
+<div class="card who"><label>שם<input id="nm" autocomplete="name"></label><label>כיתה<input id="cl"></label></div>
+
+<div class="card">
+ <p>לפניכם גרפים המתארים את לחץ הדם ואת מהירות זרימת הדם בכלי הדם השונים.</p>
+ <div class="fig"><img src="img/graph-lachatz-mehirut.png" alt="גרף עליון: לחץ הדם; גרף תחתון: מהירות זרימת הדם, בעורקים ובעורקיקים, בנימים ובוורידונים ובוורידים">
+  <span class="lb s" style="left:47%;top:3.6%">לחץ סיסטולי</span>
+  <span class="lb s" style="left:26%;top:29.5%">לחץ דיאסטולי</span>
+  <span class="lb v" style="left:4.6%;top:26%">לחץ הדם</span>
+  <span class="lb v" style="left:4.6%;top:73%">מהירות הזרימה</span>
+  <span class="lb" style="left:31%;top:96.5%">עורקים / עורקיקים</span>
+  <span class="lb" style="left:55%;top:96.5%">נימים</span>
+  <span class="lb" style="left:79%;top:96.5%">ורידונים / ורידים</span>
+ </div>
+ <p class="cr">איור: OpenStax, Biology · CC BY 4.0 · התוויות תורגמו לעברית</p>
+</div>
+
+<div class="card">
+ <h2>הגרף העליון: לחץ הדם</h2>
+ <div class="q" data-k="a1"><p class="qt">א. תארו את הגרף העליון.</p><textarea></textarea><button class="rev" disabled>הצגת תשובה</button>
+  <div class="ans">בעורקים לחץ הדם הגבוה ביותר, והוא עולה ויורד במחזוריות: בין לחץ סיסטולי ללחץ דיאסטולי. לאורך העורקים והעורקיקים הלחץ יורד, והתנודות הולכות וקטנות. הירידה החדה ביותר היא בעורקיקים. בנימים, בוורידונים ובוורידים הלחץ נמוך, כמעט ללא תנודות, והוא ממשיך לרדת בהדרגה.</div></div>
+ <div class="q" data-k="a2"><p class="qt">ב. ציינו שני גורמים שמשפיעים על השינויים הנראים בגרף.</p><textarea></textarea><button class="rev" disabled>הצגת תשובה</button>
+  <div class="ans">שניים מתוך: התכווצות והרפיה של החדר השמאלי (פעילות הלב); החיכוך של הדם בדפנות כלי הדם (ההתנגדות לזרימה, שתלויה בקוטר כלי הדם); הגמישות של דופן העורקים (סיבים אלסטיים).</div></div>
+ <div class="q" data-k="a3"><p class="qt">ג. הסבירו את השינויים הנראים בגרף.</p><textarea></textarea><button class="rev" disabled>הצגת תשובה</button>
+  <div class="ans">בהתכווצות החדר השמאלי נדחס דם לאבי העורקים, והלחץ בעורקים עולה (לחץ סיסטולי). בהרפיית החדר הלחץ יורד (לחץ דיאסטולי), אבל לא לאפס: הדופן האלסטית של העורקים, שנמתחה, חוזרת לממדיה ודוחסת את הדם. לאורך הדרך הדם מתחכך בדפנות כלי הדם, ולכן הלחץ יורד. העורקיקים צרים וההתנגדות בהם גדולה, ולכן בהם הירידה החדה ביותר, והתנודות כמעט נעלמות. בנימים ובוורידים הלחץ נמוך.</div></div>
+</div>
+
+<div class="card">
+ <h2>הגרף התחתון: מהירות זרימת הדם</h2>
+ <div class="q" data-k="b1"><p class="qt">א. תארו את הגרף התחתון.</p><textarea></textarea><button class="rev" disabled>הצגת תשובה</button>
+  <div class="ans">בעורקים מהירות הזרימה גבוהה, והיא משתנה במחזוריות עם פעימות הלב. בעורקיקים המהירות יורדת, ובנימים היא הנמוכה ביותר. בוורידונים ובוורידים המהירות עולה בהדרגה, אבל נשארת נמוכה מהמהירות בעורקים.</div></div>
+ <div class="q" data-k="b2"><p class="qt">ב. הסבירו מה היתרון של מהירות הזרימה שמתרחשת בנימים.</p><textarea></textarea><button class="rev" disabled>הצגת תשובה</button>
+  <div class="ans">בנימים הזרימה האיטית ביותר, ולכן הדם שוהה בהם זמן רב יותר. כך יש זמן למעבר חומרים בדיפוזיה בין הדם לנוזל הבין־תאי ולתאים: חמצן וגלוקוז עוברים לתאים, ופחמן דו־חמצני ופסולת עוברים לדם.</div></div>
+</div>
+
+<div class="card">
+ <h2>משתנים</h2>
+ <div class="q" data-k="c1"><p class="qt">ג. בכל אחד משני הגרפים: מהו <b>המשתנה הבלתי תלוי</b> ומהו <b>המשתנה התלוי</b>?</p><textarea></textarea><button class="rev" disabled>הצגת תשובה</button>
+  <div class="ans">המשתנה הבלתי תלוי בשני הגרפים: סוג כלי הדם (המיקום לאורך מערכת כלי הדם). המשתנה התלוי: בגרף העליון לחץ הדם, ובגרף התחתון מהירות זרימת הדם.</div></div>
+ <div class="q" data-k="c2"><p class="qt">ד. היעזרו בשני הגרפים: האם מהירות הזרימה תלויה רק בלחץ הדם? הסבירו.</p><textarea></textarea><button class="rev" disabled>הצגת תשובה</button>
+  <div class="ans">לא. בנימים ובוורידים לחץ הדם נמוך ויורד בהדרגה, ובכל זאת המהירות בוורידים גבוהה מבנימים. מהירות הזרימה תלויה גם בשטח החתך הכולל: בנימים שטח החתך הכולל הגדול ביותר, ולכן הזרימה בהם האיטית ביותר. בוורידים שטח החתך הכולל קטן יותר, והמהירות עולה.</div></div>
+</div>
+
+<p class="hint" style="text-align:center">כותבים תשובה (לפחות שלוש מילים), ורק אז אפשר לפתוח את התשובה ולהשוות.</p>
+<button class="print" onclick="window.print()">📄 שמירה כ־PDF / הדפסה</button>
+<p class="credit">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים</p>
+</div>
+<script>
+(function(){
+ const KEY='hadam-ws-lachatz';let st={};try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+ const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+ ['nm','cl'].forEach(id=>{const el=document.getElementById(id);el.value=st[id]||'';el.oninput=()=>{st[id]=el.value;save()}});
+ document.querySelectorAll('.q').forEach(q=>{
+  const k=q.dataset.k,ta=q.querySelector('textarea'),b=q.querySelector('.rev'),a=q.querySelector('.ans');
+  const ok=()=>ta.value.trim().split(/\s+/).filter(Boolean).length>=3;
+  ta.value=st[k]||'';b.disabled=!ok();if(st[k+'_open']){a.classList.add('show');b.style.display='none'}
+  ta.oninput=()=>{st[k]=ta.value;save();b.disabled=!ok()};
+  b.onclick=()=>{if(!ok())return;a.classList.add('show');b.style.display='none';st[k+'_open']=1;save()};
+ });
+})();
+</script></body></html>
