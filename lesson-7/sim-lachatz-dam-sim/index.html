@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>לחץ הדם בכלי הדם · סימולציה</title>
+<meta name="description" content="סימולציה של לחץ הדם: עורק, עורקיקים, נימים, ורידונים ווריד, עם דופק, דופן אלסטית וגרפים של הלחץ לאורך מערכת כלי הדם ולאורך זמן.">
+<meta property="og:title" content="לחץ הדם בכלי הדם · סימולציה">
+<meta property="og:description" content="120/80 בעורק, ירידה גדולה בעורקיקים, ולחץ נמוך בלי דופק בנימים ובוורידים. גרפים שנבנים יחד עם הזרימה.">
+<meta property="og:image" content="https://lachatz-dam-sim.sites.tab.bot/og.jpg">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body><style>.homefix{position:fixed;top:8px;left:10px;display:flex;gap:6px;z-index:9999;direction:rtl}.homefix a{background:#fff;color:#1B1B2F;border:2px solid #1B1B2F;border-radius:20px;padding:3px 12px;font:800 13px Heebo,Arial,sans-serif;text-decoration:none;line-height:1.5}@media print{.homefix{display:none}}</style><nav class="homefix"><a href="../../index.html">🏠 דף הבית</a><a href="../index.html">→ לשיעור</a></nav>
+<header class="top">
+  <div class="wrap">
+    <p class="kicker">ביולוגיה · מערכת ההובלה</p>
+    <h1>לחץ הדם בכלי הדם</h1>
+    <p class="lead">בכל פעימה החדר השמאלי מתכווץ ודוחף דם אל העורק. לחצו על «הפעלת זרימה» ועקבו אחרי התא המסומן: איפה הלחץ גבוה ועולה ויורד עם הדופק, ואיפה הוא נמוך וקבוע?</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="lab" id="lab" aria-label="סימולציה וגרפים">
+    <div class="panel sim-panel">
+      <div class="controls" role="group" aria-label="שליטה בסימולציה">
+        <button id="btnPlay" class="btn primary" type="button" aria-pressed="false">▶ הפעלת זרימה</button>
+        <button id="btnReset" class="btn" type="button">↺ איפוס</button>
+        <label class="rate">דופק
+          <input id="hr" type="range" min="50" max="150" step="2" value="72" aria-label="קצב הלב, פעימות בדקה">
+          <output id="hrOut">72</output><span class="unit">פעימות בדקה</span>
+        </label>
+        <label class="switch inline"><input type="checkbox" id="slow"> <span>הילוך איטי</span></label>
+        <button id="btnFull" class="btn ghost" type="button" title="מסך מלא">⛶ מסך מלא</button>
+      </div>
+
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="vessels" aria-label="ציור של עורק שמתפצל לעורקיקים, לנימים, לורידונים ולוריד. דופן העורק מתרחבת בכל פעימה, ותאי דם אדומים זורמים בכלי הדם"></canvas>
+        <div class="flow-tag from" aria-hidden="true"><span class="heart" id="heart">♥</span><span>מהלב</span><span>→</span></div>
+        <div class="flow-tag to" aria-hidden="true"><span>→</span><span>אל הלב</span></div>
+        <div class="tissue-tag" id="tissueTag" aria-hidden="true">תאי רקמה</div>
+      </div>
+
+      <div class="zones" id="zones" role="list"></div>
+
+      <div class="readout" id="readout">
+        <div class="readout-line"><span class="dot-tracer" aria-hidden="true"></span> <span id="readoutText">התא המסומן מחכה בתחילת העורק.</span></div>
+        <div class="meter" aria-hidden="true"><div class="meter-fill" id="meterFill"></div></div>
+        <div class="phase-row"><span id="phase" class="phase"></span></div>
+      </div>
+      <p class="scale-note">באנימציה ההתרחבות של דופן העורק ומהירות התאים אינן בקנה מידה. שינוי הדופק בסימולציה משנה רק את קצב הפעימות, והלחצים נשארים כפי שהם.</p>
+    </div>
+
+    <div class="panel chart-panel">
+      <div class="charts">
+        <div class="chart-box">
+          <h2>גרף 1: לחץ הדם בכלי הדם השונים</h2>
+          <div class="chart-wrap"><canvas id="chart" aria-label="גרף לחץ הדם לפי סוג כלי הדם: פס בין לחץ סיסטולי לדיאסטולי בעורק, שהולך ונעשה צר עד קו אחד"></canvas></div>
+          <p class="legend"><span class="sw band"></span>טווח בין סיסטולי לדיאסטולי <span class="sw line"></span>הלחץ ברגע זה</p>
+        </div>
+        <div class="chart-box">
+          <h2>גרף 2: לחץ הדם לאורך זמן</h2>
+          <div class="mp" role="group" aria-label="נקודת מדידה">
+            <span class="mp-label">נקודת מדידה:</span>
+            <button type="button" class="chip" aria-pressed="true">עורק</button>
+            <button type="button" class="chip" aria-pressed="false">נימים</button>
+            <button type="button" class="chip" aria-pressed="false">וריד</button>
+          </div>
+          <div class="chart-wrap"><canvas id="chartTime" aria-label="גרף לחץ הדם לאורך זמן בנקודת המדידה שנבחרה"></canvas></div>
+        </div>
+      </div>
+      <p class="caption">הלחץ יורד לאורך מערכת כלי הדם. הירידה הגדולה ביותר היא בעורקיקים, ומשם והלאה הדופק נעלם.</p>
+      <div class="info" id="info" aria-live="polite">
+        <p class="info-hint">געו בכלי דם בציור, או בשם שלו, ויופיע כאן מידע עליו.</p>
+      </div>
+      <details class="values">
+        <summary>טבלת ערכים משוערים</summary>
+        <div class="table-scroll">
+        <table>
+          <thead><tr><th>כלי הדם</th><th>לחץ הדם (מ״מ כספית)</th><th>דופק</th><th>דופן</th></tr></thead>
+          <tbody id="valuesBody"></tbody>
+        </table>
+        </div>
+        <p class="small">ערכים משוערים לאדם בוגר במנוחה, במחזור הדם הגדול, לפי ספרי לימוד. הערכים משתנים בין מקורות ובין אנשים. 120/80 פירושו לחץ סיסטולי של כ־120 ולחץ דיאסטולי של כ־80 מ״מ כספית.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="panel tasks" aria-labelledby="qTitle">
+    <h2 id="qTitle">שאלות לחשיבה</h2>
+    <p class="small">התשובות נשמרות אוטומטית בדפדפן במכשיר הזה.</p>
+    <ol class="qlist">
+      <li>
+        <label for="q1">בגרף 1: מהו המשתנה הבלתי תלוי ומהו המשתנה התלוי? באיזה סוג כלי דם הירידה בלחץ הדם היא הגדולה ביותר? הסבירו בעזרת המושג התנגדות לזרימה.</label>
+        <textarea id="q1" rows="4" data-key="q1"></textarea>
+      </li>
+      <li>
+        <label for="q2">בגרף 2 בחרו פעם «עורק» ופעם «וריד». בעורק הלחץ עולה ויורד בכל פעימה, ובוריד אין דופק. הסבירו כיצד הדופן האלסטית של העורקים וההתנגדות של העורקיקים משפיעות על התנודות בלחץ.</label>
+        <textarea id="q2" rows="4" data-key="q2"></textarea>
+      </li>
+      <li>
+        <label for="q3">בוורידים הגדולים, ליד הלב, הלחץ קרוב ל־0 מ״מ כספית. הציעו הסבר: כיצד הדם חוזר אל הלב למרות הלחץ הנמוך? היעזרו במבנה הוורידים ובמה שקורה סביבם.</label>
+        <textarea id="q3" rows="4" data-key="q3"></textarea>
+      </li>
+    </ol>
+    <div class="task-actions">
+      <button id="btnCopy" class="btn primary" type="button">📋 העתקה</button>
+      <span id="saveState" class="small" aria-live="polite"></span>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p>סימולציה להוראה. הערכים משוערים, והאנימציה אינה בקנה מידה של גודל כלי הדם.</p>
+</footer>
+<script src="script.js?v=2"></script>
+<p style="text-align:center;font:12px Heebo,Arial,sans-serif;color:#666;margin:12px 0">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים · חגית ברגמן · נבנה עם Tab</p></body>
+</html>

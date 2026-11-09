@@ -1,0 +1,96 @@
+@font-face{font-family:"Heebo";src:url("../fonts/Heebo.ttf") format("truetype");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Gveret Levin";src:url("../fonts/GveretLevin.ttf") format("truetype");font-weight:400;font-display:swap}
+:root{
+  --bg:#f7f5f1; --card:#ffffff; --ink:#24262b; --muted:#5d6370; --line:#e4dfd7;
+  --red:#c62828; --red-d:#8e1f2f; --vein:#6c2d5f; --teal:#0f766e; --gold:#f2b632;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Heebo","Open Sans",system-ui,sans-serif;font-size:17px;line-height:1.55}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+h1,h2{font-family:"Gveret Levin","Heebo",sans-serif;font-weight:400;line-height:1.15;margin:0}
+h1{font-size:clamp(30px,4.2vw,48px);color:var(--red-d)}
+h2{font-size:clamp(22px,2.4vw,28px);color:var(--ink);margin-bottom:10px}
+.top{padding:26px 0 10px}
+.kicker{margin:0 0 4px;color:var(--teal);font-weight:700;font-size:15px;letter-spacing:.02em}
+.lead{margin:8px 0 0;max-width:820px;color:var(--muted)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.lab{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start;margin-top:14px}
+@media (max-width:1050px){.lab{grid-template-columns:1fr}}
+.side{display:flex;flex-direction:column;gap:16px}
+.mech{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.mbtn{font:inherit;font-weight:700;font-size:15.5px;border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:14px;padding:8px 12px;cursor:pointer;min-height:48px;display:inline-flex;align-items:center;gap:6px;transition:background .2s,border-color .2s}
+.mbtn:hover{border-color:#cfc6b8}
+.mbtn[aria-pressed="true"]{background:#e3f3f1;border-color:var(--teal);color:#0f5e58}
+.mbtn[aria-pressed="true"]::after{content:"✓";font-weight:800}
+.mi{font-size:18px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:8px 14px;cursor:pointer;min-height:44px}
+.btn:hover{border-color:#cfc6b8}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.primary:hover{background:#b71c1c}
+.btn.ghost{background:transparent}
+.btn:focus-visible,.mbtn:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #f2b632;outline-offset:2px}
+.rate{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--muted)}
+.rate input{width:100px;accent-color:var(--teal)}
+.rate output{min-width:2.4em;font-weight:700;color:var(--ink)}
+#btnFull{margin-inline-start:auto}
+.switch{display:flex;gap:8px;align-items:center;font-size:15px;cursor:pointer;margin:0}
+.switch input{width:20px;height:20px;accent-color:#d9822b}
+.switch.leak{font-weight:700;color:#a24f0b;background:#fdf3e8;border:1px solid #f0cfa8;border-radius:999px;padding:8px 14px;min-height:44px}
+.canvas-wrap{position:relative;border-radius:12px;overflow:hidden;background:#fbfaf7;border:1px solid var(--line)}
+#scene{display:block;width:100%;height:auto}
+.legend{margin-top:6px}
+.readout h2,.chart-panel h2{font-size:clamp(20px,2vw,24px)}
+.count{margin:0 0 8px;font-size:16px}
+.count b{color:var(--teal);font-size:20px}
+.rows{list-style:none;margin:0;padding:0}
+.rows li{padding:7px 10px;border-radius:10px;margin-bottom:6px;background:#f6f3ee;color:var(--muted);font-size:15px;line-height:1.45;border-inline-start:4px solid #d8d1c5}
+.rows li.on{background:#eef7f5;color:var(--ink);border-inline-start-color:var(--teal)}
+.rows li b{color:var(--ink)}
+.valves{margin-top:6px;font-size:14.5px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.vl{color:var(--muted)}
+#valveRow{display:inline-flex;gap:5px;flex-wrap:wrap}
+.vb{display:inline-block;border-radius:999px;padding:1px 9px;font-weight:700;font-size:13.5px;border:1px solid}
+.vb.open{background:#e3f3f1;color:#0f766e;border-color:#9fd1ca}
+.vb.shut{background:#efedea;color:#555b66;border-color:#d8d3cb}
+.vb.bad{background:#fdebd9;color:#a24f0b;border-color:#e7a565}
+.leak-note{margin:8px 0 0;font-size:14.5px;background:#fdf3e8;border-inline-start:4px solid #d9822b;padding:8px 10px;border-radius:8px}
+.chart-wrap{position:relative;width:100%;aspect-ratio:4/2.7;max-height:340px}
+#graph{display:block;width:100%;height:100%}
+.rate-now{margin-top:8px;font-size:15px}
+.rate-now b{color:var(--red-d)}
+.meter{height:10px;background:#ece6dc;border-radius:99px;margin-top:6px;overflow:hidden}
+.meter-fill{height:100%;width:2%;background:linear-gradient(270deg,#0f766e,#8e1f2f);border-radius:99px;transition:width .3s;margin-inline-start:0}
+.note h3,.explain summary{font-family:"Gveret Levin","Heebo",sans-serif;font-weight:400;font-size:21px;margin:0 0 4px;color:var(--ink)}
+.note p{margin:0;font-size:15px;color:var(--ink)}
+.note{background:#fbf8f2}
+.explain{margin-top:16px}
+.explain summary{cursor:pointer;color:var(--teal)}
+.explain li{margin-bottom:8px}
+.explain p,.explain li{font-size:16px}
+.small{font-size:14px;color:var(--muted);margin:4px 0}
+.tasks{margin:16px 0}
+.qlist{padding-inline-start:22px;margin:8px 0}
+.qlist li{margin-bottom:14px}
+.qlist label{display:block;font-weight:600;margin-bottom:6px}
+textarea{width:100%;font:inherit;font-size:16px;border:1px solid #d8d1c5;border-radius:10px;padding:10px;background:#fffdf9;resize:vertical}
+.task-actions{display:flex;gap:12px;align-items:center}
+.foot{padding:6px 20px 30px;color:var(--muted);font-size:14px}
+.panel.sim-panel:fullscreen{overflow:auto;padding:24px;background:#fff;display:flex;flex-direction:column;justify-content:center}
+.panel.sim-panel:fullscreen .canvas-wrap{max-width:calc((100vh - 200px) * 640 / 600);width:100%;margin:0 auto}
+@media (max-width:640px){
+  body{font-size:16px}
+  .wrap{padding:0 12px}
+  .panel{padding:12px;border-radius:14px}
+  .btn{padding:8px 14px}
+  .mbtn{font-size:14.5px;padding:7px 8px;flex:1 1 30%;justify-content:center;gap:4px}
+  .mi{display:none}
+  .mbtn[aria-pressed="true"]::after{content:none}
+  #btnFull{display:none}
+  .rate input{width:90px}
+  .switch.leak{flex:1 1 100%;justify-content:center}
+  .controls .btn{padding:8px 11px}
+  .chart-wrap{aspect-ratio:4/3.2}
+}
+@media (prefers-reduced-motion:reduce){.meter-fill{transition:none}}

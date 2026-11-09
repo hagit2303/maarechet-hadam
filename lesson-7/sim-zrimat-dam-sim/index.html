@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מהירות זרימת הדם בכלי הדם · סימולציה</title>
+<meta name="description" content="סימולציה של מהירות זרימת הדם: עורק, עורקיקים, נימים, ורידונים ווריד, עם גרף של מהירות הזרימה ושטח החתך הכולל.">
+<meta property="og:title" content="מהירות זרימת הדם בכלי הדם · סימולציה">
+<meta property="og:description" content="עורק, עורקיקים, נימים, ורידונים ווריד: תאי דם זורמים במהירות שונה, וגרף שנבנה יחד עם הזרימה.">
+<meta property="og:image" content="https://zrimat-dam-sim.sites.tab.bot/og.jpg">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="styles.css?v=3">
+</head>
+<body><style>.homefix{position:fixed;top:8px;left:10px;display:flex;gap:6px;z-index:9999;direction:rtl}.homefix a{background:#fff;color:#1B1B2F;border:2px solid #1B1B2F;border-radius:20px;padding:3px 12px;font:800 13px Heebo,Arial,sans-serif;text-decoration:none;line-height:1.5}@media print{.homefix{display:none}}</style><nav class="homefix"><a href="../../index.html">🏠 דף הבית</a><a href="../index.html">→ לשיעור</a></nav>
+<header class="top">
+  <div class="wrap">
+    <p class="kicker">ביולוגיה · מערכת ההובלה</p>
+    <h1>מהירות זרימת הדם בכלי הדם</h1>
+    <p class="lead">הדם זורם מהעורק אל העורקיקים, משם לנימים, ואז לורידונים ולוריד. לחצו על «הפעלת זרימה» ועקבו אחרי התא המסומן: איפה הוא מהיר, ואיפה הוא כמעט עומד?</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="lab" id="lab" aria-label="סימולציה וגרף">
+    <div class="panel sim-panel">
+      <div class="controls" role="group" aria-label="שליטה בסימולציה">
+        <button id="btnPlay" class="btn primary" type="button" aria-pressed="false">▶ הפעלת זרימה</button>
+        <button id="btnReset" class="btn" type="button">↺ איפוס</button>
+        <label class="rate">קצב
+          <input id="rate" type="range" min="0.25" max="2" step="0.25" value="1" aria-label="קצב הסימולציה">
+          <output id="rateOut">×1</output>
+        </label>
+        <button id="btnFull" class="btn ghost" type="button" title="מסך מלא">⛶ מסך מלא</button>
+      </div>
+
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="vessels" aria-label="ציור של עורק שמתפצל לעורקיקים, לנימים, לורידונים ולוריד, ותאי דם אדומים זורמים בהם"></canvas>
+        <div class="flow-tag from" aria-hidden="true"><span>מהלב</span><span>→</span></div>
+        <div class="flow-tag to" aria-hidden="true"><span>→</span><span>אל הלב</span></div>
+        <div class="tissue-tag" id="tissueTag" aria-hidden="true">תאי רקמה</div>
+      </div>
+
+      <div class="zones" id="zones" role="list"></div>
+
+      <div class="readout" id="readout" aria-live="polite">
+        <div class="readout-line"><span class="dot-tracer" aria-hidden="true"></span> <span id="readoutText">התא המסומן מחכה בתחילת העורק.</span></div>
+        <div class="meter" aria-hidden="true"><div class="meter-fill" id="meterFill"></div></div>
+      </div>
+
+      <div class="options">
+        <label class="switch"><input type="checkbox" id="realScale"> <span>מהירות במציאות (בלי הקטנה)</span></label>
+        <p class="scale-note" id="scaleNote">באנימציה הפערים בין המהירויות מוקטנים, וסדר המהירויות נשמר. במציאות הדם בעורק מהיר פי כ־900 מהדם בנימים.</p>
+      </div>
+    </div>
+
+    <div class="panel chart-panel">
+      <h2>גרף: מהירות זרימת הדם בכלי הדם השונים</h2>
+      <div class="chart-wrap"><canvas id="chart" aria-label="גרף מהירות זרימת הדם לפי סוג כלי הדם"></canvas></div>
+      <label class="switch"><input type="checkbox" id="showArea"> <span>להציג גם את שטח החתך הכולל (קו מקווקו)</span></label>
+      <label class="switch"><input type="checkbox" id="logY"> <span>ציר לוגריתמי (מגדיל את ההבדלים בין הערכים הנמוכים)</span></label>
+      <p class="caption" id="areaCaption" hidden>שטח החתך הכולל הוא סכום שטחי החתך של כל כלי הדם מאותו סוג. נים בודד הוא כלי הדם הצר ביותר, אבל מספר הנימים עצום, ולכן שטח החתך הכולל שלהם הגדול ביותר. כמות הדם שעוברת בכל שנייה זהה בכל המקטעים, וכאשר שטח החתך הכולל גדל, המהירות יורדת.</p>
+      <div class="info" id="info" aria-live="polite">
+        <p class="info-hint">געו בכלי דם בציור, או בשם שלו, ויופיע כאן מידע עליו.</p>
+      </div>
+      <details class="values">
+        <summary>טבלת ערכים משוערים</summary>
+        <div class="table-scroll">
+        <table>
+          <thead><tr><th>כלי הדם</th><th>מהירות (ס״מ/שנייה)</th><th>קוטר כלי בודד</th><th>שטח חתך כולל (סמ״ר)</th></tr></thead>
+          <tbody id="valuesBody"></tbody>
+        </table>
+        </div>
+        <p class="small">ערכים משוערים לאדם במנוחה, לפי ספרי לימוד. הערכים משתנים בין מקורות ובין אנשים.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="panel tasks" aria-labelledby="qTitle">
+    <h2 id="qTitle">שאלות לחשיבה</h2>
+    <p class="small">התשובות נשמרות אוטומטית בדפדפן במכשיר הזה.</p>
+    <ol class="qlist">
+      <li>
+        <label for="q1">באיזה סוג כלי דם מהירות הזרימה הנמוכה ביותר? הסבירו את הקשר בין שטח החתך הכולל של כלי הדם לבין מהירות הזרימה בהם.</label>
+        <textarea id="q1" rows="4" data-key="q1"></textarea>
+      </li>
+      <li>
+        <label for="q2">דופן הנימים בנויה משכבת תאים אחת. כיצד משפיעה מהירות הזרימה הנמוכה בנימים על מעבר החומרים בין הדם לבין תאי הרקמה?</label>
+        <textarea id="q2" rows="4" data-key="q2"></textarea>
+      </li>
+      <li>
+        <label for="q3">בגרף: מהו המשתנה הבלתי תלוי ומהו המשתנה התלוי? המהירות בוריד עולה שוב, אך נשארת נמוכה מהמהירות בעורק. הציעו הסבר לכך בעזרת שטח החתך הכולל.</label>
+        <textarea id="q3" rows="4" data-key="q3"></textarea>
+      </li>
+    </ol>
+    <div class="task-actions">
+      <button id="btnCopy" class="btn primary" type="button">📋 העתקה</button>
+      <span id="saveState" class="small" aria-live="polite"></span>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p>סימולציה להוראה. הערכים משוערים, והאנימציה אינה בקנה מידה של גודל כלי הדם.</p>
+</footer>
+<script src="script.js?v=3"></script>
+<p style="text-align:center;font:12px Heebo,Arial,sans-serif;color:#666;margin:12px 0">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים · חגית ברגמן · נבנה עם Tab</p></body>
+</html>

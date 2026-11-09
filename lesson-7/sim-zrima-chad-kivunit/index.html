@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>זרימה חד כיוונית בוורידים וההחזר הורידי · סימולציה</title>
+<meta name="description" content="סימולציה של זרימה חד כיוונית בוורידים: מסתמי כיס, משאבת השרירים, משאבת הנשימה והיניקה מהלב, וגרף של נפח הדם שחוזר ללב.">
+<meta property="og:title" content="זרימה חד כיוונית בוורידים · ההחזר הורידי">
+<meta property="og:description" content="שלושת הכוחות שמחזירים את הדם ללב: משאבת השרירים, משאבת הנשימה והיניקה מהלב. ומה קורה כשמסתם פגום.">
+<meta property="og:image" content="https://zrima-chad-kivunit.sites.tab.bot/og.jpg">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="styles.css?v=2">
+</head>
+<body><style>.homefix{position:fixed;top:8px;left:10px;display:flex;gap:6px;z-index:9999;direction:rtl}.homefix a{background:#fff;color:#1B1B2F;border:2px solid #1B1B2F;border-radius:20px;padding:3px 12px;font:800 13px Heebo,Arial,sans-serif;text-decoration:none;line-height:1.5}@media print{.homefix{display:none}}</style><nav class="homefix"><a href="../../index.html">🏠 דף הבית</a><a href="../index.html">→ לשיעור</a></nav>
+<header class="top">
+  <div class="wrap">
+    <p class="kicker">ביולוגיה · מערכת ההובלה</p>
+    <h1>זרימה חד כיוונית בוורידים: ההחזר הורידי</h1>
+    <p class="lead">הדם בוורידי הרגל זורם כלפי מעלה, אל הלב, בלחץ נמוך ונגד כוח הכובד. הפעילו כל אחד משלושת הכוחות, או את שלושתם יחד, ועקבו אחרי המסתמים ואחרי הגרף.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="lab" aria-label="סימולציה וגרף">
+    <div class="panel sim-panel">
+      <div class="mech" role="group" aria-label="שלושת הכוחות של ההחזר הורידי">
+        <button id="b-muscle" class="mbtn m1" type="button" aria-pressed="false"><span class="mi">💪</span> משאבת השרירים</button>
+        <button id="b-breath" class="mbtn m2" type="button" aria-pressed="false"><span class="mi">🫁</span> משאבת הנשימה</button>
+        <button id="b-heart" class="mbtn m3" type="button" aria-pressed="false"><span class="mi">🫀</span> יניקה מהלב</button>
+        <label class="switch leak"><input type="checkbox" id="leaky"> <span>מסתם פגום</span></label>
+      </div>
+      <div class="controls" role="group" aria-label="שליטה בסימולציה">
+        <button id="btnPlay" class="btn" type="button" aria-pressed="false">⏸ השהיה</button>
+        <button id="btnReset" class="btn" type="button">↺ איפוס</button>
+        <button id="btnAll" class="btn" type="button">⚡ שלושתם יחד</button>
+        <label class="rate">קצב
+          <input id="rate" type="range" min="0.25" max="1.5" step="0.25" value="1" aria-label="קצב הסימולציה">
+          <output id="rateOut">×1</output>
+        </label>
+        <button id="btnFull" class="btn ghost" type="button" title="מסך מלא" aria-label="מסך מלא">⛶</button>
+      </div>
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="scene" aria-label="ציור של וריד ברגל עם ארבעה מסתמי כיס, שרירי שלד לצידו, בית החזה עם הסרעפת והעלייה הימנית של הלב. תאי דם אדומים זורמים בוריד כלפי מעלה."></canvas>
+      </div>
+      <p class="small legend">ברגל: ורידי הרגל. בבטן ובבית החזה: הוריד הנבוב התחתון. התרשים סכמטי, ואינו בקנה מידה.</p>
+    </div>
+
+    <div class="side">
+      <div class="panel readout" aria-live="polite">
+        <h2>מה פועל עכשיו?</h2>
+        <p class="count">פועלים עכשיו <b id="nActive">0</b> מתוך 3 מנגנונים</p>
+        <ul class="rows">
+          <li id="row-muscle"><b>משאבת השרירים:</b> <span id="rdMuscle">כבויה</span></li>
+          <li id="row-breath"><b>משאבת הנשימה:</b> <span id="rdBreath">כבויה</span></li>
+          <li id="row-heart"><b>יניקה מהלב:</b> <span id="rdHeart">כבויה</span></li>
+        </ul>
+        <div class="valves"><span class="vl">מסתמים (מלמטה למעלה):</span> <span id="valveRow"></span></div>
+        <p class="leak-note" id="leakNote" hidden>מסתם 3 פגום: עלי המסתם אינם נסגרים עד הסוף. דם זורם דרכו לאחור, מצטבר בוריד שמתחתיו, ודופן הוריד נמתחת. כך נוצרות דליות.</p>
+      </div>
+      <div class="panel chart-panel">
+        <h2>נפח הדם שחזר ללב לאורך זמן</h2>
+        <div class="chart-wrap"><canvas id="graph" aria-label="גרף של נפח הדם שחזר ללב לאורך הזמן, והרקע מראה כמה מנגנונים פועלים"></canvas></div>
+        <div class="rate-now"><span>קצב ההחזר עכשיו: <b id="rateNum">0</b> יחידות לשנייה</span><div class="meter" aria-hidden="true"><div class="meter-fill" id="rateBar"></div></div></div>
+        <p class="small">ככל שהגרף תלול יותר, כך חוזר יותר דם ללב בכל שנייה. צבע הרקע והמספר שמעל הגרף מראים כמה מנגנונים פעלו באותו זמן (0 עד 3). ערכים יחסיים, לא מדידה.</p>
+      </div>
+      <div class="panel note">
+        <h3>לחץ שאריתי</h3>
+        <p>הדם מגיע לוורידים בלחץ נמוך, שנשאר מהלחץ שיצר הלב בצד העורקי (כ־15 ממ״כ בתחילת הורידונים, וכמעט אפס בעלייה הימנית). בעמידה, בוורידי הרגל, הלחץ הזה לבדו אינו מספיק להחזיר את הדם ללב נגד כוח הכובד. לכן גם כשכל המנגנונים כבויים זורם מעט דם, ושלושת הכוחות מגבירים את ההחזר.</p>
+      </div>
+    </div>
+  </section>
+
+  <details class="panel explain">
+    <summary>שלושת הכוחות של ההחזר הורידי, והמסתמים</summary>
+    <ol>
+      <li><b>משאבת השרירים:</b> שרירי השלד שליד הוריד מתכווצים, מתעבים ולוחצים על הוריד. הלחץ בקטע הלחוץ עולה, המסתם שמעליו נפתח, והמסתם שמתחתיו נסגר. הדם נדחף רק כלפי מעלה. כשהשריר נרפה, הדם נופל מעט לאחור וסוגר את המסתם העליון, והקטע הלחוץ מתמלא מלמטה.</li>
+      <li><b>משאבת הנשימה:</b> בשאיפה הסרעפת מתכווצת ויורדת. נפח בית החזה גדל והלחץ בו יורד, ובאותו זמן הלחץ בחלל הבטן עולה. הפרש הלחצים מעביר דם מוורידי הבטן אל הוורידים שבבית החזה, לכיוון הלב.</li>
+      <li><b>יניקה מהלב:</b> בזמן הדיאסטולה העלייה הימנית נרפית והלחץ בה נמוך מאוד. הדם בוורידים הגדולים, שהלחץ בו גבוה יותר, זורם אל העלייה.</li>
+    </ol>
+    <p><b>המסתמים:</b> בוורידים, בעיקר ברגליים, יש מסתמי כיס. זרימה כלפי הלב פותחת אותם, וזרימה לאחור ממלאת את הכיסים וסוגרת אותם. כך המסתמים מונעים זרימה לאחור, והזרימה בוורידים חד כיוונית.</p>
+  </details>
+
+  <section class="panel tasks" aria-labelledby="qTitle">
+    <h2 id="qTitle">שאלות לחשיבה</h2>
+    <p class="small">התשובות נשמרות אוטומטית בדפדפן במכשיר הזה.</p>
+    <ol class="qlist">
+      <li>
+        <label for="q1">הפעילו רק את משאבת השרירים והאטו את הקצב. מה קורה למסתם שמעל השריר ולמסתם שמתחתיו כשהשריר מתכווץ, ומה קורה כשהוא נרפה? הסבירו כיצד המסתמים גורמים לכך שהזרימה חד כיוונית.</label>
+        <textarea id="q1" rows="4" data-key="q1"></textarea>
+      </li>
+      <li>
+        <label for="q2">הפעילו כל מנגנון לבד, ואחר כך את שלושתם יחד. כיצד משתנה שיפוע הגרף של נפח הדם שחזר ללב? מה המשתנה הבלתי תלוי ומה המשתנה התלוי במה שבדקתם?</label>
+        <textarea id="q2" rows="4" data-key="q2"></textarea>
+      </li>
+      <li>
+        <label for="q3">סמנו «מסתם פגום» והפעילו את משאבת השרירים. תארו מה קורה לדם ולדופן הוריד מתחת למסתם. הסבירו מדוע עמידה ממושכת בלי תנועה קשורה להופעת דליות.</label>
+        <textarea id="q3" rows="4" data-key="q3"></textarea>
+      </li>
+    </ol>
+    <div class="task-actions">
+      <button id="btnCopy" class="btn primary" type="button">📋 העתקה</button>
+      <span id="saveState" class="small" aria-live="polite"></span>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p>סימולציה להוראה. הערכים יחסיים ומשוערים, והתרשים אינו בקנה מידה. מערכת ההובלה · גוף האדם.</p>
+</footer>
+<script src="script.js?v=2"></script>
+<p style="text-align:center;font:12px Heebo,Arial,sans-serif;color:#666;margin:12px 0">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים · חגית ברגמן · נבנה עם Tab</p></body>
+</html>
