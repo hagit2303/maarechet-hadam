@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>משימה: בונים יחידת לימוד</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F7FA;--paper:#fff;--ink:#13233A;--muted:#5E6E82;--rich:#D7263D;--poor:#2457C5;--line:#DCE3EA;--soft:#EAF0F6;--gold:#F2B705;--warn-bg:#FFF8E1;--good:#1E7B4D;--good-bg:#E8F4EE}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Assistant,Arial,sans-serif;font-size:18px;line-height:1.55;padding-inline:16px;overflow-x:hidden}
+.wrap{max-width:980px;margin:auto;padding-block:14px 48px;display:flex;flex-direction:column;gap:14px}
+.homebar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.homebar a{background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:20px;padding:4px 14px;font-weight:800;font-size:14px;text-decoration:none}
+.homebar .who{margin-inline-start:auto;font-weight:800;color:var(--rich)}
+.kick{font-weight:800;color:var(--rich);font-size:14px}
+h1{font-size:clamp(30px,5vw,48px);font-weight:800;line-height:1.05}h1 span{color:var(--rich)}
+h2{font-size:clamp(20px,2.6vw,26px);font-weight:800}
+h3{font-size:19px;font-weight:800}
+.card,.hero{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.hint{color:var(--muted);font-size:.95rem}
+.note{background:var(--warn-bg);border-inline-start:6px solid var(--gold);border-radius:12px;padding:10px 14px}
+.step{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;align-items:start}
+.step .n{grid-row:1/4;width:46px;height:46px;border-radius:12px;background:var(--ink);color:#fff;font-weight:800;font-size:22px;display:flex;align-items:center;justify-content:center}
+.step:nth-of-type(even) .n{background:var(--rich)}
+ul,ol{padding-inline-start:1.2em}li{margin:.2em 0}
+.qs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.qbox{background:var(--soft);border-radius:12px;padding:12px 14px}
+.qbox b{display:block;color:var(--poor);margin-bottom:4px}
+.check label{display:flex;gap:10px;align-items:flex-start;padding:4px 0;cursor:pointer}
+.check input{margin-top:6px;accent-color:var(--ink);width:18px;height:18px;flex:none}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:right;vertical-align:top}
+th{background:var(--ink);color:#fff}
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.g{border:2px solid var(--line);border-radius:14px;padding:12px}
+.g b{display:block;font-size:18px}
+.g:nth-child(1){border-color:var(--rich)}.g:nth-child(2){border-color:var(--poor)}.g:nth-child(3){border-color:var(--gold)}.g:nth-child(4){border-color:var(--ink)}
+.prog{font-weight:800;color:var(--good)}
+footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:12px}
+@media print{.homebar{display:none}body{background:#fff}.card,.hero{break-inside:avoid}}
+@media(max-width:600px){.step{grid-template-columns:1fr}.step .n{grid-row:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="homebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
+
+  <section class="hero">
+    <div class="kick">ביולוגיה · כיתה י' · שיעור 6 · משימה בקבוצות</div>
+    <h1>אתם המורים: <span>בונים יחידת לימוד על כלי הדם</span></h1>
+    <p>הקבוצה שלכם מקבלת נושא אחד מתוך "כלי הדם", ובונה עליו יחידת לימוד קצרה לשאר הכיתה: הסבר, איור, דוגמה מהחיים ושאלות. בסוף כל קבוצה מלמדת את הכיתה 7 דקות.</p>
+    <p class="note"><b>המטרה האמיתית:</b> מי שמלמד, לומד הכי טוב. מי שמסביר משהו לאחרים צריך להבין אותו לעומק: לא רק <i>מה</i>, אלא גם <i>למה</i>.</p>
+  </section>
+
+  <section class="card">
+    <h2>ארבעה נושאים · קבוצה לכל נושא</h2>
+    <div class="groups">
+      <div class="g"><b>1. שלושה סוגי צינורות</b>עורקים, נימים וורידים: מבנה הדופן והתאמה לתפקוד.</div>
+      <div class="g"><b>2. לחץ דם</b>מה זה 120/80, איך מודדים, למה הלחץ יורד לאורך הדרך, ותפקיד הדופן האלסטית.</div>
+      <div class="g"><b>3. מהירות זרימה</b>שטח חתך כולל, למה הזרימה בנימים איטית, ומה זה מאפשר.</div>
+      <div class="g"><b>4. החזרה ללב</b>לחץ נמוך בוורידים, מסתמים, משאבת השרירים, דליות ועמידה ממושכת.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>השאלות שאתם צריכים לשאול את עצמכם</h2>
+    <p class="hint">אלו השאלות של כל מי שבונה יחידת לימוד. ענו עליהן בכתב לפני שמתחילים לעצב.</p>
+    <div class="qs">
+      <div class="qbox"><b>מה?</b>מהו הרעיון המרכזי של הנושא שלנו, במשפט אחד? אילו 4–6 מושגים חייבים להופיע?</div>
+      <div class="qbox"><b>למה?</b>מה ההסבר הביולוגי? איך המבנה קשור לתפקוד? (למשל: למה הדופן עבה? למה הזרימה איטית?)</div>
+      <div class="qbox"><b>מה כבר יודעים?</b>מה הכיתה כבר למדה בשיעורים 1–5 שאפשר להתחבר אליו? (המחזור הגדול, מסתמים בלב, ויסות זרימת הדם…)</div>
+      <div class="qbox"><b>איפה טועים?</b>איזו טעות נפוצה צפויה? (למשל: "בנים הצר הדם זורם הכי מהר", "וריד = דם דל בחמצן")</div>
+      <div class="qbox"><b>מה מעניין?</b>איזו דוגמה מהחיים, תופעה מפתיעה או ניסוי קטן יגרמו לכיתה להקשיב?</div>
+      <div class="qbox"><b>איך נראה?</b>איזה איור, גרף או דגם יסבירו טוב יותר ממילים?</div>
+      <div class="qbox"><b>איך נבדוק?</b>איך נדע שהכיתה הבינה? אילו שאלות נשאל, ומה התשובה הנכונה לכל אחת?</div>
+      <div class="qbox"><b>מאיפה?</b>מאילו מקורות לקחנו את המידע? האם המקור אמין? בדקנו אותו מול סיכום מט״ח?</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>השלבים</h2>
+    <div class="step"><span class="n">1</span><h3>חוקרים (15 דקות)</h3><p>קוראים את החלק שלכם במצגת השיעור, בסימולציה ובסיכום מט״ח. כל אחד בקבוצה רושם 3 עובדות ושאלה אחת שעדיין לא ברורה לו. משווים בקבוצה ופותרים את השאלות.</p></div>
+    <div class="step"><span class="n">2</span><h3>מתכננים (10 דקות)</h3><p>עונים בכתב על שמונה השאלות שלמעלה. מחליטים על הרעיון המרכזי במשפט אחד, ועל סדר ההסבר: מה קודם ומה אחרי.</p></div>
+    <div class="step"><span class="n">3</span><h3>בונים (25 דקות)</h3><p>בונים את היחידה, ב־Google Slides או על בריסטול. היחידה חייבת לכלול:</p></div>
+    <div class="step" style="margin-top:-6px"><span></span><div><ul>
+      <li><b>שקף פתיחה עם שאלה או חידה</b> שמעוררת סקרנות.</li>
+      <li><b>הסבר</b> עם כל המושגים, בניסוח מדויק.</li>
+      <li><b>איור או גרף</b> שציירתם בעצמכם, עם כותרת ומקרא.</li>
+      <li><b>דוגמה מהחיים</b> אחת לפחות.</li>
+      <li><b>שלוש שאלות</b> לכיתה: שאלה סגורה אחת (4 תשובות), שאלה פתוחה אחת, ושאלה אחת על גרף או טבלה. עם תשובות נכונות.</li>
+      <li><b>שקף מקורות.</b></li></ul></div></div>
+    <div class="step"><span class="n">4</span><h3>בודקים (10 דקות)</h3><p>מחליפים יחידות עם קבוצה אחרת. כל קבוצה פותרת את השאלות של הקבוצה השנייה, ונותנת משוב לפי רשימת הבדיקה שלמטה: שני דברים טובים ודבר אחד לשיפור. מתקנים.</p></div>
+    <div class="step"><span class="n">5</span><h3>מלמדים (7 דקות לקבוצה)</h3><p>כל קבוצה מלמדת את הכיתה ושואלת את השאלות שלה. כל חברי הקבוצה מדברים.</p></div>
+    <div class="step"><span class="n">6</span><h3>חושבים (5 דקות)</h3><p>כל אחד כותב: מה הבנתי רק כשהייתי צריך להסביר לאחרים? איזו שאלה של הכיתה הפתיעה אותנו?</p></div>
+  </section>
+
+  <section class="card check">
+    <h2>✔ רשימת בדיקה לפני שמגישים</h2>
+    <p class="hint">סמנו כאן. הסימון נשמר רק במכשיר שלכם.</p>
+    <div id="ck"></div>
+    <p class="prog" id="prog"></p>
+  </section>
+
+  <section class="card">
+    <h2>כללי ניסוח של ביולוגים</h2>
+    <table>
+      <tr><th>לא כותבים</th><th>כן כותבים</th></tr>
+      <tr><td>"הלב <b>רוצה</b> לדחוף את הדם"</td><td>"התכווצות החדר השמאלי <b>יוצרת</b> לחץ שדוחף את הדם"</td></tr>
+      <tr><td>"הדם זורם לאט בנימים <b>כדי</b> שיהיה זמן לחילוף חומרים"</td><td>"הזרימה בנימים איטית, <b>ולכן</b> יש זמן למעבר חומרים"</td></tr>
+      <tr><td>"בוורידים יש דם <b>כחול</b>"</td><td>"בוורידי המחזור הגדול זורם דם <b>דל בחמצן</b>; בוורידי הריאה זורם דם עשיר בחמצן"</td></tr>
+      <tr><td>"הנים <b>הכי צר</b>, אז הזרימה בו <b>הכי מהירה</b>"</td><td>"שטח החתך <b>הכולל</b> של הנימים הגדול ביותר, ולכן הזרימה בהם האיטית ביותר"</td></tr>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>מחוון</h2>
+    <table>
+      <tr><th>רכיב</th><th>מה בודקים</th><th>נקודות</th></tr>
+      <tr><td>דיוק מדעי</td><td>מושגים נכונים, הסברים נכונים, ניסוח בלי "רוצה" ובלי "כדי"</td><td>30</td></tr>
+      <tr><td>מבנה ותפקוד</td><td>לכל מבנה: איזה תפקוד הוא מאפשר, ולמה</td><td>20</td></tr>
+      <tr><td>איור או גרף</td><td>מקורי, ברור, עם כותרת ומקרא</td><td>15</td></tr>
+      <tr><td>דוגמה ופתיחה</td><td>מעוררות סקרנות וקשורות לנושא</td><td>10</td></tr>
+      <tr><td>שאלות לכיתה</td><td>שלוש שאלות מסוגים שונים, עם תשובות נכונות</td><td>15</td></tr>
+      <tr><td>הוראה בכיתה</td><td>הסבר ברור, כל חברי הקבוצה משתתפים</td><td>10</td></tr>
+    </table>
+  </section>
+
+  <footer>ביולוגיה · מערכת הדם · שיעור 6 · משימה בקבוצות. היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. נבנתה על ידי חגית ברגמן.</footer>
+</div>
+<script>
+const ITEMS=['יש משפט אחד שמנסח את הרעיון המרכזי','כל המושגים של הנושא מופיעים, ולכל אחד יש הסבר','לכל מבנה כתבנו איזה תפקוד הוא מאפשר, ולמה','בדקנו: אין "רוצה", "מנסה", "כדי", "על מנת"','יש איור או גרף מקורי, עם כותרת ומקרא','יש דוגמה מהחיים','יש שלוש שאלות לכיתה, עם תשובות נכונות','יש שקף מקורות, ובדקנו את המידע מול סיכום מט״ח','קבוצה אחרת פתרה את השאלות ונתנה לנו משוב','תיקנו לפי המשוב'];
+const box=document.getElementById('ck');let st={};try{st=JSON.parse(localStorage.getItem('hadam-build6')||'{}')}catch(e){}
+box.innerHTML=ITEMS.map((t,i)=>`<label><input type="checkbox" data-i="${i}" ${st[i]?'checked':''}> ${t}</label>`).join('');
+function prog(){const n=box.querySelectorAll('input:checked').length;document.getElementById('prog').textContent=n===ITEMS.length?'✓ הכול מוכן. אפשר להגיש!':`${n} מתוך ${ITEMS.length}`}
+box.addEventListener('change',e=>{st[e.target.dataset.i]=e.target.checked;try{localStorage.setItem('hadam-build6',JSON.stringify(st))}catch(err){}prog()});prog();
+</script>
+</body>
+</html>

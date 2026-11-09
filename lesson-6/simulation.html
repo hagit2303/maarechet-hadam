@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>מסע בכלי הדם</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F7FA;--paper:#fff;--ink:#13233A;--muted:#5E6E82;--rich:#D7263D;--poor:#2457C5;--line:#DCE3EA;--soft:#EAF0F6;--gold:#F2B705;--good:#1E7B4D;--good-bg:#E8F4EE;--warn-bg:#FFF8E1}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Assistant,Arial,sans-serif;font-size:18px;line-height:1.5;padding-inline:16px;overflow-x:hidden}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:1040px;margin:auto;padding-block:14px 48px;display:flex;flex-direction:column;gap:14px}
+.homebar{display:flex;gap:8px;flex-wrap:wrap}
+.homebar a{background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:20px;padding:4px 14px;font-weight:800;font-size:14px;text-decoration:none}
+.kick{font-weight:800;color:var(--rich);font-size:14px}
+h1{font-size:clamp(30px,5vw,48px);font-weight:800;line-height:1.05}h1 span{color:var(--rich)}
+h2{font-size:clamp(20px,2.6vw,26px);font-weight:800}
+.hero,.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.part-h{display:flex;gap:12px;align-items:center;margin-top:14px}
+.part-h .n{width:44px;height:44px;border-radius:12px;background:var(--ink);color:#fff;font-weight:800;font-size:22px;display:flex;align-items:center;justify-content:center;flex:none}
+.hint{color:var(--muted);font-size:.92rem}
+.steps{display:flex;flex-wrap:wrap;gap:6px}
+.steps button{border:2px solid var(--line);background:#fff;border-radius:12px;padding:6px 12px;font-weight:700;font-size:16px}
+.steps button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.steps button.seen{border-color:var(--ink)}
+canvas{width:100%;height:auto;display:block;border-radius:14px;background:#FBF4F2;border:1px solid var(--line)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.st{background:var(--soft);border-radius:12px;padding:10px 12px}
+.st small{display:block;color:var(--muted);font-weight:700;font-size:14px}
+.st b{font-size:22px;font-variant-numeric:tabular-nums}
+.st.p b{color:var(--rich)}.st.v b{color:var(--poor)}.st.a b{color:#A07A00}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.fig svg{width:100%;height:auto}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{background:var(--ink);color:#fff;border:0;border-radius:12px;padding:9px 16px;font-weight:800}
+.btn.ghost{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+.btn.on{background:var(--rich);color:#fff;border-color:var(--rich)}
+.note{background:var(--warn-bg);border-inline-start:6px solid var(--gold);border-radius:12px;padding:10px 14px}
+.q{border-top:1px dashed var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+.q textarea{width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);font:inherit}
+.q .ans{background:var(--good-bg);border-inline-start:6px solid var(--good);border-radius:10px;padding:8px 12px}
+.q .ans[hidden]{display:none}
+.vein{display:flex;justify-content:center}.vein svg{width:min(100%,360px);height:auto}
+.alert{font-weight:800;color:var(--rich);min-height:1.5em}
+.next{display:flex;flex-wrap:wrap;gap:10px}
+.next a{background:var(--rich);color:#fff;border-radius:12px;padding:12px 18px;font-weight:800;text-decoration:none}
+.next a.g{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:12px}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="homebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a><a href="presentation.html">▤ המצגת</a></nav>
+  <section class="hero">
+    <div class="kick">ביולוגיה · כיתה י' · שיעור 6 · סימולציה</div>
+    <h1>מסע <span>בכלי הדם</span></h1>
+    <p>שלוש תחנות: (1) נוסעים עם הדם מאבי העורקים עד הווריד הנבוב, ורואים איך משתנים הלחץ, שטח החתך והמהירות. (2) בודקים מה הדופן האלסטית של העורקים עושה ללחץ. (3) מפעילים את משאבת השרירים ברגל, עם מסתמים תקינים ועם מסתמים פגומים.</p>
+    <p class="hint">בכל תחנה יש שאלות. כתבו תשובה, ורק אז אפשר לפתוח את התשובה ולהשוות.</p>
+  </section>
+
+  <!-- ===== 1 ===== -->
+  <div class="part-h"><span class="n">1</span><h2>המסע: מאבי העורקים ועד הווריד הנבוב</h2></div>
+  <section class="card">
+    <p>לחצו על כל תחנה לפי הסדר. שימו לב לנקודות האדומות (תאי הדם האדומים): מה קורה למהירות שלהן?</p>
+    <div class="steps" id="steps"></div>
+    <canvas id="cv1" width="1000" height="230" aria-label="תאי דם זורמים בכלי הדם שנבחר"></canvas>
+    <p class="hint" id="cvNote"></p>
+    <div class="stats">
+      <div class="st"><small>כלי דם</small><b id="sName"></b></div>
+      <div class="st p"><small>לחץ דם (מ״מ כספית)</small><b id="sP"></b></div>
+      <div class="st a"><small>שטח חתך כולל</small><b id="sA"></b></div>
+      <div class="st v"><small>מהירות זרימה ממוצעת</small><b id="sV"></b></div>
+      <div class="st"><small>זמן לעבור מילימטר אחד</small><b id="sT"></b></div>
+      <div class="st"><small>קוטר כלי אחד · כמה יש</small><b id="sD" style="font-size:17px"></b></div>
+    </div>
+    <p id="sW"></p>
+    <div class="two"><div class="fig" id="g1"></div><div class="fig" id="g2"></div></div>
+    <p class="hint">ערכים מקורבים, לפי ספר הפיזיולוגיה של Guyton. המהירות הממוצעת מחושבת כך: 5 ליטר בדקה ÷ שטח החתך הכולל.</p>
+    <div class="q" data-a="שטח החתך הכולל ומהירות הזרימה הפוכים זה לזה. שטח החתך הכולל הגדול ביותר נמצא בנימים, ושם מהירות הזרימה הקטנה ביותר. באבי העורקים שטח החתך הכולל הקטן ביותר, ושם הזרימה המהירה ביותר."><b>שאלה 1.</b> השוו בין שני הגרפים שמתחת לנתונים. מה הקשר בין שטח החתך הכולל לבין מהירות הזרימה?<textarea rows="2"></textarea><button class="btn ghost" type="button">בדיקה מול התשובה</button><div class="ans" hidden></div></div>
+    <div class="q" data-a="כל נים צר מאוד, אבל יש מיליארדי נימים, והדם מתחלק ביניהם. שטח החתך הכולל של כל הנימים יחד גדול פי 1,000 בערך משטח החתך של אבי העורקים, ולכן הדם זורם בהם לאט פי 1,000 בערך."><b>שאלה 2.</b> נים צר הרבה יותר מאבי העורקים. מדוע הזרימה בנים איטית יותר?<textarea rows="2"></textarea><button class="btn ghost" type="button">בדיקה מול התשובה</button><div class="ans" hidden></div></div>
+    <div class="q" data-a="הירידה החדה ביותר בלחץ היא בעורקיקים (מכ־90 לכ־35). העורקיקים צרים ורבים, והדם מתחכך בדפנות שלהם. בעורקיקים גם נעלמות כמעט לגמרי התנודות בין הלחץ הסיסטולי לדיאסטולי, ולכן בנימים ובוורידים הזרימה רציפה."><b>שאלה 3.</b> באיזה סוג כלי דם הלחץ יורד בחדות הרבה ביותר? מה עוד משתנה בלחץ באותו מקום?<textarea rows="2"></textarea><button class="btn ghost" type="button">בדיקה מול התשובה</button><div class="ans" hidden></div></div>
+  </section>
+
+  <!-- ===== 2 ===== -->
+  <div class="part-h"><span class="n">2</span><h2>העורק האלסטי</h2></div>
+  <section class="card">
+    <p>החדר השמאלי מתכווץ פעם בשנייה. בחרו את סוג הדופן של אבי העורקים, והסתכלו על הגרף ועל תאי הדם שיוצאים מימין לשמאל.</p>
+    <div class="row"><button class="btn on" id="elOn" type="button">דופן אלסטית (תקינה)</button><button class="btn ghost" id="elOff" type="button">דופן קשיחה</button></div>
+    <canvas id="cv2" width="1000" height="330" aria-label="אבי העורקים וגרף הלחץ לאורך זמן"></canvas>
+    <div class="stats"><div class="st p"><small>לחץ סיסטולי</small><b id="pS"></b></div><div class="st"><small>לחץ דיאסטולי</small><b id="pD" style="color:var(--poor)"></b></div><div class="st"><small>הזרימה בזמן הדיאסטולה</small><b id="pF" style="font-size:18px"></b></div></div>
+    <p class="note">מודל מפושט. המספרים להמחשה בלבד.</p>
+    <div class="q" data-a="בדופן אלסטית: בסיסטולה הדופן נמתחת ומכילה חלק מהדם. בדיאסטולה הדופן חוזרת לממדיה ודוחסת את הדם קדימה. לכן הלחץ הדיאסטולי נשאר כ־80, והדם זורם גם כשהלב נרפה. בדופן קשיחה: הלחץ קופץ גבוה מאוד בסיסטולה ויורד כמעט לאפס בדיאסטולה, והזרימה נעצרת בין פעימה לפעימה."><b>שאלה 4.</b> השוו בין שני סוגי הדופן: מה קורה ללחץ הסיסטולי, ללחץ הדיאסטולי ולזרימה בזמן הדיאסטולה? הסבירו.<textarea rows="3"></textarea><button class="btn ghost" type="button">בדיקה מול התשובה</button><div class="ans" hidden></div></div>
+    <div class="q" data-a="בגיל מבוגר הדופן של העורקים נעשית קשיחה יותר. היא נמתחת פחות בסיסטולה, ולכן הלחץ הסיסטולי עולה. לחץ גבוה לאורך זמן מעמיס על הלב ועל דפנות כלי הדם."><b>שאלה 5.</b> אצל אנשים מבוגרים נמדד לעיתים קרובות לחץ סיסטולי גבוה. היעזרו בסימולציה והציעו הסבר.<textarea rows="2"></textarea><button class="btn ghost" type="button">בדיקה מול התשובה</button><div class="ans" hidden></div></div>
+  </section>
+
+  <!-- ===== 3 ===== -->
+  <div class="part-h"><span class="n">3</span><h2>וריד ברגל: מסתמים ומשאבת השרירים</h2></div>
+  <section class="card">
+    <p>הלחץ בוורידי הרגליים נמוך מאוד. נסו את ארבעת הכפתורים, עם מסתמים תקינים ועם מסתמים פגומים. שימו לב למונה "דם שחזר ללב" ולרוחב הווריד.</p>
+    <div class="row"><button class="btn on" id="vOk" type="button">מסתמים תקינים</button><button class="btn ghost" id="vBad" type="button">מסתמים פגומים</button></div>
+    <div class="two" style="align-items:center">
+      <div class="vein" id="veinFig"></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="row"><button class="btn" id="bSq" type="button">💪 כיווץ השריר</button><button class="btn" id="bRx" type="button">😌 הרפיה</button></div>
+        <div class="row"><button class="btn ghost" id="bWalk" type="button">🚶 הליכה (10 צעדים)</button><button class="btn ghost" id="bStand" type="button">🧍 עמידה בלי תנועה (10 שניות)</button></div>
+        <div class="stats"><div class="st v"><small>דם שחזר ללב</small><b id="vRet">0</b></div><div class="st p"><small>דם בחלק התחתון של הווריד</small><b id="vLow">1</b></div></div>
+        <p class="alert" id="vMsg" role="status"></p>
+        <button class="btn ghost" id="bReset" type="button">↺ התחלה מחדש</button>
+      </div>
+    </div>
+    <p class="note">מודל מפושט: כל "יחידה" היא כמות דם קטנה. בכל הרפיה נכנסת יחידה אחת מהנימים לחלק התחתון של הווריד.</p>
+    <div class="q" data-a="כשהשריר מתכווץ, הוא לוחץ על הווריד והדם נדחס. המסתם שמעל נפתח, והמסתם שמתחת נסגר, ולכן הדם נע רק כלפי מעלה, אל הלב. כשהשריר נרפה, המסתם העליון נסגר, והדם לא חוזר למטה."><b>שאלה 6.</b> עם מסתמים תקינים: מה קורה בכל כיווץ של השריר ובכל הרפיה? מדוע הדם נע רק לכיוון הלב?<textarea rows="2"></textarea><button class="btn ghost" type="button">בדיקה מול התשובה</button><div class="ans" hidden></div></div>
+    <div class="q" data-a="בעמידה בלי תנועה השרירים לא לוחצים על הוורידים, הדם מצטבר ברגליים, ופחות דם חוזר ללב. כשפחות דם חוזר ללב, הלב מזרים פחות דם בכל פעימה, ופחות דם מגיע למוח. עם מסתמים פגומים, גם בהליכה חלק מהדם זורם בחזרה למטה, הדם מצטבר בוורידי הרגליים, והוורידים מתרחבים (דליות)."><b>שאלה 7.</b> הסבירו בעזרת הסימולציה: (א) מדוע חייל שעומד דום זמן רב עלול להתעלף? (ב) מדוע מסתמים פגומים גורמים לדליות?<textarea rows="3"></textarea><button class="btn ghost" type="button">בדיקה מול התשובה</button><div class="ans" hidden></div></div>
+  </section>
+
+  <section class="card">
+    <h2>סיימתם? ממשיכים לתרגיל</h2>
+    <div class="next"><a href="practice.html">✎ תרגיל: כלי הדם (עם PDF)</a><a class="g" href="presentation.html">▤ חזרה למצגת</a><a class="g" href="../lesson-4/heartbeat.html">◎ הלב הפועם (שיעור 4)</a></div>
+  </section>
+  <footer>ביולוגיה · מערכת הדם · שיעור 6: כלי הדם, מהירות זרימה ולחץ דם · היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. נבנתה על ידי חגית ברגמן.</footer>
+</div>
+<script src="vessels.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- שאלות: כתיבה ואז תשובה ---------- */
+document.querySelectorAll('.q').forEach(q=>{const t=q.querySelector('textarea'),b=q.querySelector('button'),a=q.querySelector('.ans');
+ b.onclick=()=>{if(t.value.trim().split(/\s+/).length<3){t.focus();t.placeholder='כתבו קודם תשובה (לפחות משפט קצר)';return}a.innerHTML='<b>תשובה:</b> '+q.dataset.a;a.hidden=false;t.readOnly=true;b.hidden=true}});
+
+/* ---------- 1. המסע ---------- */
+const SEG=V.SEG;let cur=0;const seen=new Set([0]);
+$('steps').innerHTML=SEG.map((s,i)=>`<button type="button" data-i="${i}">${i+1}. ${s.n}</button>`).join('');
+$('steps').onclick=e=>{const b=e.target.closest('button');if(b)pick(+b.dataset.i)};
+const RBC=Array.from({length:26},()=>({x:Math.random()*1000,y:Math.random()}));
+function pick(i){cur=i;seen.add(i);
+ document.querySelectorAll('#steps button').forEach((b,k)=>{b.classList.toggle('on',k===i);b.classList.toggle('seen',seen.has(k))});
+ const s=SEG[i];$('sName').textContent=s.n;
+ $('sP').textContent=s.side==='a'&&i<2?`${s.p[0]}/${s.p[1]}`:`${s.p[0]} ← ${s.p[1]}`;
+ $('sA').textContent=V.fmtA(s.area);$('sV').textContent=V.fmtV(s.v);
+ const t=0.1/s.v;$('sT').textContent=t<1?`${(t*1000).toFixed(0)} אלפיות שנייה`:`${t.toFixed(1)} שניות`;
+ $('sD').textContent=`${s.d} · ${s.count}`;
+ $('sW').innerHTML=`<b>הדופן:</b> ${s.wall}.`+(i===3?' <b>כאן עוברים חומרים</b> בין הדם לנוזל הבין־תאי ולתאים.':'')+(i===2?' כיווץ והרפיה של השריר בדופן משנים את כמות הדם שמגיעה לכל איבר (שיעור 3).':'')+(i===5?' המסתמים מאפשרים זרימה רק לכיוון הלב.':'');
+ $('cvNote').textContent=i===3?'בנים: תאי הדם האדומים עוברים בטור, אחד אחרי השני. על המסך הזרימה איטית, ובמציאות היא איטית עוד יותר: פי 1,000 מאשר באבי העורקים.':'הגדלה שונה לכל כלי דם. המהירויות על המסך אינן בקנה מידה: ההבדלים האמיתיים גדולים הרבה יותר.';
+ $('g1').innerHTML=V.fig('pressure',{at:i});$('g2').innerHTML=V.fig('speed',{at:i});}
+pick(0);
+const c1=$('cv1').getContext('2d');let last=performance.now(),T=0;
+function draw1(now){const dt=Math.min(.05,(now-last)/1000);last=now;T+=dt;
+ const s=SEG[cur],W=1000,H=230,beat=s.side==='a'&&cur<3?Math.max(0,Math.sin(T*2*Math.PI))**3:0;
+ const wallW=[34,24,16,5,6,8,10][cur],inner=cur===3?40:cur===4?60:cur===2?70:[0,110,100][cur]||(cur===5?120:130);
+ const ih=inner*(1+(cur<2?0.08:0.02)*beat),cy=H/2;
+ c1.clearRect(0,0,W,H);
+ c1.fillStyle=cur<3?'#C9707A':'#D9A5A8';c1.fillRect(0,cy-ih/2-wallW,W,wallW);c1.fillRect(0,cy+ih/2,W,wallW);
+ if(cur<2){c1.strokeStyle='#F7E7A8';c1.lineWidth=3;c1.setLineDash([16,8]);for(let k=1;k<4;k++){const yy=wallW*k/4;c1.beginPath();c1.moveTo(0,cy-ih/2-yy);c1.lineTo(W,cy-ih/2-yy);c1.stroke();c1.beginPath();c1.moveTo(0,cy+ih/2+yy);c1.lineTo(W,cy+ih/2+yy);c1.stroke()}c1.setLineDash([])}
+ c1.fillStyle='#F6D9D6';c1.fillRect(0,cy-ih/2,W,ih);
+ if(cur===5){c1.strokeStyle='#fff';c1.lineWidth=5;[300,700].forEach(x=>{c1.beginPath();c1.moveTo(x+40,cy-ih/2);c1.quadraticCurveTo(x,cy-ih/4,x-10,cy-6);c1.moveTo(x+40,cy+ih/2);c1.quadraticCurveTo(x,cy+ih/4,x-10,cy+6);c1.stroke()})}
+ const px=reduce?0:560*Math.sqrt(s.v/33.2)*(s.side==='a'&&cur<3?(.45+1.1*beat):1);
+ const n=cur===3?7:RBC.length;
+ for(let k=0;k<n;k++){const r=RBC[k];r.x-=px*dt;if(r.x<-20)r.x+=W+40;
+  const y=cur===3?cy:cy-ih/2+12+r.y*(ih-24),rx=cur===3?16:11,ry=cur===3?14:7;
+  c1.fillStyle='#B5162B';c1.beginPath();c1.ellipse(cur===3?((r.x+k*150)%(W+40))-20:r.x,y,rx,ry,0,0,7);c1.fill();c1.fillStyle='#8E0F22';c1.beginPath();c1.ellipse(cur===3?((r.x+k*150)%(W+40))-20:r.x,y,rx*.45,ry*.45,0,0,7);c1.fill()}
+ c1.fillStyle='#13233A';c1.font='700 22px Assistant,Arial';c1.textAlign='right';c1.fillText(s.n,W-14,28);
+ c1.textAlign='left';c1.fillText('← כיוון הזרימה',14,H-12);
+ // מד לחץ
+ const pr=s.side==='a'&&cur<2?s.p[1]+(s.p[0]-s.p[1])*beat:(s.p[0]+s.p[1])/2;
+ c1.fillStyle='#fff';c1.fillRect(W-60,48,40,150);c1.strokeStyle='#13233A';c1.lineWidth=2;c1.strokeRect(W-60,48,40,150);
+ c1.fillStyle='#D7263D';const ph=150*pr/130;c1.fillRect(W-58,198-ph,36,ph);
+ c1.fillStyle='#13233A';c1.font='700 15px Assistant,Arial';c1.textAlign='center';c1.fillText(Math.round(pr),W-40,44+0);
+ requestAnimationFrame(draw1)}
+requestAnimationFrame(draw1);
+
+/* ---------- 2. העורק האלסטי ---------- */
+let elastic=true,lastCyc=-1;const HIST=[];let T2=0,last2=performance.now(),cyc={max:0,min:999},show={s:'',d:''};
+function P(ph){ // ph 0..1 בתוך מחזור לב; סיסטולה 0–0.35
+ if(elastic){if(ph<.15)return 80+40*Math.sin(Math.PI/2*ph/.15);if(ph<.35)return 120-22*(ph-.15)/.2;const e=Math.exp(-2.6);return 80+18*Math.exp(-(ph-.35)*4)-18*e*(ph-.35)/.65}
+ if(ph<.35)return 5+165*Math.sin(Math.PI*ph/.35);return 5}
+function flow(ph){return elastic?(ph<.35?1.4:.55):(ph<.35?2.2*Math.sin(Math.PI*ph/.35):0)}
+const c2=$('cv2').getContext('2d');const D2=Array.from({length:30},(_,k)=>({x:k*34}));
+function draw2(now){const dt=Math.min(.05,(now-last2)/1000);last2=now;T2+=dt;const ph=T2%1,p=P(ph);
+ HIST.push(p);if(HIST.length>220)HIST.shift();cyc.max=Math.max(cyc.max,p);cyc.min=Math.min(cyc.min,p);
+ const ci=Math.floor(T2);if(ci!==lastCyc){if(lastCyc>=0&&cyc.max>0){show.s=Math.round(cyc.max);show.d=Math.round(cyc.min)}cyc={max:0,min:999};lastCyc=ci}
+ $('pS').textContent=show.s||'…';$('pD').textContent=show.d===''?'…':show.d;$('pF').textContent=elastic?'ממשיכה (חלשה יותר)':'נעצרת';
+ const W=1000;c2.clearRect(0,0,W,330);
+ // לב
+ const sq=ph<.35?Math.sin(Math.PI*ph/.35):0;c2.fillStyle='#C9707A';c2.beginPath();c2.ellipse(930,75,60-14*sq,52-10*sq,0,0,7);c2.fill();
+ c2.fillStyle='#13233A';c2.font='700 16px Assistant,Arial';c2.textAlign='center';c2.fillText(ph<.35?'סיסטולה':'דיאסטולה',930,80);
+ // אבי העורקים
+ const wid=elastic?34+18*(p-80)/40:34;c2.fillStyle='#F7E7A8';c2.fillRect(40,75-wid/2-8,830,wid+16);
+ c2.fillStyle=elastic?'#C9707A':'#8A8F99';c2.fillRect(40,75-wid/2-8,830,6);c2.fillRect(40,75+wid/2+2,830,6);
+ c2.fillStyle='#F6D9D6';c2.fillRect(40,75-wid/2,830,wid);
+ const sp=reduce?0:260*flow(ph);D2.forEach((d,k)=>{d.x-=sp*dt;if(d.x<40)d.x+=830;c2.fillStyle='#B5162B';c2.beginPath();c2.ellipse(d.x,75+((k*7)%3-1)*wid/4,9,6,0,0,7);c2.fill()});
+ c2.fillStyle='#13233A';c2.textAlign='right';c2.fillText(elastic?'אבי העורקים · דופן אלסטית':'אבי העורקים · דופן קשיחה',860,22);
+ // גרף
+ const gx0=940,gx1=60,gy0=310,gy1=140,sy=v=>gy0-(gy0-gy1)*v/180;
+ c2.strokeStyle='#DCE3EA';c2.lineWidth=1;c2.fillStyle='#5E6E82';c2.font='600 13px Assistant,Arial';c2.textAlign='left';
+ [0,40,80,120,160].forEach(v=>{c2.beginPath();c2.moveTo(gx1,sy(v));c2.lineTo(gx0,sy(v));c2.stroke();c2.fillText(v,gx0+6,sy(v)+4)});
+ c2.strokeStyle='#D7263D';c2.lineWidth=3;c2.beginPath();HIST.forEach((v,k)=>{const x=gx0-(HIST.length-1-k)*(gx0-gx1)/220;k?c2.lineTo(x,sy(v)):c2.moveTo(x,sy(v))});c2.stroke();
+ c2.fillStyle='#13233A';c2.textAlign='right';c2.font='700 14px Assistant,Arial';c2.fillText('לחץ באבי העורקים (מ״מ כספית) לאורך זמן ←',gx0,gy1-8);
+ requestAnimationFrame(draw2)}
+requestAnimationFrame(draw2);
+function setEl(v){elastic=v;lastCyc=-1;$('elOn').className='btn '+(v?'on':'ghost');$('elOff').className='btn '+(v?'ghost':'on');show={s:'',d:''};cyc={max:0,min:999}}
+$('elOn').onclick=()=>setEl(true);$('elOff').onclick=()=>setEl(false);
+
+/* ---------- 3. משאבת השרירים ---------- */
+let ok=true,c=[1,1,1,1],ret=0,sqz=false,busy=null;
+function veinSVG(){const x=180,top=40,h=70,mus=sqz?40:24;let s='';
+ // שרירים
+ s+=`<ellipse cx="${x-95}" cy="${top+2*h}" rx="${mus}" ry="150" fill="#C9707A" opacity=".85"/><ellipse cx="${x+95}" cy="${top+2*h}" rx="${mus}" ry="150" fill="#C9707A" opacity=".85"/>`;
+ for(let i=0;i<4;i++){const y=top+(3-i)*h,w=Math.min(110,22+c[i]*16)*(sqz?.75:1);s+=`<rect x="${x-w/2}" y="${y}" width="${w}" height="${h}" fill="#B5162B" stroke="#5E6E82" stroke-width="2"/><text x="${x}" y="${y+h/2+6}" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">${c[i].toFixed(1).replace('.0','')}</text>`}
+ for(let i=0;i<=4;i++){const y=top+(4-i)*h,open=ok?(sqz?true:false):true,w=30;
+  s+=open?`<path d="M${x-w},${y} L${x-10},${y-18} M${x+w},${y} L${x+10},${y-18}" stroke="${ok?'#F2B705':'#9AA3AE'}" stroke-width="5" stroke-linecap="round"/>`
+         :`<path d="M${x-w},${y} Q${x-15},${y-16} ${x},${y-3} Q${x+15},${y-16} ${x+w},${y}" fill="none" stroke="#F2B705" stroke-width="5" stroke-linecap="round"/>`}
+ s+=`<text x="${x}" y="24" text-anchor="middle" font-size="16" font-weight="800" fill="#13233A">↑ אל הלב</text><text x="${x}" y="${top+4*h+30}" text-anchor="middle" font-size="15" fill="#5E6E82">↑ מהנימים</text>`;
+ s+=`<text x="${x-95}" y="${top+2*h+5}" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">שריר</text><text x="${x+95}" y="${top+2*h+5}" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">שריר</text>`;
+ return `<svg viewBox="0 0 360 360" role="img" aria-label="וריד ברגל עם מסתמים ושרירים" font-family="Assistant,Arial,sans-serif">${s}</svg>`}
+function render3(){ $('veinFig').innerHTML=veinSVG();$('vRet').textContent=ret.toFixed(1).replace('.0','');$('vLow').textContent=c[0].toFixed(1).replace('.0','');
+ $('vMsg').textContent=c[0]>=4?'⚠ הדם מצטבר בחלק התחתון של הווריד: הווריד מתרחב, והרגל מתנפחת.':''}
+function squeeze(){sqz=true;if(ok){ret+=c[3];c=[0,c[0],c[1],c[2]]}else{const n=[0,0,0,0];for(let i=0;i<4;i++){const u=c[i]/2,d=c[i]/2;if(i===3)ret+=u;else n[i+1]+=u;n[Math.max(0,i-1)]+=d}c=n}render3()}
+function relax(){sqz=false;c[0]+=1;if(!ok){for(let i=1;i<4;i++){const m=c[i]*.6;c[i]-=m;c[i-1]+=m}}render3()}
+function run(seq){if(busy)return;let k=0;document.querySelectorAll('#bSq,#bRx,#bWalk,#bStand').forEach(b=>b.disabled=true);
+ busy=setInterval(()=>{seq[k++]();if(k>=seq.length){clearInterval(busy);busy=null;document.querySelectorAll('#bSq,#bRx,#bWalk,#bStand').forEach(b=>b.disabled=false)}},reduce?60:450)}
+$('bSq').onclick=squeeze;$('bRx').onclick=relax;
+$('bWalk').onclick=()=>run(Array.from({length:20},(_,i)=>i%2?relax:squeeze));
+$('bStand').onclick=()=>run(Array.from({length:10},()=>relax));
+function reset3(){c=[1,1,1,1];ret=0;sqz=false;render3()}
+$('bReset').onclick=reset3;
+function setV(v){ok=v;$('vOk').className='btn '+(v?'on':'ghost');$('vBad').className='btn '+(v?'ghost':'on');reset3()}
+$('vOk').onclick=()=>setV(true);$('vBad').onclick=()=>setV(false);
+render3();
+</script>
+</body>
+</html>

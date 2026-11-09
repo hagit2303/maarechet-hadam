@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>תרגיל: כלי הדם</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Atlas practice in the socratic format: one attempt per question, lock, correct answer + explanation, mistakes page, PDF report */
+:root{--bg:#F4F7FA;--paper:#fff;--ink:#13233A;--muted:#5E6E82;--rich:#D7263D;--poor:#2457C5;--line:#DCE3EA;--accent:#13233A;--accent-soft:#EAF0F6;--tag:#D7263D;--tag-ink:#fff;--good:#1E7B4D;--good-bg:#E8F4EE;--bad:#B3261E;--bad-bg:#FBE7E5;--warn-bg:#FFF8E1;--gold:#F2B705}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Assistant,Arial,sans-serif;font-size:18px;line-height:1.5;padding-inline:16px;overflow-x:hidden}
+button,select,input,textarea{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:1000px;margin:auto;padding-block:14px 40px;display:flex;flex-direction:column;gap:14px}
+.homebar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.homebar a{background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:20px;padding:4px 14px;font-weight:800;font-size:14px;text-decoration:none}
+.homebar .who{margin-inline-start:auto;font-weight:800;color:var(--rich)}
+.kick{font-weight:800;color:var(--rich);font-size:14px}
+h1{font-size:clamp(30px,5vw,46px);font-weight:800;line-height:1.05}h1 span{color:var(--rich)}
+h2{font-size:clamp(20px,2.6vw,26px);font-weight:800}
+.hero{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.routine{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:15px}
+.routine b{background:var(--accent-soft);border-radius:20px;padding:3px 12px}.routine i{font-style:normal;color:var(--muted)}
+.part-h{display:flex;gap:12px;align-items:center;margin-top:14px}
+.part-h .n{width:44px;height:44px;border-radius:12px;background:var(--ink);color:#fff;font-weight:800;font-size:22px;display:flex;align-items:center;justify-content:center;flex:none}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.hint{color:var(--muted);font-size:.92rem}
+.qn{display:inline-block;align-self:flex-start;font-size:.78rem;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--tag);color:var(--tag-ink)}
+.src{font-size:.8rem;color:var(--muted)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opts label{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;line-height:1.45;cursor:pointer}
+.opts label:hover{border-color:var(--accent)}
+.opts label input{margin-top:5px;accent-color:var(--accent);flex:none}
+.opts label.right{background:var(--good-bg);border-color:var(--good)}
+.opts label.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.fb{border-radius:12px;padding:10px 14px;line-height:1.5}
+.fb:empty{display:none}
+.fb.ok{background:var(--good-bg);border-inline-start:6px solid var(--good)}
+.fb.no{background:var(--bad-bg);border-inline-start:6px solid var(--bad)}
+.note{background:var(--warn-bg);border-inline-start:6px solid var(--gold);border-radius:12px;padding:10px 14px}
+.ri{color:var(--good);font-weight:700}
+.ck,.rv,.sc,.fchk{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:9px 18px;font-weight:700;align-self:flex-start}
+.rv.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.ck[disabled],.rv[disabled],.sc[disabled]{opacity:.45;cursor:not-allowed}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:16px;align-items:start}
+.rows{display:flex;flex-direction:column;gap:8px}
+.role{display:grid;grid-template-columns:minmax(8em,1fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.role b.r{color:var(--rich)}.role b.b{color:var(--poor)}
+select{padding:6px 8px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);min-width:0;max-width:100%}
+select.m-ok{outline:3px solid var(--good)}select.m-no{outline:3px solid var(--bad)}
+.fix{grid-column:1/-1;font-size:15px;color:var(--good);font-weight:700}
+.idl{display:flex;flex-direction:column;gap:6px}
+.idl li{display:flex;gap:8px;align-items:center;flex-wrap:wrap;list-style:none}
+.idl li .k{width:30px;height:30px;border-radius:50%;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;background:#fff;flex:none}
+.idl li.cur .k{background:var(--gold)}
+.idl select{flex:1 1 150px}
+.match{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center}
+.match select{min-width:170px}
+.match .m-ok{outline:3px solid var(--good)}.match .m-no{outline:3px solid var(--bad)}
+.bq h3{font-size:1.15rem}
+.bpart{display:flex;flex-direction:column;gap:8px;border-top:1px dashed var(--line);padding-top:12px;margin-top:6px}
+textarea{width:100%;padding:10px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+textarea[readonly]{opacity:.85}
+.rub{display:flex;flex-direction:column;gap:6px;background:var(--warn-bg);border-radius:12px;padding:10px 14px}
+.rub label{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.rub details summary{cursor:pointer;font-weight:700}
+.mi{border-inline-start:4px solid var(--bad);background:var(--bg);border-radius:8px;padding:8px 12px;margin-bottom:8px}.mi p{margin:2px 0}
+.dl{background:var(--tag);color:var(--tag-ink);border:0;border-radius:14px;font-size:1.15rem;font-weight:800;padding:14px 24px;align-self:flex-start}
+.sgate{position:fixed;inset:0;z-index:100;background:rgba(19,35,58,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.sgate[hidden]{display:none}
+.sgate .gbox{background:#fff;border:3px solid var(--tag);border-radius:18px;max-width:420px;width:100%;padding:20px;display:grid;gap:10px}
+.sgate label{display:grid;gap:4px;font-weight:700}
+.sgate input{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.sgate .gerr{color:var(--bad);font-weight:700;min-height:1em}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:10px 20px;font-weight:800}
+#report{position:fixed;left:0;top:0;display:none;z-index:-1;pointer-events:none;width:760px;background:#fff;color:#13233A;font-family:Arial,sans-serif;padding:24px;direction:rtl}
+#report h1{font-size:24px;margin-bottom:6px}
+#report .rr{border-bottom:1px solid #DCE3EA;padding:5px 0;font-size:14px;display:flex;gap:8px}
+#report .rr b{min-width:200px}
+#report .y{color:#1E7B4D;font-weight:700}#report .n{color:#B3261E;font-weight:700}
+footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:12px}
+@media(max-width:760px){.two{grid-template-columns:1fr}.role{grid-template-columns:1fr 1fr}.role b{grid-column:1/-1}.match{grid-template-columns:1fr}}
+</style>
+<style>.bq .fig svg{width:100%;height:auto;max-width:760px}</style>
+</head>
+<body>
+<div class="sgate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו שם מלא וכיתה. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button class="btn" id="gGo" type="button">מתחילים ←</button></div></div>
+
+<div class="wrap">
+  <nav class="homebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a><a href="simulation.html">◎ הסימולציה</a><span class="who" data-fill="name"></span></nav>
+  <section class="hero">
+    <div class="kick">ביולוגיה · כיתה י' · שיעור 6 · תרגיל</div>
+    <h1>כלי הדם: <span>מהירות זרימה ולחץ דם</span></h1>
+    <p><b>ניסיון אחד לכל שאלה.</b> אחרי הבדיקה השאלה ננעלת, ומופיעים התשובה הנכונה וההסבר. ממשיכים הלאה גם אחרי טעות. בסוף מורידים קובץ PDF ומעלים אותו למשימה ב־Classroom.</p>
+    <div class="routine"><b>1 מבנה ותפקוד</b><i>←</i><b>2 שאלות סגורות</b><i>←</i><b>3 שאלות בגרות</b><i>←</i><b>📒 טעויות</b><i>←</i><b>⬇ קובץ</b></div>
+  </section>
+
+  <div class="part-h"><span class="n">1</span><h2>התאמה בין מבנה לתפקוד</h2></div>
+  <section class="card">
+    <p>לכל תפקוד בחרו את המבנה שמאפשר אותו. בדיקה אחת.</p>
+    <div class="match" id="mt"></div>
+    <button class="ck" id="mtBtn" type="button">בדיקה</button><div class="fb" id="mtFb" role="status"></div>
+    <p class="src">מקור: מצגת השיעור וסיכום מט״ח (כלי הדם: התאמה בין מבנה לתפקוד)</p>
+  </section>
+
+  <div class="part-h"><span class="n">2</span><h2>שאלות סגורות</h2></div>
+  <p class="hint">לפי סדר השיעור: נימים ומהירות זרימה, לחץ דם, דופק, ורידים, והלב כמשאבה.</p>
+  <div id="qs" style="display:grid;gap:14px"></div>
+
+  <div class="part-h"><span class="n">3</span><h2>שאלות בסגנון בגרות</h2></div>
+  <p class="hint">כתבו תשובה מלאה, ורק אז נפתח המחוון. סמנו ביושר מה כלול בתשובה שלכם. המורה רואה בקובץ גם את התשובה וגם את הסימון.</p>
+  <div id="bg" style="display:grid;gap:14px"></div>
+
+  <section class="card">
+    <h2>⬇ סיימתם? מורידים את הקובץ</h2>
+    <p class="hint">בקובץ: השם, כמה תשובות נכונות היו בניסיון הראשון, כל התשובות שלכם ודף הטעויות. אחר כך מעלים אותו למשימה ב־Classroom.</p>
+    <button class="dl" id="dl" type="button">⬇ הורדת קובץ PDF</button><p class="hint" id="dlmsg"></p>
+  </section>
+
+  <footer>ביולוגיה · מערכת הדם · שיעור 6: כלי הדם, מהירות זרימה ולחץ דם · השאלות מבוססות על בחינות בגרות, מבחנים כיתתיים ומצגת השיעור. היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. נבנתה על ידי חגית ברגמן.</footer>
+</div>
+<div id="report"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../assets/lab.js"></script>
+<script src="../assets/pdf.js"></script>
+<script src="vessels.js"></script>
+<script>
+window.REPORT_FOOT='תרגול · שיעור 6: כלי הדם';
+
+/* ---------- 1. מבנה ותפקוד ---------- */
+renderMatch($('mt'),[
+ ['דופן עבה עם סיבים אלסטיים בעורקים','עמידה בלחץ גבוה, ולחץ דיאסטולי שאינו יורד לאפס'],
+ ['שריר חלק בדופן העורקיקים','שינוי כמות הדם שמגיעה לכל איבר'],
+ ['דופן נים של שכבת תאים אחת','מרחק קצר למעבר חומרים בין הדם לתאים'],
+ ['שטח חתך כולל עצום של הנימים','זרימה איטית, וזמן למעבר חומרים'],
+ ['מסתמים בוורידים','זרימה בכיוון אחד, אל הלב'],
+ ['שרירי שלד סביב הוורידים','דחיסת הדם בוורידים לכיוון הלב'],
+ ['חלל רחב ודופן דקה בוורידים','יותר ממחצית הדם בגוף נמצא בהם, בלחץ נמוך']
+],$('mtBtn'),$('mtFb'));
+
+/* ---------- 2. שאלות סגורות ---------- */
+const Q=[
+{src:'בגרות קיץ תשפ״ב, שאלה 4 (כלשונה)',stem:'להלן ארבעה משפטים בנוגע לנימי הדם. איזה מהם <b>אינו</b> נכון?',
+ opts:['זרימת הדם בנימים מהירה יותר מזרימתו בוורידים.','הקוטר של נים הדם דומה לקוטר של תא דם אדום.','שטח הפנים של כלל הנימים הוא גדול מאוד.','לנים הדם יש דופן חד־שכבתית.'],ans:0,
+ ok:'נכון. המשפט הזה אינו נכון: שטח החתך הכולל של הנימים הוא הגדול ביותר במערכת, ולכן הזרימה בהם האיטית ביותר, איטית יותר מבוורידים.',
+ no:['','המשפט הזה נכון: קוטר נים הוא כ־0.008 מ״מ, כמו תא דם אדום, ותאי הדם עוברים בו בטור. חפשו את המשפט שאינו נכון.','המשפט הזה נכון: מיליארדי נימים יוצרים שטח פנים עצום. חפשו את המשפט שאינו נכון.','המשפט הזה נכון: הדופן היא שכבת תאים אחת. חפשו את המשפט שאינו נכון.']},
+{src:'מצגת השיעור, ברוח בגרות קיץ תשפ״ב שאלה 4 (לא מבגרות)',stem:'מהו ההסבר לכך שמהירות זרימת הדם בנימים היא האיטית ביותר במערכת?',
+ opts:['הקוטר של כל נים קטן מאוד','שטח החתך הכולל של כל הנימים יחד הוא הגדול ביותר במערכת','הדם מאבד בנימים את רוב המים שבו','הנימים רחוקים מהלב, והדם מאט בדרך אליהם'],ans:1,
+ ok:'נכון. הדם שעובר בכל דקה מתחלק בין מיליארדי נימים. שטח החתך הכולל שלהם גדול פי 1,000 בערך משטח החתך של אבי העורקים, ולכן הזרימה בהם איטית פי 1,000 בערך.',
+ no:['כשמצרים צינור אחד, הזרימה בו נעשית מהירה יותר, לא איטית. נים אחד צר, אבל המהירות נקבעת לפי שטח החתך של כל הנימים יחד.','','רוב הנוזל שיוצא מהנימים חוזר לדם, וזה לא מסביר את המהירות. מה קובע את המהירות: הקוטר של נים אחד, או שטח החתך של כולם יחד?','אם המרחק מהלב היה קובע, הזרימה בוורידים הייתה איטית עוד יותר. בפועל, בוורידים הזרימה מהירה יותר מבנימים, כי שטח החתך הכולל שלהם קטן יותר.']},
+{src:'נתוני מצגת השיעור (Guyton), לא מבגרות',stem:'שטח החתך הכולל של כל הנימים גדול פי 1,000 בערך משטח החתך של אבי העורקים. מהירות הזרימה הממוצעת באבי העורקים היא כ־33 ס״מ בשנייה. מהי בערך מהירות הזרימה בנימים?',
+ opts:['33 מטר בשנייה','33 ס״מ בשנייה','0.33 מ״מ בשנייה','33 מ״מ בשנייה'],ans:2,
+ ok:'נכון. אותה כמות דם עוברת בכל דקה דרך אבי העורקים ודרך כל הנימים. שטח גדול פי 1,000 ← מהירות קטנה פי 1,000: ‏33 ס״מ ÷ 1,000 = 0.033 ס״מ = 0.33 מ״מ בשנייה.',
+ no:['שטח חתך גדול יותר ← מהירות קטנה יותר, לא גדולה יותר.','אם שטח החתך הכולל גדל, המהירות לא נשארת זהה. כמה פעמים קטנה המהירות?','','33 מ״מ = 3.3 ס״מ: קטן רק פי 10. השטח גדל פי 1,000, ולכן המהירות קטנה פי 1,000.']},
+{src:'מבחן רבעון 1 תש״ף, כיתה י׳, שאלה טו (הותאמה)',stem:'בבדיקה נמדד אצל אדם לחץ דם של 130/85 מ״מ כספית. מה מציין המספר 85?',
+ opts:['את הלחץ בעורק בזמן הרפיית החדרים (לחץ דיאסטולי)','את הלחץ בעורק בזמן התכווצות החדרים (לחץ סיסטולי)','את הלחץ בוורידים','את מספר פעימות הלב בדקה'],ans:0,
+ ok:'נכון. המספר הנמוך הוא הלחץ הדיאסטולי: הלחץ בעורק כשהחדרים נרפים. המספר הגבוה (130) הוא הלחץ הסיסטולי. שני המספרים נמדדים באותו עורק, באותה מדידה.',
+ no:['','הלחץ בזמן התכווצות החדרים גבוה יותר: זה המספר 130.','שני המספרים נמדדים בעורק הזרוע. הלחץ בוורידים נמוך בהרבה, כ־10 מ״מ כספית ופחות.','מספר הפעימות בדקה הוא הדופק, וזו מדידה אחרת. 85 כאן הוא לחץ, ביחידות של מ״מ כספית.']},
+{src:'בגרות קיץ תשפ״ד, שאלה 27 (הגרף; השאלה חדשה)',stem:'לפי הגרף של לחץ הדם במחזור הגדול (בשאלת הבגרות למטה), באיזה סוג של כלי דם הלחץ יורד בחדות הרבה ביותר?',
+ opts:['באבי העורקים','בעורקיקים','בנימים','בוורידים'],ans:1,
+ ok:'נכון. בעורקיקים הלחץ יורד מכ־90 לכ־35. העורקיקים צרים ורבים, והחיכוך עם הדפנות גדול. בעורקיקים גם נעלמות כמעט לגמרי התנודות בין הלחץ הסיסטולי לדיאסטולי.',
+ no:['באבי העורקים הלחץ כמעט אינו יורד: הוא נע בין 80 ל־120 בכל פעימה.','','בנימים הלחץ ממשיך לרדת (מכ־35 לכ־15), אבל הירידה החדה קרתה לפניהם.','בוורידים הלחץ כבר נמוך מאוד, והוא יורד רק מעט.']},
+{src:'מצגת השיעור (לא מבגרות)',stem:'מדוע אפשר למשש דופק בעורק שבשורש כף היד, ואי אפשר למשש דופק בווריד?',
+ opts:['בעורקים הלחץ עולה ויורד בכל פעימה והדופן נמתחת; בוורידים הלחץ נמוך וכמעט קבוע','בעורקים יש מסתמים שנסגרים בכל פעימה','הוורידים נמצאים תמיד עמוק יותר בגוף מהעורקים','בוורידים הדם אינו זורם'],ans:0,
+ ok:'נכון. הדופק הוא גל של מתיחת הדופן, שנוצר בכל התכווצות של החדר השמאלי ומתקדם לאורך העורקים. עד שהדם מגיע לוורידים, התנודות בלחץ דועכות בעורקיקים ובנימים.',
+ no:['','בעורקים אין מסתמים (המסתמים בבסיס אבי העורקים ועורק הריאה נמצאים ביציאה מהלב). הדופק הוא גל מתיחה של הדופן.','הוורידים בגב כף היד נראים ממש מתחת לעור, ובכל זאת אין בהם דופק.','בוורידים הדם זורם ברציפות, אל הלב.']},
+{src:'בגרות קיץ תשע״א, שאלה טז (כלשונה)',stem:'הדופק במנוחה של ספורטאי נמוך בהרבה מן הדופק במנוחה של אדם שאינו עוסק בספורט. מהו ההסבר לכך?',
+ opts:['נפח הפעימה במנוחה של ספורטאי גדול בהרבה מזה של אדם שאינו עוסק בספורט.','נפח הפעימה במנוחה של ספורטאי קטן בהרבה מזה של אדם שאינו עוסק בספורט.','תפוקת הלב במנוחה של ספורטאי גדולה בהרבה מזו של אדם שאינו עוסק בספורט.','תפוקת הלב במנוחה של ספורטאי קטנה בהרבה מזו של אדם שאינו עוסק בספורט.'],ans:0,
+ ok:'נכון. הדופק = קצב הלב. במנוחה תפוקת הלב של שניהם דומה. אצל הספורטאי יוצא יותר דם בכל פעימה (נפח פעימה גדול), ולכן באותה תפוקת לב קצב הלב שלו נמוך יותר.',
+ no:['','אם נפח הפעימה קטן ותפוקת הלב זהה, קצב הלב גבוה יותר, והדופק גבוה, לא נמוך.','במנוחה תפוקת הלב של שניהם דומה. ההבדל הוא בחלוקה: נפח הפעימה מול קצב הלב.','במנוחה תפוקת הלב של שניהם דומה. ההבדל הוא בנפח הפעימה.']},
+{src:'בגרות קיץ תשפ״א, שאלה 2 (כלשונה)',stem:'בדפנות הפנימיות של הוורידים מצויים מסתמים, הגורמים לזרימת דם חד־כיוונית. אם מסתמי הוורידים אינם תקינים:',
+ opts:['לא יהיה מעבר של דם מהחדרים אל העליות.','צפוי קושי בזרימת דם מהרגלים אל הלב.','הדם יעבור מחדרי הלב אל העליות.','דם ורידי יתערבב עם דם עורקי.'],ans:1,
+ ok:'נכון. בוורידי הרגליים הלחץ נמוך, והדם עולה כנגד כוח הכובד. בכל הרפיה של שרירי הרגל המסתמים נסגרים, והדם אינו זורם לאחור. מסתמים פגומים מאפשרים לדם לזרום בחזרה למטה ולהצטבר ברגליים.',
+ no:['השאלה עוסקת במסתמים שבוורידים, לא במסתמים שבלב.','','המסתמים בין העליות לחדרים נמצאים בלב. השאלה עוסקת במסתמים שבוורידים.','ערבוב נגרם מפתח בין שני צדי הלב, לא ממסתמים בוורידים.']},
+{src:'בגרות קיץ תשפ״ג, שאלה 7 (כלשונה)',stem:'הצד השמאלי של שריר הלב אצל אדם מסוים נחלש מאוד. מה יכול לקרות עקב כך?',
+ opts:['לחץ הדם באבי העורקים יעלה.','תפוקת הלב תגדל.','הצד הימני של הלב יזרים דם לאבי העורקים.','נפח הפעימה יקטן.'],ans:3,
+ ok:'נכון. חדר שמאלי חלש מתכווץ בעוצמה קטנה יותר, ובכל פעימה יוצא ממנו פחות דם לאבי העורקים: נפח הפעימה קטן.',
+ no:['התכווצות חלשה יוצרת לחץ נמוך יותר באבי העורקים, לא גבוה יותר.','תפוקת הלב = נפח הפעימה × קצב הלב. כשהחדר חלש, נפח הפעימה קטן.','החדר הימני מזרים דם לעורק הריאה בלבד. אין מעבר מהצד הימני לאבי העורקים.','']},
+{src:'בגרות קיץ תשע״ז, סעיף ג (הותאם לבחירה מרובה)',stem:'בגלל מבנה מערכת ההובלה בדגים, הדם זורם אל הרקמות שבגופם בלחץ נמוך. מהו ההסבר?',
+ opts:['הדם עובר ברשת הנימים של הזימים לפני שהוא מגיע לרקמות, והלחץ יורד בנימים','בלב של הדג יש ארבעה חללים','הדג חי במים, והמים לוחצים על כלי הדם','בדם של הדג יש מעט תאי דם אדומים'],ans:0,
+ ok:'נכון. בדג יש מחזור דם אחד: מהלב לנימי הזימים, ומשם, בלי לחזור ללב, לנימי הגוף. בנימי הזימים הלחץ יורד, ולכן הדם מגיע לרקמות בלחץ נמוך. אצל האדם הדם חוזר ללב אחרי הריאות, והחדר השמאלי מזרים אותו שוב בלחץ גבוה.',
+ no:['','בלב של הדג יש שני חללים עיקריים: עלייה וחדר.','הלחץ של המים מבחוץ אינו קובע את הלחץ שהלב יוצר בכלי הדם.','מספר תאי הדם האדומים קשור להובלת החמצן, לא ללחץ הדם.']}
+];
+renderQuestions($('qs'),Q,'q');
+
+/* ---------- 3. שאלות בסגנון בגרות ---------- */
+renderBagrut($('bg'),[
+{src:'בגרות קיץ תשפ״ד, שאלון 43381, שאלה 27א (כלשונה; הגרף שורטט מחדש; 5 נקודות לשני הסעיפים יחד, החלוקה לתרגול)',title:'לחץ הדם בכלי הדם',
+ stem:'<p>בגרף שלפניכם מוצגים נתונים של לחץ הדם הממוצע בכלי דם שונים במחזור הדם הגדול.</p><div class="fig">'+V.fig('pressure')+'</div>',
+ parts:[
+ {n:'(1)',task:'מהו הגורם להבדל בין לחץ הדם הסיסטולי ובין לחץ הדם הדיאסטולי באבי העורקים?',pts:2,
+  rubric:[['בזמן התכווצות החדר השמאלי (סיסטולה) נכנס דם לאבי העורקים, והלחץ עולה',50],['בזמן הרפיית החדר השמאלי (דיאסטולה) לא נכנס דם לאבי העורקים, והלחץ יורד',50]],
+  model:'ההבדל נובע מהפעילות של החדר השמאלי. בזמן ההתכווצות שלו (סיסטולה) נכנס דם לאבי העורקים, והלחץ בו עולה ללחץ הסיסטולי. בזמן ההרפיה (דיאסטולה) המסתם בבסיס אבי העורקים סגור, לא נכנס דם, והלחץ יורד ללחץ הדיאסטולי.'},
+ {n:'(2)',task:'הסבירו הבדל אחד במבנה בין עורק לווריד, וציינו כיצד הבדל זה קשור לנתונים המוצגים בגרף.',pts:3,
+  rubric:[['הבדל במבנה: לעורק דופן עבה, עם שריר וסיבים אלסטיים, ולווריד דופן דקה (או: בווריד יש מסתמים)',40],['קשר לגרף: בעורקים הלחץ גבוה ומשתנה בכל פעימה, ובוורידים הלחץ נמוך',35],['הקשר בין המבנה לנתון: הדופן העבה והאלסטית עומדת בלחץ הגבוה ובתנודות שלו (או: בלחץ הנמוך שבוורידים, המסתמים מונעים זרימה לאחור)',25]],
+  model:'לעורק דופן עבה, עם שכבת שריר וסיבים אלסטיים, ולווריד דופן דקה. לפי הגרף, בעורקים לחץ הדם גבוה ומשתנה בכל פעימה בין לחץ סיסטולי לדיאסטולי, ובוורידים הלחץ נמוך מאוד. הדופן העבה והאלסטית של העורק עומדת בלחץ הגבוה, נמתחת בסיסטולה וחוזרת לממדיה בדיאסטולה. בוורידים הלחץ נמוך, ודופן דקה עומדת בו.'}]},
+{src:'בגרות קיץ תשפ״ה, שאלון 43381, שאלה 27א, היגד II (הותאם: בלי האיור, עם שאלה מנחה)',title:'שני חדרים, שני לחצים',
+ stem:'<p>לפניכם היגד: <b>"יש הבדל במבנה בין החדר הימני לבין החדר השמאלי, ולכן לחץ הדם ביציאה מהחדר השמאלי שונה מלחץ הדם ביציאה מהחדר הימני."</b></p>',
+ parts:[
+ {n:'א.',task:'הסבירו את ההיגד: מהו ההבדל במבנה, ובאיזה עורק לחץ הדם גבוה יותר? מה הקשר בין הלחץ לבין המסלול שהדם עובר?',pts:5,
+  rubric:[['ההבדל במבנה: הדופן של החדר השמאלי עבה יותר (יותר תאי שריר)',30],['לחץ הדם באבי העורקים (היציאה מהחדר השמאלי) גבוה יותר מהלחץ בעורק הריאה',30],['החדר השמאלי מזרים דם לכל הגוף (מחזור גדול), דרך מערכת ארוכה ומסועפת של כלי דם; החדר הימני מזרים דם רק לריאות',25],['הלחץ יורד לאורך הדרך, והלחץ ההתחלתי הגבוה מאפשר לדם להגיע לכל תאי הגוף',15]],
+  model:'הדופן של החדר השמאלי עבה יותר מהדופן של החדר הימני, ויש בה יותר תאי שריר. ההתכווצות שלו חזקה יותר, ולכן לחץ הדם באבי העורקים (כ־120/80) גבוה בהרבה מהלחץ בעורק הריאה (כ־25/8). החדר השמאלי מזרים דם במחזור הגדול, לכל הגוף, דרך מערכת ארוכה ומסועפת של כלי דם, ולאורך הדרך הלחץ יורד. בזכות הלחץ ההתחלתי הגבוה, הדם מגיע גם לנימים הרחוקים ביותר. החדר הימני מזרים דם רק לריאות, שקרובות ללב.'}]}
+],'b');
+
+/* ---------- הורדה ---------- */
+$('dl').onclick=()=>{if(!(window.STUDENT&&window.STUDENT.name)){$('gate').hidden=false;$('gErr').textContent='לפני ההורדה: כתבו שם וכיתה, הם יופיעו בקובץ.';$('gName').focus();window.AFTER_GATE=()=>$('dl').click();return}labPdf('תרגול: כלי הדם, מהירות זרימה ולחץ דם','תרגול-כלי-הדם')};
+</script>
+<script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
+try{const s=JSON.parse(localStorage.getItem('hadam-student')||'{}');n.value=s.name||'';c.value=s.cls||''}catch(e){}
+document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
+ if(nm.replace(/\s/g,'').length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}
+ try{localStorage.setItem('hadam-student',JSON.stringify({name:nm,cls:cl}))}catch(e){}
+ document.querySelectorAll('[data-fill="name"]').forEach(e=>e.textContent='👋 '+nm+' · '+cl);
+ window.STUDENT={name:nm,cls:cl};g.hidden=true;if(window.AFTER_GATE){const f=window.AFTER_GATE;window.AFTER_GATE=null;f()}};
+n.addEventListener('keydown',e=>{if(e.key==='Enter')c.focus()});c.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('gGo').click()});
+n.focus()})();</script>
+</body>
+</html>
+
