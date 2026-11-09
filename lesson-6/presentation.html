@@ -1,296 +1,288 @@
-<!doctype html>
-<html lang="he" dir="rtl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>כלי הדם: מהירות זרימה ולחץ דם</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet">
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>כלי הדם: מהירות זרימה ולחץ דם</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700;800&family=Secular+One&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F4F7FA;--ink:#13233A;--mut:#5E6E82;--rich:#D7263D;--poor:#2457C5;--card:#fff;--line:#DCE3EA;--ok:#1E7B4D;--blood:#B5162B;--wall:#E7C7C3;--musc:#C9707A;--gold:#F2B705}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{background:var(--bg);color:var(--ink);font-family:Assistant,Arial,sans-serif;overflow:hidden}
-.deck{position:relative;height:100%}
-.s{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;gap:clamp(10px,2vh,22px);padding:clamp(56px,7vh,70px) clamp(16px,6vw,96px) 84px;overflow-y:auto}
-.s.on{display:flex}
-.kick{font-size:clamp(14px,1.4vw,18px);font-weight:800;color:var(--rich);letter-spacing:.3px}
-h1{font-size:clamp(40px,6.4vw,86px);font-weight:800;line-height:1;letter-spacing:-.5px;text-wrap:balance}
-h1 span,h2 em{color:var(--rich);font-style:normal}
-h2{font-size:clamp(26px,3.8vw,50px);font-weight:800;line-height:1.1;text-wrap:balance}
-p,li{font-size:clamp(17px,2vw,25px);line-height:1.45;max-width:56ch}
-.lead{color:var(--mut)}
-ul{padding-inline-start:1.1em}li{margin:.25em 0}
-.split{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(16px,4vw,56px);align-items:center}
-.big{font-size:clamp(64px,11vw,150px);font-weight:800;line-height:.95;color:var(--rich);font-variant-numeric:tabular-nums}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
-.card b{display:block;font-size:clamp(17px,1.8vw,23px);margin-bottom:4px}
-.card p,.card li{font-size:clamp(15px,1.6vw,20px)}
-.card.r{border-top:6px solid var(--rich)}.card.b{border-top:6px solid var(--poor)}.card.g{border-top:6px solid var(--gold)}
-.reveal{background:var(--ink);color:#fff;border:0;border-radius:10px;padding:10px 18px;font:inherit;font-weight:800;font-size:clamp(15px,1.5vw,19px);cursor:pointer;align-self:flex-start}
-.ans{display:none;background:var(--card);border:2px dashed var(--rich);border-radius:12px;padding:12px 16px}
+html,body{height:100%;background:#FFF8EE;color:#1B1B2F;font-family:Assistant,Arial,sans-serif;overflow:hidden}
+.stage{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:center}
+.slide{position:absolute;inset:0;display:none;padding:80px 96px 84px;gap:64px;align-items:center;
+ background:#FFF8EE radial-gradient(circle at 94% 8%,#FFE3E0 0 220px,transparent 221px),radial-gradient(circle at 4% 96%,#DDF3EF 0 190px,transparent 191px)}
+.slide.on{display:flex;animation:in .4s ease}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.col{flex-direction:column;justify-content:center;text-align:center}
+.txt{flex:1 1 50%;display:flex;flex-direction:column;gap:26px}
+h1,h2,.num{font-family:'Secular One',Assistant,sans-serif;font-weight:400}
+h1{font-size:108px;line-height:1.04;color:#E63946}
+h2{font-size:68px;line-height:1.1}
+.kick{align-self:flex-start;background:#1B1B2F;color:#FFC93C;font-weight:800;padding:6px 22px;border-radius:99px;font-size:24px}
+.col .kick{align-self:center}
+p,li{font-size:38px;line-height:1.42}
+.s{font-size:30px}
+mark{background:linear-gradient(transparent 55%,#FFC93C 55%);color:inherit;padding:0 4px}
+.r{color:#E63946}.b{color:#2457C5}
+.ph{flex:1 1 46%;position:relative;background:#fff;padding:16px 16px 10px;border-radius:6px;box-shadow:0 18px 40px rgba(27,27,47,.18);transform:rotate(-1.4deg);min-width:0}
+.ph.t2{transform:rotate(1.2deg)}
+.ph::before{content:"";position:absolute;top:-14px;left:50%;width:140px;height:30px;transform:translateX(-50%) rotate(-3deg);background:rgba(255,201,60,.8);z-index:2}
+.ph img{width:100%;display:block;border-radius:3px;max-height:600px;object-fit:cover}
+.ph .fig{position:relative}
+.cr{font-size:14px;color:#666;margin-top:8px;text-align:right}
+.num{font-size:170px;color:#E63946;line-height:.95}
+.num small{font-size:60px;color:#1B1B2F}
+.lb{position:absolute;transform:translate(-50%,-50%);font-weight:800;font-size:26px;padding:2px 12px;border-radius:8px;background:#E63946;color:#fff;box-shadow:0 3px 8px rgba(0,0,0,.25);white-space:nowrap}
+.lb.d{background:#1B1B2F;color:#FFC93C}
+.lb.o{font-family:'Secular One';font-size:48px;width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;background:#1B1B2F;color:#FFC93C}
+.reveal{align-self:flex-start;font:800 30px Assistant;background:#FFC93C;color:#1B1B2F;border:3px solid #1B1B2F;border-radius:14px;padding:12px 28px;cursor:pointer;box-shadow:5px 5px 0 #1B1B2F}
+.col .reveal{align-self:center}
+.ans{display:none;font-size:34px;line-height:1.42;background:#fff;border:3px solid #1B1B2F;border-radius:16px;padding:18px 26px;box-shadow:6px 6px 0 #FFC93C;text-align:right}
 .ans.show{display:block}
-.ans p{max-width:70ch}
-table{border-collapse:collapse;font-size:clamp(14px,1.55vw,20px);background:var(--card);border-radius:12px;overflow:hidden;width:100%}
-th,td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
-th{background:var(--ink);color:#fff}
+.cards{display:flex;gap:28px;width:100%}
+.card{flex:1;background:#fff;border:3px solid #1B1B2F;border-radius:20px;padding:26px 28px;box-shadow:6px 6px 0 #FFC93C;display:flex;flex-direction:column;gap:12px;text-align:right}
+.card h3{font-family:'Secular One';font-weight:400;font-size:46px;line-height:1.1}
+.card p{font-size:32px}
+.card .n{font-family:'Secular One';font-size:40px;color:#E63946}
+.graph{flex:1 1 62%;background:#fff;border-radius:16px;padding:14px;box-shadow:0 14px 34px rgba(27,27,47,.14)}
+.graph svg{width:100%;display:block}
+.graph svg text{font-size:21px}
+table{border-collapse:separate;border-spacing:0;width:100%;background:#fff;border:3px solid #1B1B2F;border-radius:18px;overflow:hidden;box-shadow:6px 6px 0 #FFC93C}
+th,td{font-size:32px;padding:14px 20px;text-align:right;border-bottom:2px solid #F0E6D6}
+th{font-family:'Secular One';font-weight:400;background:#1B1B2F;color:#FFC93C;font-size:34px}
+tr:last-child td{border-bottom:0}
 td:first-child{font-weight:800}
-.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;display:inline-block}
-.src{font-size:13px;color:var(--mut)}
-.fig{display:flex;justify-content:center}.fig svg{width:100%;height:auto;max-height:62vh}
-.tag{display:inline-block;background:var(--gold);color:var(--ink);font-weight:800;font-size:14px;border-radius:20px;padding:2px 12px}
-.eq{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:clamp(20px,2.4vw,32px);font-weight:800}
-.eq span{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 14px}
-.eq i{font-style:normal;color:var(--mut)}
-.go{display:inline-block;background:var(--rich);color:#fff;border-radius:12px;padding:12px 20px;font-weight:800;font-size:clamp(17px,1.8vw,22px);text-decoration:none}
-.nav{position:fixed;bottom:14px;inset-inline-start:16px;display:flex;gap:8px;align-items:center;z-index:5}
-.nav button{width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;border:2px solid var(--ink);background:var(--card);color:var(--ink)}
-.nav span{min-width:56px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
-.credit{position:fixed;bottom:22px;inset-inline-end:16px;font-size:12px;color:var(--mut);z-index:4}
+.formula{font-family:'Secular One';font-size:64px;background:#fff;border:3px solid #1B1B2F;border-radius:20px;padding:20px 40px;box-shadow:6px 6px 0 #FFC93C;align-self:center}
+.links{display:flex;gap:26px;flex-wrap:wrap;justify-content:center}
+.links a{font-family:'Secular One';font-size:38px;color:#1B1B2F;text-decoration:none;background:#fff;border:3px solid #1B1B2F;border-radius:20px;padding:22px 34px;box-shadow:6px 6px 0 #FFC93C}
+.links a small{display:block;font-family:Assistant;font-size:24px;color:#555;margin-top:4px}
+.links a:hover{background:#FFC93C}
 .homefix{position:fixed;top:10px;inset-inline-end:12px;display:flex;gap:8px;z-index:50}
-.homefix a{background:#fff;color:#13233A;border:2px solid #13233A;border-radius:20px;padding:4px 14px;font-weight:800;font-size:14px;text-decoration:none;line-height:1.5}
-.homefix a:hover{background:#13233A;color:#fff}
-@media (max-width:760px){.split{grid-template-columns:1fr}.credit{display:none}}
+.homefix a{background:#fff;color:#1B1B2F;border:2px solid #1B1B2F;border-radius:20px;padding:4px 14px;font-weight:800;font-size:14px;text-decoration:none;line-height:1.5}
+.homefix a:hover{background:#1B1B2F;color:#fff}
+.nav{position:fixed;bottom:14px;left:14px;display:flex;gap:8px;align-items:center;z-index:5}
+.nav button{background:#1B1B2F;color:#fff;border:0;border-radius:99px;padding:10px 20px;font:800 18px Assistant;cursor:pointer}
+.cnt{background:#fff;border-radius:99px;padding:6px 14px;font-weight:800}
+.credit{position:fixed;bottom:18px;right:16px;font-size:12px;color:#666;z-index:4}
+.bar{position:fixed;top:0;right:0;height:5px;background:#E63946;z-index:6;transition:width .3s}
+@media (max-width:760px){.credit{display:none}}
 @media print{.homefix,.nav{display:none!important}}
-</style>
-</head>
+</style></head>
 <body><nav class="homefix" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
-<div class="deck" id="deck">
+<div class="bar"></div>
+<div class="stage">
 
-<!-- 1 -->
-<section class="s">
-  <div class="kick">ביולוגיה · כיתה י' · מערכת הדם · שיעור 6</div>
-  <div class="split"><div>
-    <h1>כלי הדם:<br><span>מהירות זרימה</span><br>ולחץ דם</h1>
-    <p class="lead" style="margin-top:14px">אותו דם, באותה דקה, עובר בצינורות שונים מאוד. איפה הוא שועט, איפה הוא כמעט עומד, ולמה זה משנה?</p>
-  </div><div class="fig" data-f="tree"></div></div>
+<!-- 1 שער -->
+<section class="slide">
+ <div class="txt"><span class="kick">מערכת הדם · שיעור 6</span><h1>מהירות זרימה ולחץ דם</h1><p>מה אומר <mark>120/80</mark>?<br>ולמה הדם בנימים זורם הכי לאט?</p></div>
+ <figure class="ph" style="flex-basis:34%"><img src="img/bp.jpg" alt="מדידת לחץ דם בזרוע" style="max-height:640px"><figcaption class="cr">מדידת לחץ דם · Confidence24 · CC BY-SA 4.0</figcaption></figure>
 </section>
 
-<!-- 2 -->
-<section class="s">
-  <div class="kick">חידה לפתיחה</div>
-  <h2>שני פצועים. אצל אחד הדם <em>פורץ בסילון שקופץ בקצב הדופק</em>. אצל השני הדם <em>זורם בשקט וברציפות</em>.</h2>
-  <p>באיזה כלי דם נחתך כל אחד מהם? מה ההבדל בין שני כלי הדם?</p>
-  <button class="reveal">תשובה</button>
-  <div class="ans"><p><b>סילון בקצב הדופק ← עורק.</b> בעורקים לחץ הדם גבוה, והוא עולה בכל התכווצות של החדרים. <b>זרימה רציפה ושקטה ← וריד.</b> בוורידים לחץ הדם נמוך, וכמעט אינו משתנה בין פעימה לפעימה. בסוף השיעור נדע להסביר את שני ההבדלים.</p></div>
+<!-- 2 חידה -->
+<section class="slide col">
+ <span class="kick">חידה לפתיחה</span>
+ <h2>שני פצועים</h2>
+ <div class="cards">
+  <div class="card"><span class="n">פצוע 1</span><p>הדם פורץ <b>בסילון</b>, שקופץ <b>בקצב הדופק</b>.</p></div>
+  <div class="card"><span class="n">פצוע 2</span><p>הדם זורם <b>בשקט</b> וברציפות.</p></div>
+ </div>
+ <p>באיזה כלי דם נחתך כל אחד?</p>
+ <button class="reveal">הצגת תשובה</button>
+ <div class="ans">פצוע 1: <b class="r">עורק</b>. הלחץ בעורק גבוה, ועולה בכל התכווצות של החדרים. פצוע 2: <b class="b">וריד</b>. הלחץ בווריד נמוך וכמעט קבוע.</div>
 </section>
 
-<!-- 3 -->
-<section class="s">
-  <div class="kick">תזכורת: המסלול</div>
-  <h2>עורק ← עורקיק ← <em>נים</em> ← ורידון ← וריד</h2>
-  <div class="fig" data-f="path"></div>
-  <p>עורק מוגדר לפי כיוון הזרימה: <b>מהלב</b>. וריד: <b>אל הלב</b>. העורקים מתפצלים שוב ושוב, עד מיליארדי נימים, והנימים מתאחדים לוורידונים ולוורידים.</p>
+<!-- 3 מתפוקת הלב -->
+<section class="slide">
+ <div class="txt"><span class="kick">מחברים לשיעור הקודם: תפוקת הלב</span><div class="num">5 <small>ליטר בדקה</small></div>
+  <p>תפוקת הלב = <mark>קצב הלב × נפח פעימה</mark></p><p class="s">במנוחה: 70 פעימות × 70 מ״ל ≈ 5 ליטר בדקה.<br>כל הכמות הזו עוברת בכל דקה בעורקים, בנימים ובוורידים.</p></div>
+ <figure class="ph t2" style="flex-basis:40%"><img src="img/marathon.jpg" alt="רץ מרתון"><figcaption class="cr">אליוד קיפצ׳וגה, מרתון ברלין · Desitlicheresguruweil · CC BY-SA 4.0</figcaption></figure>
 </section>
 
-<!-- 4 -->
-<section class="s">
-  <div class="kick">שלושה סוגי צינורות</div>
-  <h2>חתך רוחב: <em>עורק, נים, וריד</em></h2>
-  <div class="fig" data-f="cross"></div>
-  <p class="src">האיור אינו בקנה מידה: הנים מוגדל מאוד. צבע הדם באיור אינו מסמן ריכוז חמצן.</p>
+<!-- 4 המסלול -->
+<section class="slide col">
+ <span class="kick">המסלול</span>
+ <h2>עורק ← עורקיקים ← נימים ← ורידונים ← וריד</h2>
+ <figure class="ph" style="flex:0 0 auto;width:930px;transform:rotate(.6deg)"><div class="fig"><img src="img/vessels.svg" alt="עורק מתפצל לעורקיקים ולנימים, שמתאחדים לוורידונים ולווריד" style="max-height:none">
+  <span class="lb d" style="left:17.2%;top:43.5%">עורק</span><span class="lb d" style="left:84.3%;top:43%">וריד</span><span class="lb" style="left:30.8%;top:51%">עורקיקים</span><span class="lb" style="left:56%;top:6%">נימים</span><span class="lb" style="left:71.5%;top:51%">ורידונים</span></div>
+  <figcaption class="cr">Blood vessels · Kelvinsong, Begoon · CC BY-SA 3.0 · תוויות בעברית</figcaption></figure>
 </section>
 
-<!-- 5 -->
-<section class="s">
-  <div class="kick">התאמה בין מבנה לתפקוד</div>
-  <div class="cards">
-    <div class="card r"><b>עורק</b><ul><li>דופן <b>עבה</b>, שכבת שריר חלק וסיבים <b>אלסטיים</b></li><li>עומד בלחץ גבוה, ונמתח ומתכווץ בכל פעימה</li><li>בעורקיקים: שריר חלק שמתכווץ ונרפה, וכך משתנה כמות הדם לכל איבר (שיעור 3)</li></ul></div>
-    <div class="card g"><b>נים</b><ul><li>דופן של <b>שכבת תאים אחת</b></li><li>קוטר: כמו תא דם אדום אחד</li><li>מיליארדי נימים: <b>שטח פנים עצום</b></li><li>כאן, ורק כאן, עוברים חומרים בין הדם לנוזל הבין־תאי ולתאים</li></ul></div>
-    <div class="card b"><b>וריד</b><ul><li>דופן <b>דקה</b>, מעט שריר, חלל רחב</li><li>לחץ דם נמוך</li><li><b>מסתמים</b>: זרימה בכיוון אחד, אל הלב</li><li>יותר ממחצית הדם בגוף נמצא בוורידים</li></ul></div>
-  </div>
+<!-- 5 מיקרוסקופ -->
+<section class="slide">
+ <div class="txt" style="flex-basis:36%"><span class="kick">תחנת מיקרוסקופ</span><h2>מי העורק ומי הווריד?</h2><p class="s">חתך רוחב אמיתי. ציינו שני סימנים במבנה.</p><button class="reveal">הצגת תשובה</button>
+  <div class="ans"><b>ב = עורק:</b> דופן עבה ושרירית, חלל עגול וקטן.<br><b>א = וריד:</b> דופן דקה, חלל רחב וצורה קורסת.</div></div>
+ <figure class="ph t2" style="flex-basis:64%"><div class="fig"><img src="img/artery-vein.jpg" alt="חתך רוחב של עורק ושל וריד במיקרוסקופ" style="max-height:none">
+  <span class="lb o" style="left:74%;top:28%">א</span><span class="lb o" style="left:27%;top:71%">ב</span></div>
+  <figcaption class="cr">OpenStax Anatomy and Physiology, איור 20.2 · CC BY 3.0 · התוויות הוסרו</figcaption></figure>
 </section>
 
-<!-- 6 -->
-<section class="s">
-  <div class="kick">לחץ דם</div>
-  <div class="split"><div>
-    <h2>הלב <em>יוצר לחץ</em>, והדם זורם מלחץ גבוה ללחץ נמוך</h2>
-    <p>כשהחדר השמאלי מתכווץ, הוא דוחס את הדם לתוך אבי העורקים. הלחץ שהדם מפעיל על דופן כלי הדם הוא <b>לחץ הדם</b>.</p>
-    <p>לאורך הדרך הדם מתחכך בדפנות, והלחץ יורד. לכן הדם זורם תמיד מהלב, דרך העורקים והנימים, אל הוורידים, ומשם חזרה ללב.</p>
-  </div><div class="card"><b>דוגמה: צינור השקיה ארוך</b><p>פותחים ברז, ובקצה של צינור באורך 50 מטר המים יוצאים חלשים יותר מבקצה של צינור באורך 2 מטר. ככל שהדרך ארוכה וצרה יותר, הלחץ יורד יותר.</p></div></div>
+<!-- 6 מה זה לחץ דם -->
+<section class="slide col">
+ <span class="kick">לחץ דם</span>
+ <h2>הלחץ שהדם מפעיל על <mark>דופן</mark> כלי הדם</h2>
+ <div class="cards">
+  <div class="card"><span class="n">1</span><p>החדר השמאלי מתכווץ ודוחס דם לאבי העורקים.</p></div>
+  <div class="card"><span class="n">2</span><p>הדם מתחכך בדפנות, והלחץ יורד לאורך הדרך.</p></div>
+  <div class="card"><span class="n">3</span><p>הדם זורם תמיד <b>מלחץ גבוה ללחץ נמוך</b>.</p></div>
+ </div>
 </section>
 
-<!-- 7 -->
-<section class="s">
-  <div class="kick">מה פירוש 120/80?</div>
-  <div class="split"><div>
-    <div class="big"><span class="num">120/80</span></div>
-    <p><b style="color:var(--rich)">120 · לחץ סיסטולי:</b> הלחץ בעורק בזמן <b>התכווצות</b> החדרים (סיסטולה).</p>
-    <p><b style="color:var(--poor)">80 · לחץ דיאסטולי:</b> הלחץ באותו עורק בזמן <b>הרפיית</b> החדרים (דיאסטולה).</p>
-    <p class="lead">היחידה: מ״מ כספית. לחץ של 120 מ״מ כספית מסוגל להרים עמוד כספית לגובה 120 מ״מ.</p>
-  </div><div class="fig" data-f="cuff"></div></div>
+<!-- 7 120/80 -->
+<section class="slide">
+ <div class="txt"><span class="kick">מה אומר המספר?</span><div class="num">120/80</div>
+  <p><b class="r">120</b> · לחץ <b>סיסטולי</b>: בזמן התכווצות החדרים.</p>
+  <p><b class="b">80</b> · לחץ <b>דיאסטולי</b>: בזמן הרפיית החדרים.</p>
+  <p class="s">היחידה: מ״מ כספית. יתר לחץ דם: 140/90 ומעלה, שוב ושוב.</p></div>
+ <figure class="ph" style="flex-basis:32%"><img src="img/bp.jpg" alt="מדידת לחץ דם" style="max-height:620px;object-position:70% 60%"><figcaption class="cr">מדידת לחץ דם · Confidence24 · CC BY-SA 4.0</figcaption></figure>
 </section>
 
-<!-- 8 -->
-<section class="s">
-  <div class="kick">מדידה בכיתה</div>
-  <h2>איך מודדים לחץ דם?</h2>
-  <div class="cards">
-    <div class="card"><b>1. מנפחים</b><p>שרוול סביב הזרוע, בגובה הלב. לחץ השרוול גבוה מהלחץ בעורק, והעורק נלחץ ונסגר: הדם לא עובר.</p></div>
-    <div class="card"><b>2. משחררים לאט</b><p>כשלחץ השרוול יורד מתחת ללחץ <b>הסיסטולי</b>, הדם מתחיל לעבור בכל פעימה. זה המספר הגבוה.</p></div>
-    <div class="card"><b>3. ממשיכים לשחרר</b><p>כשלחץ השרוול יורד מתחת ללחץ <b>הדיאסטולי</b>, הדם עובר ברציפות. זה המספר הנמוך.</p></div>
-  </div>
-  <p class="lead">לחץ דם שנמדד שוב ושוב ב־140/90 ומעלה נחשב <b>לחץ דם גבוה</b>. בדרך כלל אין לו תסמינים, ולכן בודקים אותו באופן קבוע.</p>
+<!-- 8 מדידה -->
+<section class="slide col">
+ <span class="kick">איך מודדים?</span>
+ <h2>שרוול, שחרור לאט, שני מספרים</h2>
+ <div class="cards">
+  <div class="card"><span class="n">1 · מנפחים</span><p>הלחץ בשרוול גבוה מהלחץ בעורק. העורק נסגר.</p></div>
+  <div class="card"><span class="n">2 · משחררים</span><p>הדם מתחיל לעבור בכל פעימה: זה הלחץ <b class="r">הסיסטולי</b>.</p></div>
+  <div class="card"><span class="n">3 · ממשיכים</span><p>הדם עובר ברציפות: זה הלחץ <b class="b">הדיאסטולי</b>.</p></div>
+ </div>
 </section>
 
-<!-- 9 -->
-<section class="s">
-  <div class="kick">הגרף מהבגרות</div>
-  <h2>לחץ הדם לאורך <em>המחזור הגדול</em></h2>
-  <div class="fig" data-f="pressure"></div>
-  <p class="src">ערכים מקורבים. הגרף מבוסס על הגרף בבגרות קיץ תשפ״ד, שאלה 27, ועל ספר הפיזיולוגיה של Guyton.</p>
+<!-- 9 גרף לחץ -->
+<section class="slide" style="gap:40px">
+ <div class="txt" style="flex-basis:30%"><span class="kick">הגרף מהבגרות</span><h2>הלחץ לאורך הדרך</h2><p class="s">מבוסס על בגרות קיץ תשפ״ד, שאלה 27.</p></div>
+ <div class="graph" id="gP"></div>
 </section>
 
-<!-- 10 -->
-<section class="s">
-  <div class="kick">קוראים את הגרף</div>
-  <div class="cards">
-    <div class="card"><b>1. למה בעורקים הלחץ "קופץ" בין 80 ל־120?</b><button class="reveal">תשובה</button><div class="ans"><p>בכל התכווצות של החדר השמאלי נכנס דם לאבי העורקים, והלחץ עולה (סיסטולי). בזמן ההרפיה לא נכנס דם, והלחץ יורד (דיאסטולי).</p></div></div>
-    <div class="card"><b>2. איפה הלחץ יורד בחדות?</b><button class="reveal">תשובה</button><div class="ans"><p>בעורקיקים. הם צרים, יש רבים מהם, והדם מתחכך בדפנות שלהם. גם התנודות בין סיסטולה לדיאסטולה כמעט נעלמות שם.</p></div></div>
-    <div class="card"><b>3. למה אין דופק בוורידים?</b><button class="reveal">תשובה</button><div class="ans"><p>עד שהדם מגיע לוורידים, הוא עובר בעורקיקים ובנימים, והתנודות בלחץ דועכות. בוורידים הלחץ נמוך וכמעט קבוע.</p></div></div>
-  </div>
+<!-- 10 שאלה על הגרף -->
+<section class="slide" style="gap:40px">
+ <div class="txt" style="flex-basis:34%"><span class="kick">❓ שאלה לכיתה</span><h2>איפה הלחץ יורד <mark>בחדות</mark>?</h2><button class="reveal">הצגת תשובה</button>
+  <div class="ans">בעורקיקים. הם צרים ורבים, והדם מתחכך בדפנות שלהם. שם גם נעלמות כמעט התנודות בין סיסטולה לדיאסטולה.</div></div>
+ <div class="graph" id="gP2"></div>
 </section>
 
-<!-- 11 -->
-<section class="s">
-  <div class="kick">הסוד של אבי העורקים</div>
-  <div class="split"><div>
-    <h2>למה הלחץ לא יורד <em>לאפס</em> בין פעימה לפעימה?</h2>
-    <p><b>בסיסטולה:</b> הדם שנכנס מותח את הדופן האלסטית של אבי העורקים, כמו בלון שמתנפח.</p>
-    <p><b>בדיאסטולה:</b> הדופן חוזרת לממדיה ודוחסת את הדם קדימה. לכן הלחץ נשאר כ־80, והדם ממשיך לזרום גם כשהלב נרפה.</p>
-    <p class="lead">בגיל מבוגר הדופן נעשית קשיחה יותר, והלחץ הסיסטולי עולה.</p>
-  </div><div class="fig" data-f="elastic"></div></div>
+<!-- 11 אבי העורקים האלסטי -->
+<section class="slide col">
+ <span class="kick">למה הלחץ לא יורד לאפס?</span>
+ <h2>אבי העורקים <mark>נמתח וחוזר</mark></h2>
+ <div class="cards">
+  <div class="card"><span class="n r">בסיסטולה</span><p>הדם שנכנס מותח את הדופן האלסטית, כמו בלון שמתנפח.</p></div>
+  <div class="card"><span class="n b">בדיאסטולה</span><p>הדופן חוזרת לממדיה ודוחסת את הדם קדימה. הלחץ נשאר כ־80.</p></div>
+ </div>
+ <p class="s">בגיל מבוגר הדופן נעשית קשיחה, והלחץ הסיסטולי עולה.</p>
 </section>
 
-<!-- 12 -->
-<section class="s">
-  <div class="kick">הדופק</div>
-  <div class="split"><div>
-    <h2>הדופק: <em>גל</em> שעובר בדופן העורקים</h2>
-    <p>בכל התכווצות של החדר השמאלי, הדופן של העורקים נמתחת. גל המתיחה מתקדם לאורך העורקים, ואפשר למשש אותו בעורק שקרוב לעור: בשורש כף היד או בצוואר.</p>
-    <p><b>מספר הפעימות בדקה בדופק = קצב הלב.</b></p>
-  </div><div class="card g"><b>⏱ נסו עכשיו</b><p>הניחו שתי אצבעות (לא אגודל) בצד הפנימי של שורש כף היד, מתחת לאגודל. ספרו פעימות במשך 15 שניות, וכפלו ב־4.</p><p>אחר כך: 20 קפיצות במקום, ושוב מדידה. מה השתנה?</p></div></div>
+<!-- 12 דופק -->
+<section class="slide">
+ <div class="txt"><span class="kick">הדופק</span><h2>גל שעובר בדופן העורקים</h2><p>בכל התכווצות של החדר השמאלי, דופן העורקים נמתחת. את הגל מרגישים בשורש כף היד.</p><p><mark>⏱ נסו עכשיו: 15 שניות × 4</mark></p></div>
+ <figure class="ph t2" style="flex-basis:42%"><img src="img/pulse.jpg" alt="מישוש דופק בשורש כף היד"><figcaption class="cr">מישוש דופק · U.S. Air Force, Jeanette Copeland · נחלת הכלל</figcaption></figure>
 </section>
 
-<!-- 13 -->
-<section class="s">
-  <div class="kick">חידה: מהירות הזרימה</div>
-  <div class="split"><div>
-    <h2>כשלוחצים באגודל על פתח הצינור, המים יוצאים <em>מהר יותר</em>.</h2>
-    <p>הנים הוא כלי הדם הצר ביותר בגוף. האם הדם זורם בנימים מהר יותר מאשר באבי העורקים?</p>
-    <button class="reveal">תשובה</button>
-    <div class="ans"><p><b>לא. בנימים הזרימה האיטית ביותר.</b> אבי העורקים הוא צינור אחד. הנימים הם מיליארדי צינורות שהדם מתחלק ביניהם, וכל נים מקבל כמות זעירה של דם. מה שקובע את המהירות הוא <b>שטח החתך הכולל</b> של כל הצינורות יחד.</p></div>
-  </div><div class="fig" data-f="hose"></div></div>
+<!-- 13 חידת הצינור -->
+<section class="slide col">
+ <span class="kick">חידה</span>
+ <h2>לוחצים באגודל על צינור השקיה: המים יוצאים <mark>מהר יותר</mark></h2>
+ <p>הנים הוא כלי הדם הצר ביותר.<br>האם בנימים הדם זורם הכי מהר?</p>
+ <button class="reveal">הצגת תשובה</button>
+ <div class="ans"><b>לא. בנימים הזרימה הכי איטית.</b> אבי העורקים הוא צינור אחד. הנימים הם מיליארדי צינורות, והדם מתחלק ביניהם. המהירות תלויה בשטח החתך <b>הכולל</b>.</div>
 </section>
 
-<!-- 14 -->
-<section class="s">
-  <div class="kick">שטח חתך כולל</div>
-  <div class="split"><div>
-    <h2>כביש של נתיב אחד <em>שמתפצל לאלף נתיבים</em></h2>
-    <p>בכל דקה עוברות בכביש 1,000 מכוניות. בנתיב האחד הן נוסעות מהר. כשהכביש מתפצל ל־1,000 נתיבים, עוברות באותה דקה אותן 1,000 מכוניות, ובכל נתיב יש מכונית אחת שזוחלת לאט.</p>
-    <p>כך גם בגוף: בכל דקה עוברים כ־5 ליטר דם בכל "קומה" של כלי הדם.</p>
-  </div><div>
-    <div class="eq"><span>שטח חתך כולל גדול</span><i>←</i><span>זרימה איטית</span></div>
-    <table style="margin-top:14px"><tr><th></th><th>שטח חתך כולל</th><th>מהירות ממוצעת</th></tr>
-      <tr><td>אבי העורקים</td><td>2.5 סמ״ר</td><td>33 ס״מ בשנייה</td></tr>
-      <tr><td>כל הנימים</td><td>2,500 סמ״ר</td><td>0.3 מ״מ בשנייה</td></tr></table>
-    <p class="lead" style="margin-top:8px">שטח גדול פי 1,000 ← מהירות קטנה פי 1,000.</p>
-  </div></div>
+<!-- 14 כביש -->
+<section class="slide col">
+ <span class="kick">שטח חתך כולל</span>
+ <h2>כביש אחד שמתפצל ל־1,000 נתיבים</h2>
+ <div class="cards">
+  <div class="card"><span class="n">נתיב אחד</span><p>1,000 מכוניות בדקה. כולן <b>נוסעות מהר</b>.</p></div>
+  <div class="card"><span class="n">1,000 נתיבים</span><p>אותן 1,000 מכוניות בדקה. בכל נתיב מכונית אחת <b>שזוחלת</b>.</p></div>
+ </div>
+ <p><mark>שטח חתך כולל גדול ← זרימה איטית</mark></p>
 </section>
 
-<!-- 15 -->
-<section class="s">
-  <div class="kick">שני גרפים, תמונת מראה</div>
-  <h2>שטח החתך הכולל <em>מול</em> מהירות הזרימה</h2>
-  <div class="fig" data-f="speed"></div>
-  <p class="src">ערכים מקורבים לפי Guyton: מהירות ממוצעת = 5 ליטר בדקה ÷ שטח החתך הכולל. שימו לב: המהירות עולה שוב בוורידים, כי הם מתאחדים וחוזרים להיות מעטים.</p>
+<!-- 15 הנוסחה -->
+<section class="slide col">
+ <span class="kick">החשבון: מתפוקת הלב למהירות</span>
+ <div class="formula">מהירות = תפוקת הלב ÷ שטח חתך כולל</div>
+ <div class="cards">
+  <div class="card"><span class="n">אבי העורקים</span><p>83 סמ״ק בשנייה ÷ 2.5 סמ״ר</p><p><b class="r">≈ 33 ס״מ בשנייה</b></p></div>
+  <div class="card"><span class="n">כל הנימים</span><p>83 סמ״ק בשנייה ÷ 2,500 סמ״ר</p><p><b class="b">≈ 0.33 מ״מ בשנייה</b></p></div>
+ </div>
+ <p class="s">83 סמ״ק בשנייה = 5 ליטר בדקה. ערכים מקורבים לפי Guyton.</p>
 </section>
 
-<!-- 16 -->
-<section class="s">
-  <div class="kick">ולמה זה משנה?</div>
-  <div class="split"><div>
-    <h2>בנים, הדם נמצא <em>שנייה עד שלוש</em></h2>
-    <p>אורך נים: כמילימטר אחד. מהירות: כשליש מילימטר בשנייה. בזמן הזה עוברים חמצן וגלוקוז מהדם לתאים, ופחמן דו־חמצני ופסולת מהתאים לדם.</p>
-    <p><b>שלוש התכונות של הנימים יחד</b> מאפשרות מעבר חומרים מהיר בכל הגוף: דופן של שכבת תאים אחת, שטח פנים עצום, וזרימה איטית.</p>
-  </div><div class="card g"><b>דוגמה: פס ייצור</b><p>בתחנה שבה מרכיבים חלקים, הפס מאט. אם הפס היה רץ בתחנה הזו מהר, העובדים לא היו מספיקים להרכיב. בנימים הזרימה איטית, ויש זמן למעבר החומרים.</p></div></div>
+<!-- 16 גרף שטח ומהירות -->
+<section class="slide" style="gap:40px">
+ <div class="txt" style="flex-basis:30%"><span class="kick">שני גרפים</span><h2>תמונת מראה</h2><p class="s">שטח החתך הכולל גדל, המהירות קטנה. בוורידים הם מתאחדים, והמהירות עולה שוב.</p></div>
+ <div class="graph" id="gS"></div>
 </section>
 
-<!-- 17 -->
-<section class="s">
-  <div class="kick">החזרה ללב</div>
-  <div class="split"><div>
-    <h2>לחץ כמעט אפס. <em>איך הדם עולה מכפות הרגליים ללב?</em></h2>
-    <ul><li><b>משאבת השרירים:</b> שרירי השלד שמתכווצים סביב הוורידים לוחצים עליהם, והדם נדחס.</li>
-    <li><b>מסתמים:</b> נפתחים רק לכיוון הלב, ונסגרים כשהדם נע לאחור.</li></ul>
-    <p class="lead">זוכרים את הארווי (שיעור 1)? הוא לחץ על ורידי הזרוע והראה שהדם בהם זורם רק לכיוון הלב, בגלל המסתמים.</p>
-  </div><div class="fig" data-f="valve"></div></div>
+<!-- 17 0.3 -->
+<section class="slide">
+ <div class="txt"><span class="kick">מספר אחד לזכור</span><div class="num">0.3 <small>מ״מ בשנייה</small></div>
+  <p>מהירות הזרימה בנימים. באבי העורקים: <mark>פי 1,000</mark> מהר יותר.</p><p class="s">נים באורך מילימטר: הדם עובר בו בשנייה עד שלוש. בזמן הזה עוברים חומרים בין הדם לתאים.</p></div>
+ <figure class="ph"><img src="img/capillaries.jpg" alt="נימים בקפל הציפורן"><figcaption class="cr">נימים בקפל הציפורן · D. Stavtsev, N. Margaryants, M. Volkov · CC BY 4.0</figcaption></figure>
 </section>
 
-<!-- 18 -->
-<section class="s">
-  <div class="kick">דוגמאות מהחיים</div>
-  <div class="cards">
-    <div class="card"><b>💂 חייל במסדר</b><p>עומד דום שעה ארוכה בלי לזוז. השרירים ברגליים לא מתכווצים, הדם מצטבר בוורידי הרגליים, פחות דם חוזר ללב, ופחות דם מגיע למוח. לפעמים הוא מתעלף.</p></div>
-    <div class="card"><b>✈ טיסה ארוכה</b><p>ישיבה של שעות: הרגליים מתנפחות. ההמלצה: לקום ולהתהלך, ולהפעיל את שרירי השוק.</p></div>
-    <div class="card"><b>🦵 דליות</b><p>כשהמסתמים בוורידי הרגליים פגומים, הדם זורם לאחור ומצטבר, והוורידים מתרחבים ובולטים מתחת לעור.</p></div>
-    <div class="card"><b>🦒 ג׳ירפה</b><p>המוח שלה נמצא כשני מטר מעל הלב. לחץ הדם שלה גבוה בערך פי שניים מזה של אדם, והדופן של החדר השמאלי עבה מאוד.</p></div>
-  </div>
+<!-- 18 תא דם בנים -->
+<section class="slide">
+ <div class="txt"><span class="kick">בתוך הנים</span><h2>תא דם אדום אחד ממלא את כל הנימית</h2><p class="s">דופן של שכבת תאים אחת · שטח פנים עצום · זרימה איטית.</p><p><mark>שלושתם יחד: מעבר חומרים מהיר</mark></p></div>
+ <figure class="ph t2" style="flex-basis:44%"><img src="img/rbc.jpg" alt="תא דם אדום בתוך נימית, מיקרוסקופ אלקטרונים"><figcaption class="cr">תא דם אדום בנימית · Louisa Howard · נחלת הכלל</figcaption></figure>
 </section>
 
-<!-- 19 -->
-<section class="s">
-  <div class="kick">סיכום</div>
-  <table>
-    <tr><th></th><th>עורקים</th><th>נימים</th><th>ורידים</th></tr>
-    <tr><td>כיוון הזרימה</td><td>מהלב</td><td>מעורקיקים לוורידונים</td><td>אל הלב</td></tr>
-    <tr><td>דופן</td><td>עבה, שריר וסיבים אלסטיים</td><td>שכבת תאים אחת</td><td>דקה, מעט שריר</td></tr>
-    <tr><td>לחץ דם</td><td>הגבוה ביותר, משתנה בכל פעימה</td><td>יורד מכ־35 לכ־15</td><td>הנמוך ביותר, כמעט קבוע</td></tr>
-    <tr><td>שטח חתך כולל</td><td>קטן</td><td>הגדול ביותר</td><td>בינוני</td></tr>
-    <tr><td>מהירות זרימה</td><td>הגבוהה ביותר</td><td>האיטית ביותר</td><td>עולה בהדרגה</td></tr>
-    <tr><td>מסתמים</td><td>אין (רק ביציאה מהלב)</td><td>אין</td><td>יש, בעיקר בגפיים</td></tr>
-  </table>
+<!-- 19 חזרה ללב -->
+<section class="slide">
+ <div class="txt"><span class="kick">החזרה ללב</span><h2>לחץ כמעט אפס. איך הדם עולה מהרגליים?</h2>
+  <p><b>משאבת השרירים:</b> שרירי השלד מתכווצים ולוחצים על הוורידים.</p><p><b>מסתמים:</b> נפתחים רק לכיוון הלב.</p></div>
+ <figure class="ph" style="flex-basis:44%"><img src="img/harvey.jpg" alt="איור הניסוי של הארווי במסתמי הוורידים"><figcaption class="cr">ויליאם הארווי, De Motu Cordis (1628) · University of Liverpool · CC BY-SA 2.0</figcaption></figure>
 </section>
 
-<!-- 20 -->
-<section class="s">
-  <div class="kick">כרטיס יציאה · בגרות קיץ תשפ״ב, שאלה 4</div>
-  <h2>להלן ארבעה משפטים בנוגע לנימי הדם. <em>איזה מהם אינו נכון?</em></h2>
-  <div class="cards">
-    <div class="card"><b>א.</b><p>זרימת הדם בנימים מהירה יותר מזרימתו בוורידים.</p></div>
-    <div class="card"><b>ב.</b><p>הקוטר של נים הדם דומה לקוטר של תא דם אדום.</p></div>
-    <div class="card"><b>ג.</b><p>שטח הפנים של כלל הנימים הוא גדול מאוד.</p></div>
-    <div class="card"><b>ד.</b><p>לנים הדם יש דופן חד־שכבתית.</p></div>
-  </div>
-  <button class="reveal">תשובה</button>
-  <div class="ans"><p><b>א אינו נכון.</b> שטח החתך הכולל של הנימים הוא הגדול ביותר במערכת, ולכן הזרימה בהם האיטית ביותר, איטית יותר מבוורידים.</p></div>
+<!-- 20 חיילים -->
+<section class="slide">
+ <div class="txt"><span class="kick">❓ שאלה לכיתה</span><h2>למה חיילים מתעלפים במסדר ארוך?</h2><button class="reveal">הצגת תשובה</button>
+  <div class="ans">בלי תנועה, שרירי השוק לא לוחצים על הוורידים. הדם מצטבר ברגליים, פחות דם חוזר ללב ופחות דם מגיע למוח. כיווץ שרירי השוק מגביר את חזרת הדם ללב.</div></div>
+ <figure class="ph t2" style="flex-basis:30%"><img src="img/soldiers.jpg" alt="חיילי משמר במסדר" style="max-height:620px"><figcaption class="cr">חיילי משמר במסדר · Sgt Adrian Harlen / MOD · OGL 2</figcaption></figure>
 </section>
 
-<!-- 21 -->
-<section class="s">
-  <div class="kick">ממשיכים</div>
-  <h2>עכשיו <em>מנסים בעצמכם</em></h2>
-  <div class="cards">
-    <a class="card" href="simulation.html" style="text-decoration:none;color:inherit"><b>◎ סימולציה: מסע בכלי הדם</b><p>נוסעים עם הדם מאבי העורקים ועד הווריד הנבוב, ורואים איך משתנים הלחץ, שטח החתך והמהירות. ובנוסף: העורק האלסטי ומשאבת השרירים.</p></a>
-    <a class="card" href="practice.html" style="text-decoration:none;color:inherit"><b>✎ תרגיל: כלי הדם</b><p>שאלות מבגרות בניסיון אחד, דף טעויות, וקובץ PDF למשימה ב־Classroom.</p></a>
-  </div>
+<!-- 21 סיכום -->
+<section class="slide col" style="gap:28px">
+ <span class="kick">סיכום</span>
+ <table><tr><th></th><th class="r" style="color:#FF8A94">עורקים</th><th style="color:#fff">נימים</th><th style="color:#8FB4FF">ורידים</th></tr>
+  <tr><td>לחץ</td><td>הגבוה ביותר, עם תנודות</td><td>יורד מ־35 ל־15</td><td>הנמוך ביותר</td></tr>
+  <tr><td>שטח חתך כולל</td><td>קטן</td><td>הגדול ביותר</td><td>בינוני</td></tr>
+  <tr><td>מהירות</td><td>הגבוהה ביותר</td><td>האיטית ביותר</td><td>עולה בהדרגה</td></tr>
+  <tr><td>דופן</td><td>עבה ואלסטית</td><td>שכבת תאים אחת</td><td>דקה, עם מסתמים</td></tr></table>
+</section>
+
+<!-- 22 כרטיס יציאה -->
+<section class="slide col" style="gap:24px">
+ <span class="kick">כרטיס יציאה · בגרות קיץ תשפ״ב, שאלה 4</span>
+ <h2>איזה משפט על הנימים <mark>אינו נכון</mark>?</h2>
+ <div class="card" style="flex:0 0 auto;width:1200px"><p>א. זרימת הדם בנימים מהירה יותר מזרימתו בוורידים.</p><p>ב. הקוטר של נים דומה לקוטר של תא דם אדום.</p><p>ג. שטח הפנים של כלל הנימים גדול מאוד.</p><p>ד. לנים יש דופן חד־שכבתית.</p></div>
+ <button class="reveal">הצגת תשובה</button>
+ <div class="ans"><b>א אינו נכון.</b> שטח החתך הכולל של הנימים הוא הגדול ביותר, ולכן הזרימה בהם האיטית ביותר.</div>
+</section>
+
+<!-- 23 ממשיכים -->
+<section class="slide col">
+ <span class="kick">ממשיכים</span>
+ <h2>עכשיו מנסים בעצמכם</h2>
+ <div class="links">
+  <a href="simulation.html">◎ סימולציה: מסע בכלי הדם<small>לחץ, שטח חתך ומהירות בכל תחנה</small></a>
+  <a href="practice.html">✎ תרגיל: כלי הדם<small>שאלות בגרות, דף טעויות ו־PDF</small></a>
+  <a href="https://tafukat-lev-tmunot.sites.tab.bot/" target="_blank" rel="noopener">♥ תפוקת הלב<small>המצגת מהשיעור הקודם</small></a>
+ </div>
 </section>
 
 </div>
-<div class="nav"><button type="button" id="prev" aria-label="שקופית קודמת">→</button><span id="cnt"></span><button type="button" id="next" aria-label="שקופית הבאה">←</button></div>
+<div class="nav"><button data-go="1">הבא ←</button><span class="cnt"></span><button data-go="-1">→ הקודם</button></div>
 <p class="credit">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים · חגית ברגמן</p>
 <script src="vessels.js"></script>
 <script>
-document.querySelectorAll('.fig').forEach(f=>{f.innerHTML=V.fig(f.dataset.f)});
-document.querySelectorAll('.reveal').forEach(b=>b.onclick=()=>{b.nextElementSibling.classList.toggle('show')});
-const S=[...document.querySelectorAll('.s')];let i=0;const cnt=document.getElementById('cnt');
-function go(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,k)=>s.classList.toggle('on',k===i));cnt.textContent=(i+1)+' / '+S.length;history.replaceState(null,'','#s'+(i+1))}
-document.getElementById('next').onclick=()=>go(i+1);document.getElementById('prev').onclick=()=>go(i-1);
-addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key===' '||e.key==='PageDown')go(i+1);if(e.key==='ArrowRight'||e.key==='PageUp')go(i-1)});
-go((parseInt(location.hash.slice(2))||1)-1);
-</script>
-</body>
-</html>
+document.getElementById('gP').innerHTML=V.fig('pressure');
+document.getElementById('gP2').innerHTML=V.fig('pressure',{at:2});
+document.getElementById('gS').innerHTML=V.fig('speed');
+(function(){
+ const stage=document.querySelector('.stage'),slides=[...document.querySelectorAll('.slide')],bar=document.querySelector('.bar');
+ let i=Math.max(0,Math.min(slides.length-1,(parseInt(location.hash.slice(2))||1)-1));
+ function fit(){const k=Math.min(innerWidth/1600,innerHeight/900);stage.style.transform='translate(-50%,-50%) scale('+k+')'}
+ window.go=function(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,j)=>s.classList.toggle('on',j===i));
+  document.querySelector('.cnt').textContent=(i+1)+' / '+slides.length;bar.style.width=((i+1)/slides.length*100)+'%';history.replaceState(null,'','#s'+(i+1))};
+ addEventListener('resize',fit);fit();go(i);
+ addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key===' '||e.key==='PageDown')go(i+1);if(e.key==='ArrowRight'||e.key==='PageUp')go(i-1)});
+ document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(i+(+b.dataset.go)));
+ document.querySelectorAll('.reveal').forEach(b=>b.onclick=()=>{b.parentElement.querySelector('.ans').classList.add('show');b.remove()});
+})();
+</script></body></html>
