@@ -1,0 +1,211 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>למה הדם זורם ברציפות? הדמיית מזרק ובלון</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Secular+One&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Assistant,Arial,sans-serif;background:#FFF9F0;color:#1d2b36}
+header{padding:14px 20px 4px;text-align:center}h1{font-family:'Secular One',sans-serif;color:#C2410C;margin:0;font-size:clamp(24px,4vw,40px)}
+.sub{font-size:clamp(16px,2vw,20px);margin:6px 0 0;color:#334}
+.wrap{max-width:1100px;margin:auto;padding:10px}
+canvas{width:100%;background:#fff;border-radius:16px;box-shadow:0 4px 18px #0001;display:block}
+.ctrl{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:12px 0}
+button{font:inherit;font-size:19px;border:0;border-radius:12px;padding:10px 18px;cursor:pointer;background:#0F766E;color:#fff}
+button.off{background:#94a3b8}button.alt{background:#C2410C}
+label{font-size:18px;display:flex;align-items:center;gap:8px;background:#fff;padding:6px 12px;border-radius:12px}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:10px}
+.card{background:#fff;border-radius:12px;padding:10px 14px;font-size:17px;border-right:6px solid #0F766E}
+.q{margin-top:14px;background:#FEF3C7;border-radius:14px;padding:12px 16px;font-size:18px}
+.q b{color:#C2410C}.ans{display:none;margin-top:6px;color:#0F766E}.ans.show{display:block}
+#status{font-family:'Secular One';font-size:22px;text-align:center;color:#1d2b36;min-height:30px}
+</style></head><body><style>.homefix{position:fixed;top:8px;left:10px;display:flex;gap:6px;z-index:9999;direction:rtl}.homefix a{background:#fff;color:#1B1B2F;border:2px solid #1B1B2F;border-radius:20px;padding:3px 12px;font:800 13px Assistant,Arial,sans-serif;text-decoration:none;line-height:1.5}.homefix a:hover{background:#1B1B2F;color:#fff}@media print{.homefix{display:none}}</style><nav class="homefix" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
+<header><h1>למה הדם זורם ברציפות, למרות שהלב פועם?</h1>
+<p class="sub">מודל: מזרק = הלב · שסתום חד־כיווני = המסתם · בלון = דופן אלסטית של העורקים · צינורית צרה = כלי דם קטנים (התנגדות)</p></header>
+<div class="wrap" id="task"><div style="background:#fff;border-radius:16px;box-shadow:0 4px 18px #0001;padding:16px 20px;border-top:8px solid #C2410C">
+<h2 style="font-family:'Secular One';color:#C2410C;margin:0 0 6px">📝 משימה לתלמידים</h2>
+<p style="margin:0 0 10px;font-size:18px">עבדו בזוגות עם ההדמיה שלמטה. ענו בתיבות, ובסוף הדפיסו או שמרו כ-PDF.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"><input id="t_name" placeholder="שם" style="font:inherit;padding:8px;border:1px solid #cbd5e1;border-radius:8px"><input id="t_cls" placeholder="כיתה" style="font:inherit;padding:8px;border:1px solid #cbd5e1;border-radius:8px"></div>
+<ol style="font-size:18px;line-height:1.5;padding-right:22px">
+<li>הפעילו את ההדמיה. מה קורה לבלון בזמן <b>דחיסה</b>? ומה קורה לו בזמן <b>משיכה</b>?<textarea id="t_q1"></textarea></li>
+<li>מדוע הדם לא חוזר למזרק כשמושכים את הבוכנה?<textarea id="t_q2"></textarea></li>
+<li>הסתכלו בגרף. השוו בין הזרימה מהמזרק (קו מקווקו) לזרימה ביציאה (קו אדום). מה ההבדל ביניהן?<textarea id="t_q3"></textarea></li>
+<li>לחצו «בלי בלון». מה השתנה בזרימה ביציאה? מה השתנה בלחץ?<textarea id="t_q4"></textarea></li>
+<li>הזיזו את מחוון הצינורית ל«רחבה מאוד». מה קורה לבלון? הסבירו מדוע.<textarea id="t_q5"></textarea></li>
+<li>התאימו לכל חלק במודל את המבנה בגוף: מזרק · שסתום · בלון · צינורית צרה · מאגר.<textarea id="t_q6"></textarea></li>
+<li>הסבירו במשפט או שניים: מדוע הדם בנימים זורם ברציפות, למרות שהלב מתכווץ ומתרפה לסירוגין?<textarea id="t_q7"></textarea></li>
+<li>בטרשת עורקים דופן העורקים מתקשה. נבאו מה יקרה לזרימה וללחץ בשיא הפעימה, ובדקו את הניבוי בהדמיה.<textarea id="t_q8"></textarea></li>
+</ol>
+<button id="t_send" style="margin-top:6px;background:#C2410C">📤 שליחה למורה</button> <span id="t_st" style="font-size:18px;margin-right:8px"></span>
+<script>
+document.getElementById('t_send').onclick=function(){
+ var E=["entry.56685426", "entry.1310784589", "entry.1833563475", "entry.1844699920", "entry.1060325627", "entry.1731247228", "entry.722489961", "entry.332553451", "entry.1162502888", "entry.1218621986"], n=document.getElementById('t_name').value.trim(), c=document.getElementById('t_cls').value.trim(), st=document.getElementById('t_st');
+ if(!n||!c){st.textContent='נא למלא שם וכיתה';st.style.color='#C2410C';return;}
+ var fd=new URLSearchParams();fd.append(E[0],n);fd.append(E[1],c);
+ for(var i=1;i<=8;i++){fd.append(E[i+1],document.getElementById('t_q'+i).value||'(אין תשובה)');}
+ this.disabled=true;st.textContent='שולח...';st.style.color='#334';var b=this;
+ fetch('https://docs.google.com/forms/d/e/1FAIpQLSciL_dwQM7t3wAiA6yoGvh2Q9XjeIoiLfccOQO5aq0mSzGKjA/formResponse',{method:'POST',mode:'no-cors',body:fd})
+ .then(function(){st.textContent='✓ נשלח למורה';st.style.color='#0F766E';})
+ .catch(function(){st.textContent='השליחה נכשלה. בדקו חיבור ונסו שוב.';st.style.color='#C2410C';b.disabled=false;});
+};
+</script> <button onclick="window.print()" style="margin-top:6px">🖨 הדפסה / שמירה כ-PDF</button></div></div>
+<style>#task textarea{display:block;width:100%;min-height:60px;margin:6px 0 10px;font:inherit;font-size:17px;padding:8px;border:1px solid #cbd5e1;border-radius:10px}
+@media print{canvas,.ctrl,.legend,.q,#status,button,h2+canvas{display:none!important}#task{page-break-after:avoid}}</style>
+<div class="wrap">
+<div id="status"></div>
+<canvas id="cv" width="1100" height="430"></canvas>
+<div class="ctrl">
+<button id="play">⏸ עצירה</button>
+<button id="bal">🎈 עם בלון</button>
+<button id="step" class="alt">צעד: דחיסה / משיכה</button>
+<label>קצב: <input type="range" id="rate" min="30" max="120" value="60"> <span id="rv">60</span> פעימות/דק׳</label>
+<label>צינורית: <input type="range" id="res" min="1" max="6" value="3"> <span id="resv">צרה</span></label>
+</div>
+<h2 style="font-family:'Secular One';text-align:center;color:#C2410C;margin:18px 0 6px">ובלב האמיתי: אותו דבר בדיוק</h2><canvas id="hv" width="1100" height="420"></canvas>
+<canvas id="gr" width="1100" height="230"></canvas>
+<div class="legend">
+<div class="card" style="border-color:#C2410C"><b>דחיסה (סיסטולה):</b> השסתום נפתח, הנוזל נכנס לצינור. הצינורית הצרה מאטה את היציאה, ולכן חלק מהנוזל מנפח את הבלון.</div>
+<div class="card" style="border-color:#2457C5"><b>משיכה (דיאסטולה):</b> השסתום נסגר והנוזל לא חוזר למזרק. הבלון מתכווץ חזרה ודוחף את הנוזל הלאה.</div>
+<div class="card"><b>התוצאה:</b> הזרימה ביציאה כמעט רציפה. בלי בלון, הזרימה נעצרת בכל משיכה.</div>
+</div>
+<div class="q"><b>שאלה לכיתה:</b> מה יקרה לזרימה אם דופן העורקים תתקשה (טרשת עורקים)? נסו: לחצו «בלי בלון».
+<div><button class="alt" style="font-size:16px;padding:6px 12px;margin-top:6px" onclick="this.parentNode.nextElementSibling.classList.toggle('show')">הצג תשובה</button></div>
+<div class="ans">הבלון (הדופן האלסטית) אוגר חלק מהנוזל בזמן הדחיסה ומשחרר אותו בזמן המשיכה. כשהדופן קשיחה, אין אגירה: הזרימה ביציאה עולה בחדות בדחיסה ונעצרת במשיכה, והלחץ בשיא הפעימה גבוה יותר.</div></div>
+<div class="q"><b>שאלה לכיתה:</b> למה הצינורית חייבת להיות צרה במודל?
+<div><button class="alt" style="font-size:16px;padding:6px 12px;margin-top:6px" onclick="this.parentNode.nextElementSibling.classList.toggle('show')">הצג תשובה</button></div>
+<div class="ans">הצינורית הצרה יוצרת התנגדות לזרימה. בלי התנגדות הנוזל יוצא מהר מהצינור, הלחץ לא עולה והבלון לא מתנפח. נסו להזיז את המחוון לצינורית רחבה.</div></div>
+</div>
+<script>
+const cv=document.getElementById('cv'),c=cv.getContext('2d'),gr=document.getElementById('gr'),g=gr.getContext('2d');
+let balT=0,running=true,balloon=true,manual=false,t=0,phase=0,P=0,hist=[],parts=[],pumpPos=0,manualDir=0;
+let bpm=60,R=3;
+const C_bal=1.0,C_rig=0.03;
+document.getElementById('play').onclick=e=>{running=!running;manual=false;e.target.textContent=running?'⏸ עצירה':'▶ הפעלה'};
+document.getElementById('bal').onclick=e=>{balloon=!balloon;e.target.textContent=balloon?'🎈 עם בלון':'🚫 בלי בלון';e.target.classList.toggle('off',!balloon)};
+document.getElementById('step').onclick=()=>{running=false;manual=true;document.getElementById('play').textContent='▶ הפעלה';manualDir=pumpPos<0.5?1:-1};
+document.getElementById('rate').oninput=e=>{bpm=+e.target.value;document.getElementById('rv').textContent=bpm};
+const rn=['','רחבה מאוד','רחבה','צרה','צרה','צרה מאוד','צרה מאוד'];
+document.getElementById('res').oninput=e=>{R=+e.target.value;document.getElementById('resv').textContent=rn[R]};
+for(let i=0;i<60;i++)parts.push({seg:Math.random()*3,x:Math.random()});
+function stepSim(dt){
+  let qin=0, prev=pumpPos;
+  if(running){t+=dt;const T=60/bpm;const ph=(t%T)/T;
+    // systole 0-0.35 push, 0.35-1 pull back (refill)
+    if(ph<0.35){pumpPos=Math.sin(ph/0.35*Math.PI/2);}else{pumpPos=1-((ph-0.35)/0.65);}
+    phase=ph<0.35?1:-1;
+  } else if(manual&&manualDir){t+=dt;pumpPos=Math.max(0,Math.min(1,pumpPos+manualDir*dt*1.5));phase=manualDir;if(pumpPos<=0||pumpPos>=1)manualDir=0;}
+  else {phase=0;if(manual)t+=dt;}
+  const dV=pumpPos-prev; qin=dV>0?dV/dt:0; // valve: only forward
+  const C=balloon?C_bal:C_rig;
+  const qout=P/(R*0.25);
+  P+= (qin-qout)/C*dt; if(P<0)P=0;
+  return {qin,qout};
+}
+function drawTube(x1,y,x2,h,col){c.fillStyle=col;c.fillRect(Math.min(x1,x2),y-h/2,Math.abs(x2-x1),h)}
+let last=performance.now(),Q={qin:0,qout:0};
+function frame(now){let dt=Math.min(0.05,(now-last)/1000);last=now;
+  for(let k=0;k<4;k++)Q=stepSim(dt/4);
+  if(running||manual){hist.push({qin:Q.qin,qout:Q.qout});if(hist.length>520)hist.shift();}
+  draw();heart();graph();requestAnimationFrame(frame)}
+function draw(){c.clearRect(0,0,1100,430);const W=1100;
+  // RTL scene: flow goes right->left. Syringe on right.
+  const y=230;
+  // reservoir (right)
+  c.fillStyle='#FDE2E2';c.fillRect(985,250,95,110);c.strokeStyle='#888';c.strokeRect(985,250,95,110);
+  c.fillStyle='#DC2626';c.globalAlpha=.75;c.fillRect(987,285,91,73);c.globalAlpha=1;
+  c.fillStyle='#334';c.font='17px Assistant';c.textAlign='center';c.fillText('מאגר (ורידים)',1032,380);
+  // syringe barrel x 760..960
+  const bx1=760,bx2=960;c.fillStyle='#EEF6FF';c.fillRect(bx1,y-45,bx2-bx1,90);c.strokeStyle='#2457C5';c.lineWidth=3;c.strokeRect(bx1,y-45,bx2-bx1,90);
+  const plX=bx1+20+(1-pumpPos)*150; // plunger face position
+  c.fillStyle='#DC2626';c.globalAlpha=.8;c.fillRect(bx1,y-43,plX-bx1,86);c.globalAlpha=1;
+  c.fillStyle='#475569';c.fillRect(plX,y-43,14,86);c.fillRect(plX+14,y-8,bx2-plX+40,16);c.fillRect(bx2+40+(plX-bx1-20)*0, y-30,12,60);
+  c.fillStyle='#334';c.font='bold 19px Assistant';c.fillText('מזרק = הלב',860,y-60);
+  c.font='18px Assistant';c.fillStyle=phase>0?'#C2410C':phase<0?'#2457C5':'#666';
+  c.fillText(phase>0?'⬅ דוחסים':phase<0?'מושכים ➡':'',860,y+75);
+  // inlet valve from reservoir (bottom of barrel) tiny pipe
+  c.fillStyle='#cbd5e1';c.fillRect(930,y+45,14,40);c.fillRect(930,y+85,70,12);
+  const inOpen=phase<0;c.strokeStyle='#0F766E';c.lineWidth=4;c.beginPath();c.moveTo(930,y+50);c.lineTo(inOpen?936:944,inOpen?y+38:y+50);c.stroke();
+  // outlet valve at x 745
+  const vx=742,open=Q.qin>0.01;
+  c.fillStyle='#cbd5e1';c.fillRect(560,y-12,200,24);
+  c.strokeStyle='#0F766E';c.lineWidth=5;c.beginPath();c.moveTo(vx,y-12);c.lineTo(open?vx-18:vx,open?y-2:y+12);c.stroke();
+  c.beginPath();c.moveTo(vx,y+12);c.lineTo(open?vx-18:vx,open?y+2:y-12);c.stroke();
+  c.fillStyle='#0F766E';c.font='bold 17px Assistant';c.fillText(open?'שסתום פתוח':'שסתום סגור',vx,y-25);
+  // balloon at x 600 above tube
+  const bxc=610;
+  if(balloon){const r=22+Math.min(70,P*45);
+    c.fillStyle='#DC2626';c.fillRect(bxc-9,y-36,18,28);c.strokeStyle='#F472B6';c.lineWidth=4;c.strokeRect(bxc-9,y-36,18,28);
+    c.fillStyle='#DC2626';c.globalAlpha=.85;c.beginPath();c.ellipse(bxc,y-30-r,r*0.9,r,0,0,7);c.fill();c.globalAlpha=1;
+    c.strokeStyle='#EC4899';c.lineWidth=6;c.beginPath();c.ellipse(bxc,y-30-r,r*0.9,r,0,0,7);c.stroke();
+    const qb=Q.qin-Q.qout; balT+=qb*0.03;
+    for(let k=0;k<6;k++){let f=((k/6+balT)%1+1)%1;const yy=y-8-f*(30+r*1.2);c.fillStyle='#FDE68A';c.beginPath();c.arc(bxc+((k%2)?4:-4),yy,4,0,7);c.fill();}
+    if(Math.abs(qb)>0.15){c.font='bold 20px Assistant';c.fillStyle=qb>0?'#C2410C':'#2457C5';
+      c.fillText(qb>0?'⬆ הדם נכנס לבלון':'⬇ הבלון דוחף את הדם הלאה',bxc-190,y-95);}
+    c.fillStyle='#9D174D';c.font='bold 19px Assistant';c.fillText('בלון = דופן אלסטית',bxc,y-40-2*r-8>20?y-40-2*r-8:24);}
+  else{c.fillStyle='#64748b';c.font='bold 18px Assistant';c.fillText('בלי בלון: צינור קשיח',bxc,y-50);}
+  // narrow tube x 120..560
+  const h=Math.max(6,22-R*2.6);c.fillStyle='#cbd5e1';c.fillRect(120,y-h/2,440,h);
+  c.fillStyle='#334';c.font='bold 18px Assistant';c.fillText('צינורית צרה = התנגדות (כלי דם קטנים)',340,y+45);
+  // outlet drop / beaker
+  c.strokeStyle='#888';c.lineWidth=2;c.strokeRect(30,y+20,80,110);
+  c.fillStyle='#334';c.font='17px Assistant';c.fillText('יציאה (רקמות)',70,y+150);
+  // fluid coloring in tubes
+  c.fillStyle='#DC2626';c.globalAlpha=.65;c.fillRect(560,y-9,180,18);c.fillRect(120,y-h/2+2,440,Math.max(2,h-4));c.globalAlpha=1;
+  // particles speed by flow
+  for(let k=0;k<8;k++){let f=((k/8+(window._wt=(window._wt||0)+Q.qin*0.004))%1);const px=740-f*130;c.fillStyle='#FDE68A';c.beginPath();c.arc(px,y+((k%2)?4:-4),3.5,0,7);c.fill();}
+  parts.forEach(p=>{const v=Q.qout*0.012;p.x+=v;if(p.x>1){p.x-=1}
+    const px=560-p.x*440;c.fillStyle='#7F1D1D';c.beginPath();c.arc(px,y+(p.seg-1.5)*h/4,3,0,7);c.fill()});
+  // outflow stream
+  const s=Math.min(14,Q.qout*4);if(s>0.5){c.fillStyle='#DC2626';c.fillRect(110,y-s/2,10,s);c.beginPath();c.moveTo(110,y);c.quadraticCurveTo(80,y+10,70,y+60);c.lineWidth=s;c.strokeStyle='#DC2626';c.stroke();}
+  // pressure gauge
+  c.fillStyle='#1d2b36';c.font='bold 18px Assistant';c.textAlign='right';
+  c.fillText('לחץ בצינור: '+(P*40).toFixed(0)+' יח׳',1080,40);c.fillText('זרימה ביציאה: '+(Q.qout*10).toFixed(1)+' יח׳',1080,66);
+  c.textAlign='center';
+  const st=document.getElementById('status');
+  st.textContent=phase>0?(balloon?'דחיסה: הנוזל עובר בשסתום ומנפח את הבלון':'דחיסה: כל הנוזל נדחס ישר לצינורית'):phase<0?(balloon?'משיכה: השסתום סגור, הבלון מתכווץ ומזרים הלאה':'משיכה: השסתום סגור, ואין מה שידחוף. הזרימה נעצרת'):'לחצו «צעד» או «הפעלה»';
+}
+function graph(){g.clearRect(0,0,1100,230);g.fillStyle='#fff';g.fillRect(0,0,1100,230);
+  g.strokeStyle='#e2e8f0';for(let i=1;i<5;i++){g.beginPath();g.moveTo(60,i*40);g.lineTo(1080,i*40);g.stroke()}
+  g.fillStyle='#1d2b36';g.font='bold 18px Assistant';g.textAlign='right';g.fillText('גרף לאורך זמן',1080,22);
+  g.font='16px Assistant';g.fillStyle='#94a3b8';g.fillText('╌ זרימה מהמזרק (פעימות)',860,22);g.fillStyle='#DC2626';g.fillText('━ זרימה ביציאה',620,22);
+  g.textAlign='center';g.fillStyle='#334';g.fillText('זמן ⬅',560,222);
+  const sc=v=>200-Math.min(170,v*28);
+  const draw1=(key,col,w,dash)=>{g.setLineDash(dash);g.strokeStyle=col;g.lineWidth=w;g.beginPath();
+    hist.forEach((h,i)=>{const x=1080-(hist.length-1-i)*1.95;const yy=sc(h[key]);i?g.lineTo(x,yy):g.moveTo(x,yy)});g.stroke();g.setLineDash([])};
+  draw1('qin','#94a3b8',2,[6,4]);draw1('qout','#DC2626',4,[]);
+  g.strokeStyle='#334';g.lineWidth=1.5;g.beginPath();g.moveTo(60,200);g.lineTo(1080,200);g.stroke();
+}
+
+const hv=document.getElementById('hv'),h=hv.getContext('2d');let hp=[];for(let i=0;i<40;i++)hp.push(Math.random());
+function heart(){h.clearRect(0,0,1100,420);h.fillStyle='#fff';h.fillRect(0,0,1100,420);h.textAlign='center';
+  // left atrium (top right)
+  h.fillStyle='#FCA5A5';h.beginPath();h.ellipse(820,95,80,50,0,0,7);h.fill();
+  h.fillStyle='#7F1D1D';h.font='bold 18px Assistant';h.fillText('עלייה שמאלית',820,100);
+  h.fillStyle='#334';h.font='16px Assistant';h.fillText('(= המאגר)',820,122);
+  // ventricle: width shrinks with pumpPos
+  const s=1-0.35*pumpPos;h.fillStyle='#DC2626';h.globalAlpha=.85;h.beginPath();
+  h.moveTo(740,170);h.bezierCurveTo(740-90*s,200,760-60*s,340,820,385);h.bezierCurveTo(880+60*s,340,900+90*s,200,900,170);h.closePath();h.fill();h.globalAlpha=1;
+  h.strokeStyle='#7F1D1D';h.lineWidth=6;h.stroke();
+  h.fillStyle='#fff';h.font='bold 20px Assistant';h.fillText('חדר שמאל',820,270);h.font='16px Assistant';h.fillText('(= המזרק)',820,292);
+  // mitral valve
+  const mOpen=phase<0;h.strokeStyle='#0F766E';h.lineWidth=6;h.beginPath();h.moveTo(785,165);h.lineTo(mOpen?795:820,mOpen?195:168);h.moveTo(855,165);h.lineTo(mOpen?845:820,mOpen?195:168);h.stroke();
+  h.fillStyle='#0F766E';h.font='15px Assistant';h.fillText(mOpen?'מסתם דו־צמידי פתוח':'מסתם דו־צמידי סגור',1000,170);
+  // aorta: from ventricle top-left (740,170) up and over to the left
+  const bul=balloon?Math.min(14,P*9):0, wall=10;
+  h.lineCap='round';h.strokeStyle='#F472B6';h.lineWidth=46+bul*2;h.beginPath();h.moveTo(735,185);h.bezierCurveTo(680,60,560,40,470,90);h.lineTo(300,150);h.stroke();
+  h.strokeStyle='#DC2626';h.lineWidth=46+bul*2-wall*2;h.beginPath();h.moveTo(735,185);h.bezierCurveTo(680,60,560,40,470,90);h.lineTo(300,150);h.stroke();
+  // small arteries (narrow)
+  h.strokeStyle='#DC2626';h.lineWidth=8;[[300,150,120,110],[300,150,110,200],[300,150,140,290]].forEach(a=>{h.beginPath();h.moveTo(a[0],a[1]);h.lineTo(a[2],a[3]);h.stroke()});
+  h.fillStyle='#334';h.font='bold 17px Assistant';h.fillText('עורקים קטנים',130,330);h.font='15px Assistant';h.fillText('(= הצינורית הצרה, התנגדות)',130,352);
+  h.fillStyle='#9D174D';h.font='bold 18px Assistant';h.fillText(balloon?'אבי העורקים: הדופן נמתחת ונרתעת':'אבי העורקים קשיח (בלי גמישות)',300,40);
+  h.font='15px Assistant';h.fillText('(= הבלון)',300,62);
+  // aortic valve
+  const aOpen=Q.qin>0.01;h.strokeStyle='#0F766E';h.lineWidth=6;h.beginPath();h.moveTo(722,190);h.lineTo(aOpen?700:735,aOpen?160:170);h.moveTo(752,178);h.lineTo(aOpen?745:735,aOpen?150:170);h.stroke();
+  h.fillStyle='#0F766E';h.font='15px Assistant';h.fillText(aOpen?'מסתם אבי העורקים פתוח':'מסתם אבי העורקים סגור',640,215);
+  // aorta flow dots
+  for(let k=0;k<10;k++){let f=((k/10+(window._at=(window._at||0)+Q.qin*0.004))%1);const t1=f;const x=(1-t1)**3*735+3*(1-t1)**2*t1*680+3*(1-t1)*t1*t1*560+t1**3*470,yy=(1-t1)**3*185+3*(1-t1)**2*t1*60+3*(1-t1)*t1*t1*40+t1**3*90;h.fillStyle='#FDE68A';h.beginPath();h.arc(x,yy,4,0,7);h.fill();}
+  // particles in small arteries
+  hp.forEach((p,i)=>{p+= Q.qout*0.01;if(p>1)p-=1;hp[i]=p;const a=[[120,110],[110,200],[140,290]][i%3];
+    const x=300+(a[0]-300)*p,y=150+(a[1]-150)*p;h.fillStyle='#FDE68A';h.beginPath();h.arc(x,y,3.5,0,7);h.fill()});
+  h.fillStyle=phase>0?'#C2410C':'#2457C5';h.font="22px 'Secular One'";
+  h.fillText(phase>0?'סיסטולה: החדר מתכווץ':phase<0?'דיאסטולה: החדר מתרפה ומתמלא':'',820,412);
+}
+requestAnimationFrame(frame);
+</script><p style="text-align:center;font:12px Assistant,Arial,sans-serif;color:#666;margin:10px 0 70px">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים · חגית ברגמן · נבנה עם Tab</p></body></html>

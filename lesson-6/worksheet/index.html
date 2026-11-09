@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>דף עבודה: תפוקת הלב</title>
+<meta name="description" content="דף עבודה אינטראקטיבי בביולוגיה, כיתה י׳: 6 שאלות על תפוקת הלב. עונים בטלפון ושולחים למורה.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="דף עבודה: תפוקת הלב">
+<meta property="og:description" content="6 שאלות על תפוקת הלב · עונים בטלפון · שליחה למורה">
+<meta property="og:locale" content="he_IL">
+<meta name="theme-color" content="#D7263D">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=3">
+</head>
+<body><style>.homefix{position:fixed;top:8px;left:10px;display:flex;gap:6px;z-index:9999;direction:rtl}.homefix a{background:#fff;color:#1B1B2F;border:2px solid #1B1B2F;border-radius:20px;padding:3px 12px;font:800 13px Assistant,Arial,sans-serif;text-decoration:none;line-height:1.5}.homefix a:hover{background:#1B1B2F;color:#fff}@media print{.homefix{display:none}}</style><nav class="homefix" aria-label="ניווט"><a href="../../index.html">🏠 דף הבית</a><a href="../index.html">→ לשיעור</a></nav>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">ביולוגיה · מערכת ההובלה · כיתה י׳</p>
+    <h1>דף עבודה: <span>תפוקת הלב</span></h1>
+    <p class="lead">עונים בטלפון, ובסוף לוחצים «שליחה למורה». את הציון והמשוב תקבלו מהמורה.</p>
+    <ol class="steps"><li>1 פרטים</li><li>2 שאלות</li><li>3 שליחה למורה</li></ol>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="inapp" id="inapp-top" hidden>
+    <b class="inapp-main">פתחו את הקישור בדפדפן Chrome לפני שמתחילים</b>
+    <span class="small">בדפדפן הפנימי של וואטסאפ / אינסטגרם אי אפשר לשמור את קובץ ה-PDF, והתשובות נשמרות רק בדפדפן שבו עונים. (⋮ ← פתיחה בדפדפן / Open in Chrome)</span>
+    <button type="button" class="btn smallb copy-link">🔗 העתקת הקישור</button>
+  </div>
+
+  <section class="card" id="student">
+    <h2><span class="num">1</span> פרטי התלמיד/ה</h2>
+    <p class="muted small">השם והכיתה נשלחים למורה עם התשובות.</p>
+    <form id="student-form" class="student-form" autocomplete="on">
+      <label>שם מלא<input id="st-name" type="text" required maxlength="60" placeholder="שם פרטי ושם משפחה"></label>
+      <label>כיתה<input id="st-class" type="text" required maxlength="20" placeholder="לדוגמה: י׳3"></label>
+      <button type="submit" class="btn primary" id="st-save">שמירה והתחלה</button>
+    </form>
+    <p id="student-locked" class="locked-note" hidden></p>
+  </section>
+
+  <section class="card" id="quiz">
+    <h2><span class="num">2</span> השאלות</h2>
+    <div class="remind">
+      <b>תזכורת:</b> תפוקת לב = נפח הדם הנפלט מחדר שמאל לאבי העורקים בדקה אחת.<br>
+      <b>תפוקת לב = דופק × נפח פעימה</b> (דופק: פעימות לדקה · נפח פעימה: מ״ל)<br>
+      <span class="eq">1,000</span> מ״ל = 1 ליטר. במנוחה ≈ 5 ליטר/דקה, במאמץ עד ≈ 20.
+    </div>
+    <p class="small"><b>שימו לב:</b> על כל שאלה עונים <b>פעם אחת</b>. אחרי «שליחת תשובה» התשובה ננעלת ואי אפשר לשנות אותה.</p>
+    <div class="progress"><div class="pbar"><div id="prog"></div></div><span id="prog-txt">0 מתוך 6</span></div>
+    <div id="gate" class="gate" hidden>לפני שמתחילים לענות, מלאו שם וכיתה למעלה ↑</div>
+    <div id="questions"></div>
+  </section>
+
+  <section class="card" id="results">
+    <h2><span class="num">3</span> שליחה למורה</h2>
+    <p id="res-pending" class="muted">כפתור השליחה ייפתח אחרי שתענו על כל 8 השאלות.</p>
+    <div id="res-done" hidden>
+      <div class="donebox"><b>✅ סיימת! לחצו «שליחה למורה»</b><p class="muted small" id="sname"></p></div>
+    </div>
+
+    <div class="steps2">
+      <b>איך מגישים?</b>
+      <ol>
+        <li class="cls-strong">לוחצים על 📤 שליחה למורה: התשובות מגיעות ישר למורה.</li>
+        <li>גיבוי (לא חובה): <b>⬇ שמירת PDF</b> של התשובות שלכם.</li>
+      </ol>
+    </div>
+
+    <div class="inapp" id="inapp-res" hidden>
+      <b class="inapp-main">כאן אי אפשר לשמור קובץ PDF</b>
+      <span class="small">כפתור «שליחה למורה» עובד גם כאן. רק קובץ ה-PDF דורש Chrome.</span>
+      <button type="button" class="btn smallb copy-link">🔗 העתקת הקישור</button>
+    </div>
+    <div class="send-box">
+      <button type="button" class="btn primary wide send" id="send-btn" disabled>📤 שליחה למורה</button>
+      <p class="small" id="send-status" aria-live="polite"></p>
+    </div>
+    <p class="lockmsg" id="pdf-lock">🔒 <span id="pdf-lock-txt"></span></p>
+    <div class="save-actions">
+      <button type="button" class="btn red" id="pdf-btn" disabled>⬇ שמירת PDF של התשובות</button>
+      <button type="button" class="btn" id="share-btn" hidden disabled>📤 שיתוף הקובץ</button>
+    </div>
+    <p class="muted small" id="pdf-status" aria-live="polite"></p>
+    <div class="fallback" id="fallback" hidden>
+      <span class="small muted">הקובץ לא נשמר?</span>
+      <button type="button" class="btn smallb" id="open-btn">📄 פתיחת ה-PDF</button>
+      <button type="button" class="btn smallb" id="print-btn">🖨 הדפסה / שמירה כ-PDF</button>
+    </div>
+    <p class="chrome-tip">📱 הכי טוב לעבוד ב-<b>Chrome</b> (באייפון אפשר גם Safari), לא בדפדפן של וואטסאפ.</p>
+
+    <div class="reset-box">
+      <p class="small muted">טלפון או מחשב משותף? אחרי שלחצתם «שליחה למורה»:</p>
+      <button type="button" class="btn danger smallb" id="reset-btn">🧹 ניקוי לתלמיד הבא</button>
+    </div>
+  </section>
+</main>
+<footer class="foot wrap"><p>הערכים מקורבים לאדם בוגר ממוצע · אפשר לבדוק בסימולציה: tafukat-lev.sites.tab.bot</p></footer>
+<div id="pdf-stage" aria-hidden="true"></div>
+<script src="vendor/html2canvas.min.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="app.js?v=4"></script>
+<p style="text-align:center;font:12px Assistant,Arial,sans-serif;color:#666;margin:10px 0 70px">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים · חגית ברגמן · נבנה עם Tab</p></body>
+</html>

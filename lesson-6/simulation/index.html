@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>תפוקת הלב – סימולציה ושאלות הבנה</title>
+<meta name="description" content="סימולציה אינטראקטיבית בביולוגיה: איך דופק ונפח פעימה קובעים את תפוקת הלב במנוחה, במאמץ, בשינה, באיבוד דם ועוד – ובסוף שאלות הבנה ותעודת תוצאות ב-PDF.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="תפוקת הלב – סימולציה ושאלות הבנה">
+<meta property="og:description" content="לב פועם, דופק × נפח פעימה, 9 מצבים (מנוחה, מאמץ, ספורטאי, איבוד דם…) ו-5 שאלות הבנה עם PDF למורה.">
+<meta property="og:image" content="https://tafukat-lev.sites.tab.bot/og.png">
+<meta property="og:locale" content="he_IL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#c8102e">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css?v=20261102b">
+</head>
+<body><style>.homefix{position:fixed;top:8px;left:10px;display:flex;gap:6px;z-index:9999;direction:rtl}.homefix a{background:#fff;color:#1B1B2F;border:2px solid #1B1B2F;border-radius:20px;padding:3px 12px;font:800 13px Assistant,Arial,sans-serif;text-decoration:none;line-height:1.5}.homefix a:hover{background:#1B1B2F;color:#fff}@media print{.homefix{display:none}}</style><nav class="homefix" aria-label="ניווט"><a href="../../index.html">🏠 דף הבית</a><a href="../index.html">→ לשיעור</a></nav>
+<header class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-text">
+      <p class="eyebrow">ביולוגיה · מערכת ההובלה</p>
+      <h1>תפוקת הלב</h1>
+      <p class="lead">כמה דם יוצא מהלב לגוף בכל דקה – ומה משפיע על הכמות? הזיזו את המחוונים, נסו מצבים שונים, ובסוף ענו על שאלות ההבנה.</p>
+    </div>
+    <ol class="steps" aria-label="שלבי הפעילות">
+      <li><span>1</span>פרטים</li>
+      <li><span>2</span>סימולציה</li>
+      <li><span>3</span>שאלות</li>
+      <li><span>4</span>PDF למורה</li>
+    </ol>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="inapp-note top" id="inapp-top" hidden>
+  <b class="inapp-main">לשמירת ה-PDF פתחו את הקישור בדפדפן Chrome&rlm; <bdi dir="rtl">(⋮ ← פתיחה בדפדפן)</bdi></b>
+  <span class="small">מומלץ לעשות זאת לפני שמתחילים לענות: התשובות נשמרות רק בדפדפן שבו עונים, ובדפדפן הפנימי של וואטסאפ / אינסטגרם / פייסבוק לא ניתן לשמור קבצים.</span>
+  <button type="button" class="btn small copy-link">🔗 העתקת הקישור</button>
+</div>
+
+  <!-- Student details -->
+  <section class="card student" id="student" aria-labelledby="student-title">
+    <h2 id="student-title"><span class="num">1</span> פרטי התלמיד/ה</h2>
+    <p class="muted">השם והכיתה יופיעו בקובץ התוצאות שתשלחו למורה.</p>
+    <form id="student-form" class="student-form" autocomplete="on">
+      <label>שם מלא
+        <input id="st-name" name="name" type="text" required maxlength="60" placeholder="לדוגמה: נועה כהן">
+      </label>
+      <label>כיתה
+        <input id="st-class" name="class" type="text" required maxlength="20" placeholder="לדוגמה: יא׳2">
+      </label>
+      <button type="submit" class="btn primary" id="st-save">שמירה והתחלה</button>
+    </form>
+    <p id="student-locked" class="locked-note" hidden></p>
+  </section>
+
+  <!-- Simulation -->
+  <section class="card sim" id="sim" aria-labelledby="sim-title">
+    <h2 id="sim-title"><span class="num">2</span> הסימולציה</h2>
+
+    <div class="formula" aria-live="polite">
+      <div class="fbox co"><small>תפוקת לב</small><b id="f-co">4.9</b><em>ליטר/דקה</em></div>
+      <div class="op">=</div>
+      <div class="fbox hr"><small>דופק</small><b id="f-hr">70</b><em>פעימות/דקה</em></div>
+      <div class="op">×</div>
+      <div class="fbox sv"><small>נפח פעימה</small><b id="f-sv">70</b><em>מ״ל</em></div>
+    </div>
+    <p class="calc" id="calc-line"></p>
+
+    <div class="sim-grid">
+      <div class="stage">
+        <div class="heart-wrap">
+          <svg id="heart" viewBox="0 0 200 190" role="img" aria-label="לב פועם">
+            <defs>
+              <radialGradient id="hg" cx="38%" cy="32%" r="75%">
+                <stop offset="0%" stop-color="#ff6b7d"/>
+                <stop offset="55%" stop-color="#d4213d"/>
+                <stop offset="100%" stop-color="#8e0b22"/>
+              </radialGradient>
+            </defs>
+            <g id="heart-body">
+              <path d="M100 178 C 40 138, 6 104, 10 62 C 13 30, 38 12, 62 12 C 80 12, 93 22, 100 36 C 107 22, 120 12, 138 12 C 162 12, 187 30, 190 62 C 194 104, 160 138, 100 178 Z" fill="url(#hg)" stroke="#7a0a1d" stroke-width="3"/>
+              <path d="M52 34 C 38 38, 28 52, 30 70" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="7" stroke-linecap="round"/>
+              <path d="M100 40 C 98 80, 104 120, 100 160" fill="none" stroke="#7a0a1d" stroke-opacity=".35" stroke-width="3" stroke-dasharray="2 7" stroke-linecap="round"/>
+            </g>
+          </svg>
+          <div class="beat-flash" id="beat-flash" aria-hidden="true"></div>
+        </div>
+        <canvas id="ecg" width="600" height="110" aria-label="מוניטור דופק"></canvas>
+        <div class="stage-row">
+          <button class="btn ghost small" id="pause" type="button" aria-pressed="false">⏸ עצירת האנימציה</button>
+          <span class="muted small" id="beat-info">פעימה כל 0.86 שניות</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="slider">
+          <div class="slider-head"><label for="hr">דופק (קצב לב)</label><output id="hr-out">70 פעימות/דקה</output></div>
+          <input type="range" id="hr" min="40" max="200" step="1" value="70">
+          <div class="ticks"><span>40</span><span>200</span></div>
+        </div>
+        <div class="slider">
+          <div class="slider-head"><label for="sv">נפח פעימה</label><output id="sv-out">70 מ״ל</output></div>
+          <input type="range" id="sv" min="30" max="180" step="1" value="70">
+          <div class="ticks"><span>30</span><span>180</span></div>
+        </div>
+
+        <div class="gauge">
+          <div class="gauge-head"><span>תפוקת לב</span><b id="g-val">4.9 ליטר/דקה</b></div>
+          <div class="bar" role="meter" aria-valuemin="0" aria-valuemax="35" aria-valuenow="4.9" id="g-meter">
+            <div class="fill" id="g-fill"></div>
+            <i class="mark" style="--p:14.3%" title="מנוחה ≈ 5"></i>
+            <i class="mark" style="--p:57.1%" title="מאמץ ≈ 20"></i>
+          </div>
+          <div class="bar-legend"><span>0</span><span>מנוחה ≈ 5</span><span>מאמץ ≈ 20</span><span>35</span></div>
+          <p class="gauge-note" id="g-note"></p>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sub">מצבים לבדיקה</h3>
+    <p class="muted">לחצו על מצב – הערכים יתעדכנו ויופיע הסבר למנגנון.</p>
+    <div class="presets" id="presets"></div>
+
+    <div class="explain" id="explain" aria-live="polite">
+      <h4 id="ex-title">מנוחה</h4>
+      <p id="ex-text"></p>
+      <div class="chips" id="ex-chips"></div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-head">
+        <h3 class="sub">השוואה בין המצבים שבדקתם</h3>
+        <button type="button" class="btn ghost small" id="add-custom">+ הוספת הערכים שלי</button>
+      </div>
+      <div id="chart" class="chart"></div>
+    </div>
+
+    <details class="theory">
+      <summary>תזכורת קצרה: מה קובע את תפוקת הלב?</summary>
+      <div class="theory-body">
+        <p><b>תפוקת לב</b> = נפח הדם הנפלט מחדר שמאל לאבי העורקים בדקה אחת = <b>דופק × נפח פעימה</b>.</p>
+        <p><b>הדופק</b> = מספר הפעימות בדקה. הוא עולה במאמץ, בחום גבוה ובאיבוד דם, ויורד בשינה.</p>
+        <p><b>נפח הפעימה</b> = נפח הדם שחדר שמאל פולט בפעימה אחת. הוא גדל במאמץ ובאימון סיבולת, וקטן כאשר נפח הדם בגוף יורד (למשל באיבוד דם).</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- Quiz -->
+  <section class="card quiz" id="quiz" aria-labelledby="quiz-title">
+    <h2 id="quiz-title"><span class="num">3</span> שאלות הבנה</h2>
+    <div class="quiz-rules">
+      <b>שימו לב:</b> על כל שאלה אפשר לענות <b>פעם אחת בלבד</b>. אחרי השליחה התשובה ננעלת ומוצגות התשובה הנכונה וההסבר.
+    </div>
+    <div class="progress"><div class="progress-bar"><div id="q-prog"></div></div><span id="q-prog-txt">0 מתוך 5 נענו</span></div>
+    <div id="quiz-gate" class="gate" hidden>לפני תחילת המענה מלאו שם וכיתה למעלה ↑</div>
+    <ol id="questions" class="questions"></ol>
+  </section>
+
+  <!-- Results -->
+  <section class="card results" id="results" aria-labelledby="res-title">
+    <h2 id="res-title"><span class="num">4</span> סיכום ושליחה למורה</h2>
+    <div id="res-pending" class="muted">הסיכום יופיע כאן אחרי שתענו על כל השאלות.</div>
+    <div id="res-done" hidden>
+      <div class="score">
+        <div class="score-ring" id="score-ring"><b id="score-num">0/8</b><small id="score-pct">0%</small></div>
+        <div>
+          <p class="score-name" id="score-name"></p>
+          <p class="muted" id="score-meta"></p>
+          <p class="code">קוד אימות: <b id="score-code" dir="ltr"></b></p>
+        </div>
+      </div>
+    </div>
+      <div class="save-box" id="save-box">
+        <div class="inapp-note" id="inapp-res" hidden>
+          <b class="inapp-main">לשמירת ה-PDF פתחו את הקישור בדפדפן Chrome&rlm; <bdi dir="rtl">(⋮ ← פתיחה בדפדפן)</bdi></b>
+          <span class="small">בדפדפן הפנימי של וואטסאפ / אינסטגרם / פייסבוק לא ניתן לשמור קבצים. אם כבר עניתם כאן ואין אפשרות לשמור – צלמו מסך של הסיכום (שם, ציון וקוד אימות) ושלחו למורה.</span>
+          <button type="button" class="btn small copy-link">🔗 העתקת הקישור</button>
+        </div>
+        <p class="pdf-lock" id="pdf-lock">🔒 <span id="pdf-lock-txt"></span></p>
+        <div class="res-actions">
+          <button type="button" class="btn primary" id="pdf-btn" disabled>⬇ שמירת קובץ PDF</button>
+          <button type="button" class="btn" id="share-btn" hidden disabled>⬇ הורדה למכשיר</button>
+        </div>
+        <p class="muted small" id="pdf-status" aria-live="polite"></p>
+        <div class="res-fallback" id="res-fallback" hidden>
+          <span class="small muted">הקובץ לא נשמר?</span>
+          <button type="button" class="btn small" id="open-btn">📄 פתיחת ה-PDF</button>
+          <button type="button" class="btn small" id="print-btn">🖨 הדפסה / שמירה כ-PDF</button>
+        </div>
+      </div>
+    <div id="res-after" hidden>
+      <p class="muted small">שמרו את הקובץ ושלחו אותו למורה (בוואטסאפ, במייל או במודל).</p>
+      <details class="next-student">
+        <summary>מחשב משותף? התחלה מחדש לתלמיד/ה הבא/ה</summary>
+        <p class="small">רק אחרי ששמרתם את ה-PDF. הפעולה מוחקת את התשובות מהמכשיר הזה. מספר הניסיון במכשיר נרשם בקובץ.</p>
+        <button type="button" class="btn danger small" id="reset-btn">ניקוי והתחלה לתלמיד/ה חדש/ה</button>
+      </details>
+    </div>
+  </section>
+
+  <details class="card teacher" id="teacher">
+    <summary>למורה: בדיקת קוד אימות</summary>
+    <p class="small muted">הקוד בקובץ מחושב מהשם ומהציון. אם מישהו שינה את השם או את הציון בקובץ – הקוד לא יתאים. (הרתעה בלבד, לא אבטחה מלאה.)</p>
+    <form id="verify-form" class="verify-form">
+      <label>שם (כפי שמופיע בקובץ)<input id="v-name" type="text" required></label>
+      <label>ציון (מספר נכונות)<input id="v-score" type="number" min="0" max="8" required inputmode="numeric"></label>
+      <label>קוד אימות<input id="v-code" type="text" required dir="ltr" placeholder="XXXX-XXXX"></label>
+      <button class="btn small" type="submit">בדיקה</button>
+    </form>
+    <p id="v-result" class="v-result" aria-live="polite"></p>
+  </details>
+
+</main>
+
+<footer class="foot wrap">
+  <p>הערכים בסימולציה הם ערכים מקורבים לאדם בוגר ממוצע.</p>
+</footer>
+
+<div id="pdf-stage" aria-hidden="true"></div>
+
+<script src="vendor/html2canvas.min.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="app.js?v=20261102b"></script>
+<p style="text-align:center;font:12px Assistant,Arial,sans-serif;color:#666;margin:10px 0 70px">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים · חגית ברגמן · נבנה עם Tab</p></body>
+</html>
