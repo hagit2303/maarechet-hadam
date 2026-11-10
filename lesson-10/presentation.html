@@ -1,0 +1,241 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>מחלות כלי הדם</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Gveret Levin';src:url(fonts/GveretLevin.ttf)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#2a2118;overflow:hidden;font-family:Heebo,Arial,sans-serif;color:#1d1d1d}
+.stage{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:center;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.sl{position:absolute;inset:0;display:none;overflow:hidden;
+ background:#c49a6c;
+ background-image:radial-gradient(rgba(90,55,25,.35) 1.5px,transparent 2px),radial-gradient(rgba(255,235,200,.25) 1.2px,transparent 1.8px),radial-gradient(rgba(60,35,15,.25) 2.5px,transparent 3px);
+ background-size:13px 13px,17px 17px,41px 41px;background-position:0 0,6px 9px,20px 3px}
+.sl.paper{background:#f7f3ea;background-image:linear-gradient(#dfe6ee 1.5px,transparent 1.5px),linear-gradient(90deg,#dfe6ee 1.5px,transparent 1.5px);background-size:40px 40px}
+.sl.on{display:block}
+/* כותרת על פס נייר דבק */
+.tape{position:absolute;top:34px;left:50%;transform:translateX(-50%) rotate(-1deg);background:#f4efe1;padding:14px 46px 16px;box-shadow:0 4px 10px rgba(0,0,0,.25);font-family:'Gveret Levin',Heebo,sans-serif;font-size:62px;line-height:1.05;white-space:nowrap;z-index:3}
+.tape::before,.tape::after{content:"";position:absolute;top:-10px;width:70px;height:34px;background:rgba(255,255,255,.55);transform:rotate(-8deg)}
+.tape::before{right:-22px}.tape::after{left:-22px;transform:rotate(8deg)}
+.tape u{text-decoration-thickness:4px;text-underline-offset:8px}
+/* פתק */
+.note{position:absolute;padding:30px 30px 26px;box-shadow:3px 8px 18px rgba(0,0,0,.28);transform:rotate(var(--r,0deg));font-size:30px;line-height:1.35;z-index:2}
+.note h3{font-family:'Gveret Levin',Heebo,sans-serif;font-weight:400;font-size:44px;line-height:1.05;margin-bottom:10px}
+.note p+p{margin-top:8px}
+.note b{font-weight:800}
+.y{background:#fbe77c}.p{background:#f7b6c2}.bl{background:#b9dcf2}.g{background:#bfe6a8}.o{background:#f9c27e}.w{background:#fffdf6}.r{background:#ef6f68;color:#1a0d0d}
+.pin::before{content:"";position:absolute;top:-14px;left:50%;width:30px;height:30px;margin-left:-15px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff8b8b,#c4161c 60%,#7a0b0f);box-shadow:2px 4px 5px rgba(0,0,0,.35)}
+.tp::before{content:"";position:absolute;top:-16px;left:50%;width:120px;height:32px;margin-left:-60px;background:rgba(255,255,255,.55);transform:rotate(-3deg);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+/* פולארויד */
+.pol{position:absolute;background:#fff;padding:14px 14px 10px;box-shadow:3px 8px 18px rgba(0,0,0,.3);transform:rotate(var(--r,0deg));z-index:2}
+.pol img{display:block;width:100%;height:100%;object-fit:cover}
+.pol .im{width:100%;overflow:hidden}
+.pol figcaption{font-size:18px;line-height:1.25;margin-top:8px;color:#333}
+.pol figcaption small{display:block;font-size:12px;color:#777;margin-top:3px}
+.blur img{filter:blur(18px)}
+.blur .im{position:relative;cursor:pointer}
+.blur .im::after{content:"⚠ צילום רפואי · לחצו לצפייה";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:800 22px Heebo;color:#fff;text-shadow:0 1px 4px #000}
+.blur.open img{filter:none}.blur.open .im::after{display:none}
+/* חצים בכתב יד */
+.arr{position:absolute;z-index:1}
+.arr path{fill:none;stroke:#1d1d1d;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+/* שאלה */
+.rev{margin-top:14px;font:800 24px Heebo;background:#1d1d1d;color:#fff;border:0;border-radius:99px;padding:8px 22px;cursor:pointer}
+.ans{display:none;margin-top:12px;font-size:27px}
+.ans.show{display:block}
+.big{font-family:'Gveret Levin',Heebo,sans-serif;font-size:120px;line-height:1}
+.hand{font-family:'Gveret Levin',Heebo,sans-serif}
+.ico{font-size:58px;line-height:1;margin-bottom:6px}
+table.t{border-collapse:collapse;width:100%;font-size:25px}
+.t th,.t td{border-bottom:2px solid rgba(0,0,0,.18);padding:10px 12px;text-align:right;vertical-align:top}
+.t th{font-family:'Gveret Levin',Heebo,sans-serif;font-weight:400;font-size:34px}
+.nav{position:fixed;bottom:12px;left:12px;display:flex;gap:8px;align-items:center;z-index:9}
+.nav button{background:#1d1d1d;color:#fff;border:2px solid #fff;border-radius:99px;padding:8px 18px;font:800 16px Heebo,sans-serif;cursor:pointer}
+.cnt{background:#fff;border-radius:99px;padding:6px 14px;font:800 15px Heebo,sans-serif}
+.homefix{position:fixed;top:10px;left:12px;display:flex;gap:8px;z-index:9}
+.homefix a{background:#fff;color:#1B1B2F;border:2px solid #1B1B2F;border-radius:20px;padding:4px 14px;font:800 14px Heebo,sans-serif;text-decoration:none}
+.credit{position:fixed;bottom:16px;right:16px;font:12px Heebo,sans-serif;color:#e7dccb;z-index:8}
+@media print{.nav,.homefix,.credit{display:none}}
+</style></head><body>
+<nav class="homefix" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
+<div class="stage">
+
+<!-- 1 שער -->
+<section class="sl">
+ <div class="note y pin" style="--r:-2deg;right:520px;top:200px;width:560px;height:430px;text-align:center;display:flex;flex-direction:column;justify-content:center">
+  <div class="big">מחלות</div><div class="big">כלי הדם</div>
+  <p style="margin-top:16px;font-size:30px">כשהצנרת נפגעת: טרשת, התקף לב, שבץ, לחץ דם גבוה ודליות</p></div>
+ <figure class="pol" style="--r:4deg;left:80px;top:120px;width:380px"><div class="im" style="height:240px"><img src="img/ambulance.jpg" alt="אמבולנס של מד״א"></div><figcaption>מחלות לב וכלי דם: סיבת המוות המובילה בעולם<small>Chenspec · CC BY-SA 4.0</small></figcaption></figure>
+ <div class="note p tp" style="--r:3deg;right:90px;top:110px;width:330px"><h3>כ־18 מיליון</h3><p>בני אדם בעולם מתים בכל שנה ממחלות לב וכלי דם.</p><p style="font-size:18px;color:#444">ארגון הבריאות העולמי (WHO)</p></div>
+ <div class="note bl pin" style="--r:-4deg;right:120px;top:560px;width:330px"><h3>ורוב הסיפור</h3><p>מתחיל בשכבה דקה של תאים בצד הפנימי של העורק.</p></div>
+ <div class="note g tp" style="--r:2deg;left:120px;top:560px;width:330px"><h3>הצנרת שלנו</h3><p>עורקים, נימים וורידים: כ־100,000 ק״מ של צינורות.</p></div>
+</section>
+
+<!-- 2 מפת דרכים -->
+<section class="sl paper">
+ <div class="tape">המסלול שלנו היום</div>
+ <div class="note y pin" style="--r:-2deg;right:90px;top:200px;width:300px"><div class="ico">🧱</div><h3>1 · טרשת עורקים</h3><p>הצינור נסתם</p></div>
+ <div class="note p pin" style="--r:2deg;right:450px;top:180px;width:300px"><div class="ico">💔</div><h3>2 · התקף לב</h3><p>חסימה בעורק של הלב</p></div>
+ <div class="note bl pin" style="--r:-1deg;right:810px;top:210px;width:300px"><div class="ico">🧠</div><h3>3 · שבץ מוחי</h3><p>חסימה או דימום במוח</p></div>
+ <div class="note o pin" style="--r:3deg;right:1170px;top:190px;width:330px"><div class="ico">🩺</div><h3>4 · לחץ דם גבוה</h3><p>"הרוצח השקט"</p></div>
+ <div class="note g pin" style="--r:-3deg;right:300px;top:530px;width:320px"><div class="ico">🦵</div><h3>5 · דליות</h3><p>כשהמסתמים בוורידים לא נסגרים</p></div>
+ <div class="note w pin" style="--r:2deg;right:720px;top:540px;width:420px"><div class="ico">🛡️</div><h3>6 · מניעה, אבחון וטיפול</h3><p>מה בידיים שלנו, ומה עושים בבית החולים</p></div>
+</section>
+
+<!-- 3 צנרת -->
+<section class="sl">
+ <div class="tape">כמו בצנרת במטבח</div>
+ <div class="note y tp" style="--r:-2deg;right:90px;top:190px;width:560px"><h3>כיור שנסתם</h3><p>בצנרת במטבח מצטברים לאט שומן ושאריות. הצינור הולך ונעשה צר, עד שהמים כמעט לא עוברים.</p><p><b>גם בעורקים</b> יכולה להיווצר "סתימה" כזו.</p></div>
+ <figure class="pol" style="--r:3deg;left:610px;top:190px;width:400px"><div class="im" style="height:300px"><img src="img/healthy-artery.jpg" alt="עורק בריא במיקרוסקופ"></div><figcaption><b>עורק בריא:</b> דופן עבה וגמישה, חלל רחב ופתוח<small>Yale Rosen · CC BY-SA 2.0</small></figcaption></figure>
+ <figure class="pol blur" style="--r:-3deg;left:90px;top:230px;width:420px"><div class="im" style="height:360px"><img src="img/plaque-section.jpg" alt="חתך של עורק כלילי עם רובד"></div><figcaption><b>עורק עם טרשת:</b> רובד תופס חלק גדול מהחלל<small>Mikael Häggström · CC0</small></figcaption></figure>
+ <div class="note bl pin" style="--r:2deg;right:130px;top:560px;width:460px"><p><b>תזכורת:</b> בצד הפנימי של העורק יש <b>אנדותל</b>, שכבת תאים אחת חלקה. כשהיא נפגעת, מתחילה הבעיה.</p></div>
+</section>
+
+<!-- 4 טרשת עורקים -->
+<section class="sl paper">
+ <div class="tape">טרשת עורקים: <u>הצינור הולך ומצטמצם</u></div>
+ <div class="note y pin" style="--r:-2deg;right:60px;top:200px;width:330px"><h3>1 · נזק</h3><p>עישון, לחץ דם גבוה וסוכר גבוה פוגעים ב<b>אנדותל</b>.</p></div>
+ <svg class="arr" style="right:390px;top:300px" width="90" height="60"><path d="M85 30 C60 20 35 20 10 30 M24 16 L10 30 L26 42"/></svg>
+ <div class="note p pin" style="--r:2deg;right:480px;top:190px;width:330px"><h3>2 · הצטברות</h3><p><b>כולסטרול</b> (שומן) ותאים מצטברים מתחת לאנדותל.</p></div>
+ <svg class="arr" style="right:810px;top:300px" width="90" height="60"><path d="M85 30 C60 20 35 20 10 30 M24 16 L10 30 L26 42"/></svg>
+ <div class="note o pin" style="--r:-1deg;right:900px;top:210px;width:330px"><h3>3 · רובד</h3><p>נוצר <b>רובד</b>: גוש קשה בדופן העורק.</p></div>
+ <svg class="arr" style="right:1230px;top:300px" width="90" height="60"><path d="M85 30 C60 20 35 20 10 30 M24 16 L10 30 L26 42"/></svg>
+ <div class="note r pin" style="--r:3deg;right:1290px;top:200px;width:270px"><h3>4 · היצרות</h3><p>החלל צר, הדופן קשיחה, פחות דם עובר.</p></div>
+ <figure class="pol blur" style="--r:-3deg;left:120px;top:440px;width:300px"><div class="im" style="height:270px"><img src="img/aorta-plaques.jpg" alt="רבדים בדופן אבי העורקים"></div><figcaption>הדופן הפנימית של אבי העורקים: הגושים הצהבהבים הם רבדים<small>CDC/PHIL · נחלת הכלל</small></figcaption></figure>
+ <div class="note g tp" style="--r:2deg;right:280px;top:540px;width:640px"><h3>למה לא מרגישים?</h3><p>טרשת מתפתחת במשך <b>עשרות שנים</b>, בדרך כלל בלי כאב. כל עוד מגיע מספיק דם לרקמה, אין סימנים.</p></div>
+</section>
+
+<!-- 5 התקף לב -->
+<section class="sl">
+ <div class="tape">התקף לב: <u>חסימה בעורק של הלב</u></div>
+ <div class="note y pin" style="--r:-2deg;right:70px;top:200px;width:300px"><p><b>1.</b> רובד בעורק <b>כלילי</b> (העורק שמספק דם לשריר הלב) נסדק.</p></div>
+ <svg class="arr" style="right:370px;top:290px" width="80" height="60"><path d="M75 30 C55 20 30 20 8 30 M22 16 L8 30 L24 42"/></svg>
+ <div class="note p pin" style="--r:2deg;right:450px;top:190px;width:290px"><p><b>2.</b> על הסדק נוצר <b>קריש דם</b>, והעורק נחסם.</p></div>
+ <svg class="arr" style="right:740px;top:290px" width="80" height="60"><path d="M75 30 C55 20 30 20 8 30 M22 16 L8 30 L24 42"/></svg>
+ <div class="note o pin" style="--r:-1deg;right:820px;top:200px;width:330px"><p><b>3.</b> תאי שריר הלב שאחרי החסימה לא מקבלים חמצן, ו<b>מתים</b>.</p></div>
+ <figure class="pol blur" style="--r:3deg;left:70px;top:160px;width:380px"><div class="im" style="height:220px"><img src="img/heart-scar.jpg" alt="לב אחרי התקף ישן"></div><figcaption>לב אחרי התקף ישן: האזור הבהיר הוא צלקת במקום שריר<small>Mikael Häggström · CC0</small></figcaption></figure>
+ <div class="note r tp" style="--r:2deg;right:160px;top:520px;width:620px"><h3>הסימנים</h3><p>כאב לוחץ בחזה שמתפשט ליד השמאלית או ללסת, הזעה, קוצר נשימה.</p><p class="hand" style="font-size:40px;margin-top:10px">⏱ מיד ל־101!</p></div>
+ <figure class="pol" style="--r:-2deg;left:110px;top:520px;width:300px"><div class="im" style="height:220px"><img src="img/angiography.jpg" alt="צנתור: היצרות בעורק כלילי"></div><figcaption>צנתור: רואים היצרות בעורק של הלב<small>Pantaleo et al. · CC BY 2.0</small></figcaption></figure>
+</section>
+
+<!-- 6 שבץ -->
+<section class="sl paper">
+ <div class="tape">שבץ מוחי: <u>כשכלי דם במוח נפגע</u></div>
+ <div class="note y pin" style="--r:-2deg;right:80px;top:200px;width:420px"><h3>חסימה (השכיח)</h3><p>קריש סוגר עורק במוח. תאי המוח באזור לא מקבלים חמצן.</p></div>
+ <div class="note p pin" style="--r:2deg;right:560px;top:200px;width:400px"><h3>דימום</h3><p>עורק במוח נקרע, ודם יוצא לרקמת המוח.</p></div>
+ <figure class="pol blur" style="--r:3deg;left:90px;top:190px;width:420px"><div class="im" style="height:245px"><img src="img/stroke-mri.jpg" alt="MRI של המוח אחרי שבץ"></div><figcaption>MRI של המוח: האזורים הבהירים הם רקמה שנפגעה<small>Mirza & Gokhale · CC BY 4.0</small></figcaption></figure>
+ <div class="note bl tp" style="--r:-1deg;right:120px;top:520px;width:1100px">
+  <h3>איך מזהים? מספיק סימן אחד</h3>
+  <div style="display:flex;gap:40px;font-size:32px;margin-top:6px"><span>😐 פנים צונחות</span><span>💪 יד או רגל חלשה</span><span>🗣 דיבור משובש</span><span class="hand" style="font-size:40px">⏱ מיד ל־101</span></div></div>
+</section>
+
+<!-- 7 מקרה -->
+<section class="sl">
+ <div class="tape">🤔 מקרה לכיתה</div>
+ <div class="note y pin" style="--r:-1deg;right:260px;top:200px;width:1080px">
+  <p style="font-size:36px">אדם בן 70 פתאום לא מצליח להרים את <b>יד ימין</b>, וזווית הפה שלו צונחת.</p>
+  <p style="font-size:32px;margin-top:16px">1. מה כנראה קורה?<br>2. באיזה צד של המוח הבעיה?<br>3. מה עושים עכשיו?</p>
+  <button class="rev">הצגת תשובה</button>
+  <div class="ans">1. שבץ מוחי.<br>2. כנראה בצד שמאל של המוח: כל צד של המוח שולט בצד הנגדי של הגוף.<br>3. מתקשרים מיד ל־101 ורושמים את השעה. ככל שהטיפול מתחיל מוקדם יותר, נפגעים פחות תאי מוח.</div></div>
+</section>
+
+<!-- 8 לחץ דם גבוה -->
+<section class="sl paper">
+ <div class="tape">לחץ דם גבוה: <u>"הרוצח השקט"</u></div>
+ <div class="note y pin" style="--r:-2deg;right:80px;top:190px;width:430px;text-align:center"><p style="font-size:26px">לחץ דם תקין</p><div class="big" style="font-size:110px">120/80</div><p style="font-size:24px">סיסטולי / דיאסטולי (מ״מ כספית)</p></div>
+ <div class="note r pin" style="--r:2deg;right:570px;top:200px;width:420px;text-align:center"><p style="font-size:26px">יתר לחץ דם</p><div class="big" style="font-size:96px">140/90</div><p style="font-size:24px">ומעלה, בכמה מדידות</p></div>
+ <figure class="pol" style="--r:3deg;left:80px;top:170px;width:360px"><div class="im" style="height:300px"><img src="img/bp-home.jpg" alt="מדידת לחץ דם בבית"></div><figcaption>הדרך היחידה לדעת: <b>למדוד</b><small>Beendy234 · CC0</small></figcaption></figure>
+ <div class="note bl tp" style="--r:-1deg;right:110px;top:540px;width:520px"><h3>למה "שקט"?</h3><p>אין כאב ואין תחושה מיוחדת. אנשים חיים איתו שנים בלי לדעת.</p></div>
+ <div class="note o tp" style="--r:2deg;right:690px;top:540px;width:460px"><h3>מה הוא עושה?</h3><p>פוגע באנדותל, מאיץ טרשת עורקים ומעמיס על הלב.</p></div>
+</section>
+
+<!-- 9 דליות -->
+<section class="sl">
+ <div class="tape">דליות: <u>כשהמסתמים לא נסגרים</u></div>
+ <figure class="pol" style="--r:-2deg;right:80px;top:180px;width:420px"><div class="im" style="height:440px;background:#fff"><img src="img/varicose-valves-he.png" alt="וריד תקין מול וריד עם דליות" style="object-fit:contain"></div><figcaption>וריד תקין מול דליות<small>NHLBI · נחלת הכלל</small></figcaption></figure>
+ <div class="note y pin" style="--r:2deg;right:560px;top:190px;width:430px"><h3>וריד תקין</h3><p>ה<b>מסתמים</b> נסגרים כשהדם נע לאחור. הדם זורם רק אל הלב.</p></div>
+ <div class="note p pin" style="--r:-2deg;right:560px;top:470px;width:430px"><h3>דליות</h3><p>המסתם פגום. הדם זורם גם לאחור ומצטבר, והווריד מתרחב ומתפתל מתחת לעור.</p></div>
+ <figure class="pol" style="--r:3deg;left:70px;top:230px;width:420px"><div class="im" style="height:330px"><img src="img/varicose-leg.jpg" alt="דליות ברגל"></div><figcaption>דליות בשוק<small>Lakeland1999 · נחלת הכלל</small></figcaption></figure>
+</section>
+
+<!-- 10 שאלה טיסה -->
+<section class="sl paper">
+ <div class="tape">🤔 שאלה לכיתה</div>
+ <div class="note bl pin" style="--r:-1deg;right:260px;top:200px;width:1080px">
+  <p style="font-size:36px">טיסה של 12 שעות. למה ממליצים לקום, ללכת ולהזיז את כפות הרגליים?</p>
+  <p style="font-size:28px;margin-top:10px;color:#333">רמז: מה קורה לוורידים כששרירי השוק מתכווצים?</p>
+  <button class="rev">הצגת תשובה</button>
+  <div class="ans">כיווץ שרירי השוק לוחץ על הוורידים, והמסתמים מאפשרים זרימה רק לכיוון הלב (<b>משאבת שרירי השלד</b>). בישיבה ארוכה כמעט אין כיווצים, הדם מצטבר בוורידי הרגליים ועלול להיווצר קריש.</div></div>
+</section>
+
+<!-- 11 גורמי סיכון -->
+<section class="sl">
+ <div class="tape">גורמי סיכון: <u>מה בידיים שלנו?</u></div>
+ <figure class="pol" style="--r:-3deg;right:70px;top:170px;width:330px"><div class="im" style="height:230px"><img src="img/smoking.jpg" alt="עישון"></div><figcaption><b>עישון</b> פוגע באנדותל ומצר כלי דם<small>AnatoLensStudy · CC BY 4.0</small></figcaption></figure>
+ <figure class="pol" style="--r:2deg;right:440px;top:190px;width:330px"><div class="im" style="height:230px"><img src="img/diabetes.jpg" alt="מד סוכר"></div><figcaption><b>סוכרת:</b> סוכר גבוה בדם פוגע בדופן<small>Tomwsulcer · CC0</small></figcaption></figure>
+ <figure class="pol" style="--r:-2deg;right:810px;top:170px;width:330px"><div class="im" style="height:230px"><img src="img/salad.jpg" alt="סלט ירקות"></div><figcaption><b>תזונה:</b> ירקות, פחות מלח ושומן רווי<small>HaJunkiyada · CC BY-SA 4.0</small></figcaption></figure>
+ <figure class="pol" style="--r:3deg;right:1180px;top:190px;width:340px"><div class="im" style="height:230px"><img src="img/cycling.jpg" alt="רכיבה על אופניים"></div><figcaption><b>תנועה</b> מורידה לחץ דם ומחזקת את הלב<small>Wilfredor · CC BY-SA 4.0</small></figcaption></figure>
+ <div class="note y pin" style="--r:-1deg;right:300px;top:600px;width:520px"><h3>אפשר לשנות</h3><p>עישון, תזונה, תנועה, משקל, לחץ נפשי.</p></div>
+ <div class="note p pin" style="--r:2deg;right:880px;top:610px;width:440px"><h3>לא בשליטתנו</h3><p>גיל ותורשה (גנטיקה).</p></div>
+</section>
+
+<!-- 12 אבחון -->
+<section class="sl paper">
+ <div class="tape">אבחון: <u>איך יודעים?</u></div>
+ <div class="note y pin" style="--r:-2deg;right:80px;top:200px;width:440px"><div class="ico">🩺</div><h3>מדידת לחץ דם</h3><p>מגלה יתר לחץ דם, שלרוב לא מרגישים.</p></div>
+ <div class="note g pin" style="--r:2deg;right:580px;top:190px;width:440px"><div class="ico">🧪</div><h3>בדיקת דם</h3><p>רמת <b>כולסטרול</b> ורמת <b>גלוקוז</b> (סוכר) בדם.</p></div>
+ <div class="note bl pin" style="--r:-1deg;right:1080px;top:210px;width:440px"><div class="ico">📈</div><h3>אק״ג וצנתור</h3><p>בודקים את פעילות הלב ואת זרימת הדם בעורקים הכליליים.</p></div>
+ <div class="note w tp" style="--r:1deg;right:300px;top:560px;width:1000px"><p style="font-size:32px">הסביבה הפנימית של הגוף נשמרת בטווח מסוים (<b>הומיאוסטזיס</b>). בדיקות מגלות <b>סטייה</b> מהטווח, לפעמים שנים לפני שמופיעים סימנים.</p></div>
+</section>
+
+<!-- 13 טיפול -->
+<section class="sl">
+ <div class="tape">טיפול: <u>פותחים את הצינור</u></div>
+ <figure class="pol" style="--r:-2deg;right:70px;top:170px;width:440px"><div class="im" style="height:300px"><img src="img/cathlab.jpg" alt="חדר צנתורים"></div><figcaption>חדר צנתורים בזמן צנתור<small>Navy Medicine · נחלת הכלל</small></figcaption></figure>
+ <div class="note y pin" style="--r:2deg;right:570px;top:180px;width:430px"><h3>צנתור</h3><p>צינור דק נכנס דרך עורק ביד או במפשעה עד הלב. בלון מנופח במקום ההיצרות ופותח אותה.</p></div>
+ <figure class="pol" style="--r:3deg;left:80px;top:190px;width:400px"><div class="im" style="height:290px;background:#fff"><img src="img/stent.jpg" alt="תומכן על בלון" style="object-fit:contain"></div><figcaption><b>תומכן (סטנט):</b> רשת מתכת קטנה שנשארת בעורק ושומרת אותו פתוח<small>FDA · נחלת הכלל</small></figcaption></figure>
+ <div class="note bl tp" style="--r:-2deg;right:560px;top:520px;width:470px"><h3>ניתוח מעקפים</h3><p>מחברים כלי דם מאזור אחר בגוף, והדם עוקף את החסימה.</p></div>
+ <div class="note g tp" style="--r:2deg;right:100px;top:560px;width:400px"><h3>תרופות</h3><p>מורידות לחץ דם וכולסטרול, ומקטינות היווצרות קרישים.</p></div>
+</section>
+
+<!-- 14 סיכום -->
+<section class="sl paper">
+ <div class="tape">סיכום: <u>מה נפגע, ומה התוצאה?</u></div>
+ <div class="note w pin" style="--r:-.5deg;right:110px;top:170px;width:1380px;padding:24px 34px">
+ <table class="t"><tr><th>מחלה</th><th>איזה כלי דם?</th><th>מה השתנה במבנה?</th><th>מה התוצאה לגוף?</th></tr>
+  <tr><td><b>טרשת עורקים</b></td><td>עורקים</td><td>רובד בדופן, חלל צר, דופן קשיחה</td><td>פחות דם וחמצן לרקמה</td></tr>
+  <tr><td><b>התקף לב</b></td><td>עורק כלילי</td><td>קריש על רובד חוסם את העורק</td><td>תאי שריר הלב מתים</td></tr>
+  <tr><td><b>שבץ מוחי</b></td><td>עורק במוח</td><td>חסימה בקריש או קרע</td><td>תאי מוח נפגעים</td></tr>
+  <tr><td><b>יתר לחץ דם</b></td><td>עורקים</td><td>לחץ גבוה על הדופן לאורך זמן</td><td>פגיעה באנדותל, עומס על הלב</td></tr>
+  <tr><td><b>דליות</b></td><td>ורידי הרגליים</td><td>מסתמים פגומים, וריד מורחב</td><td>דם מצטבר ברגליים</td></tr></table></div>
+</section>
+
+<!-- 15 שאלות -->
+<section class="sl">
+ <div class="tape">תורכם 🤔</div>
+ <div class="note y pin" style="--r:-2deg;right:70px;top:180px;width:700px"><h3>שאלה 1</h3><p>מה הקשר בין עישון, אנדותל וטרשת עורקים?</p><button class="rev">תשובה</button><div class="ans">חומרים בעשן פוגעים באנדותל. בנקודות הפגועות מצטברים כולסטרול ותאים, ונוצר רובד שמצר את העורק.</div></div>
+ <div class="note bl pin" style="--r:2deg;right:830px;top:180px;width:700px"><h3>שאלה 2</h3><p>התקף לב ושבץ מוחי: מה דומה ומה שונה?</p><button class="rev">תשובה</button><div class="ans">דומה: עורק נחסם (לרוב בקריש על רובד), והרקמה שאחריו לא מקבלת חמצן. שונה: בהתקף לב נפגע עורק כלילי ושריר הלב, בשבץ נפגע עורק במוח ורקמת המוח.</div></div>
+ <div class="note g tp" style="--r:-1deg;right:300px;top:560px;width:1000px"><h3>✍ משימת יציאה</h3><p>בחרו מחלה אחת וכתבו על פתק שלושה משפטים: איזה כלי דם נפגע? מה השתנה במבנה שלו? מה התוצאה לגוף?</p></div>
+</section>
+
+<!-- 16 קרדיטים -->
+<section class="sl paper">
+ <div class="tape">מקורות</div>
+ <div class="note w" style="--r:0deg;right:110px;top:170px;width:1380px;font-size:19px;line-height:1.55">
+  <p>התוכן מבוסס על מצגת מט״ח "לחץ דם וטרשת" (קורס גוף האדם בדגש הומיאוסטזיס), ועל המצגת "מחלות של כלי הדם" שנבנתה עם Tab.</p>
+  <p style="margin-top:10px">הצילומים מ־Wikimedia Commons ברישיונות פתוחים: אמבולנס (Chenspec, CC BY-SA 4.0) · עורק בריא (Yale Rosen, CC BY-SA 2.0) · חתך עורק כלילי (Mikael Häggström, CC0) · אבי העורקים (CDC/PHIL, נחלת הכלל) · צנתור (Pantaleo et al., CC BY 2.0) · לב אחרי התקף (Mikael Häggström, CC0) · MRI שבץ (Mirza & Gokhale, CC BY 4.0) · מדידת לחץ דם (Beendy234, CC0) · וריד ודליות (NHLBI, נחלת הכלל) · דליות (Lakeland1999, נחלת הכלל) · עישון (AnatoLensStudy, CC BY 4.0) · מד סוכר (Tomwsulcer, CC0) · סלט (HaJunkiyada, CC BY-SA 4.0) · רכיבה (Wilfredor, CC BY-SA 4.0) · חדר צנתורים (Navy Medicine, נחלת הכלל) · תומכן (FDA, נחלת הכלל).</p>
+  <p style="margin-top:10px">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים.</p></div>
+</section>
+
+</div>
+<div class="nav"><button data-go="1">הבא ←</button><span class="cnt"></span><button data-go="-1">→ הקודם</button><button style="background:#fff;color:#111" onclick="document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()">⛶</button></div>
+<script>
+(function(){const st=document.querySelector('.stage'),S=[...document.querySelectorAll('.sl')];let i=Math.max(0,(parseInt(location.hash.slice(1))||1)-1);
+function fit(){const k=Math.min(innerWidth/1600,innerHeight/900);st.style.transform='translate(-50%,-50%) scale('+k+')'}
+function go(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,k)=>s.classList.toggle('on',k===i));document.querySelector('.cnt').textContent=(i+1)+' / '+S.length;history.replaceState(null,'','#'+(i+1))}
+window.go=go;addEventListener('resize',fit);fit();go(i);
+addEventListener('keydown',e=>{if(['ArrowLeft','PageDown',' '].includes(e.key)){e.preventDefault();go(i+1)}if(['ArrowRight','PageUp'].includes(e.key)){e.preventDefault();go(i-1)}});
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(i+(+b.dataset.go)));
+document.querySelectorAll('.rev').forEach(b=>b.onclick=()=>{b.nextElementSibling.classList.add('show');b.remove()});
+document.querySelectorAll('.blur .im').forEach(m=>m.onclick=()=>m.parentElement.classList.toggle('open'));
+let x0=null;addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)go(dx>0?i+1:i-1);x0=null},{passive:true});
+})();
+</script></body></html>
