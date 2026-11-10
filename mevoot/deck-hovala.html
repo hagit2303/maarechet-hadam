@@ -1,0 +1,53 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>מערכת הדם וההובלה: מפת דרכים</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800&family=Open+Sans:wght@400;700&family=Secular+One&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#1F2937;overflow:hidden;font-family:'Heebo',Arial,sans-serif}
+.stage{position:fixed;left:50%;top:50%;width:1600px;height:893px;transform-origin:center;box-shadow:0 10px 40px rgba(0,0,0,.4);background:#fff}
+.sl{position:absolute;inset:0;display:none;overflow:hidden;direction:rtl}
+.sl.on{display:block}
+.sl>img.full{width:100%;height:100%;display:block;object-fit:contain;background:#fff}
+.sh{position:absolute;display:flex;flex-direction:column;overflow:visible;color:#1F2937;text-decoration:none;word-wrap:break-word}
+.sh p{margin:0;line-height:1.2}
+.sh a{color:inherit}
+.pic{position:absolute}
+.tb{position:absolute;border-collapse:collapse;table-layout:fixed}
+.tb td{border:1px solid #E5E7EB;direction:rtl}
+.tb td p{margin:0}
+.nav{position:fixed;bottom:12px;left:12px;display:flex;gap:8px;align-items:center;z-index:9}
+.nav button{background:#111827;color:#fff;border:2px solid #fff;border-radius:99px;padding:8px 18px;font:800 16px Heebo,sans-serif;cursor:pointer}
+.cnt{background:#fff;border-radius:99px;padding:6px 14px;font:800 15px Heebo,sans-serif}
+.homefix{position:fixed;top:10px;left:12px;display:flex;gap:8px;z-index:9}
+.homefix a{background:#fff;color:#1B1B2F;border:2px solid #1B1B2F;border-radius:20px;padding:4px 14px;font:800 14px Heebo,sans-serif;text-decoration:none}
+.fs{background:#fff!important;color:#111827!important}
+@media print{.nav,.homefix{display:none}}
+</style></head><body>
+<nav class="homefix" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לפרק המבואות</a></nav>
+<div class="stage">
+<section class="sl"><img class="full" src="img/shiurim-01.jpg" alt="שקף 1" loading="eager"></section>
+<section class="sl"><img class="full" src="img/shiurim-02.jpg" alt="שקף 2" loading="eager"></section>
+<section class="sl"><img class="full" src="img/shiurim-03.jpg" alt="שקף 3" loading="lazy"></section>
+<section class="sl"><img class="full" src="img/shiurim-04.jpg" alt="שקף 4" loading="lazy"></section>
+<section class="sl"><img class="full" src="img/shiurim-05.jpg" alt="שקף 5" loading="lazy"></section>
+<section class="sl"><img class="full" src="img/shiurim-06.jpg" alt="שקף 6" loading="lazy"></section>
+<section class="sl"><img class="full" src="img/shiurim-07.jpg" alt="שקף 7" loading="lazy"></section>
+<section class="sl"><img class="full" src="img/shiurim-08.jpg" alt="שקף 8" loading="lazy"></section>
+<section class="sl"><img class="full" src="img/shiurim-09.jpg" alt="שקף 9" loading="lazy"></section>
+<section class="sl"><img class="full" src="img/shiurim-10.jpg" alt="שקף 10" loading="lazy"></section>
+<section class="sl"><img class="full" src="img/shiurim-11.jpg" alt="שקף 11" loading="lazy"></section>
+<section class="sl"><img class="full" src="img/shiurim-12.jpg" alt="שקף 12" loading="lazy"></section>
+<section class="sl"><img class="full" src="img/shiurim-13.jpg" alt="שקף 13" loading="lazy"></section>
+<section class="sl"><img class="full" src="img/shiurim-14.jpg" alt="שקף 14" loading="lazy"></section>
+<section class="sl"><img class="full" src="img/shiurim-15.jpg" alt="שקף 15" loading="lazy"></section>
+</div>
+<div class="nav"><button data-go="1">הבא ←</button><span class="cnt"></span><button data-go="-1">→ הקודם</button><button class="fs" onclick="document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()">⛶</button></div>
+<script>
+(function(){const st=document.querySelector('.stage'),S=[...document.querySelectorAll('.sl')];let i=Math.max(0,(parseInt(location.hash.slice(1))||1)-1);
+function fit(){const k=Math.min(innerWidth/1600,innerHeight/893);st.style.transform='translate(-50%,-50%) scale('+k+')'}
+function go(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,k)=>s.classList.toggle('on',k===i));document.querySelector('.cnt').textContent=(i+1)+' / '+S.length;history.replaceState(null,'','#'+(i+1))}
+window.go=go;addEventListener('resize',fit);fit();go(i);
+addEventListener('keydown',e=>{if(['ArrowLeft','PageDown',' '].includes(e.key)){e.preventDefault();go(i+1)}if(['ArrowRight','PageUp'].includes(e.key)){e.preventDefault();go(i-1)}});
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(i+(+b.dataset.go)));
+let x0=null;addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)go(dx>0?i+1:i-1);x0=null},{passive:true});
+})();
+</script></body></html>
