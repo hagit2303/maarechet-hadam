@@ -1,71 +1,160 @@
 <!doctype html>
-<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>בוחן: ויסות זרימת הדם</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
-<style>*{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#EEF4F2;--ink:#17312B;--mut:#5E756F;--acc:#127A63;--card:#fff;--line:#D3E2DD;--ok:#127A63;--no:#C0392B}
-body{background:var(--bg);color:var(--ink);font-family:Rubik,Arial,sans-serif;padding-inline:16px;line-height:1.5}
-.wrap{max-width:720px;margin:auto;padding-block:28px 60px;display:flex;flex-direction:column;gap:14px}
-.head{background:var(--card);border-top:10px solid var(--acc);border-radius:12px;padding:22px}
-h1{font-size:clamp(24px,4vw,32px)}.head p{color:var(--mut)}
-.who{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}.who label{flex:1;min-width:160px;font-size:14px;font-weight:500;display:flex;flex-direction:column;gap:4px}
-input[type=text]{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:8px}
-fieldset{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
-legend{font-weight:700;font-size:17px;padding:0;float:right;width:100%;margin-bottom:10px}
-.opt{display:flex;gap:10px;align-items:flex-start;padding:7px 8px;border-radius:8px;cursor:pointer}
-.opt:hover{background:#F3F8F6}.opt input{margin-top:5px;accent-color:var(--acc);width:18px;height:18px;flex:none}
-.opt.ok{background:#E2F3EC;color:var(--ok);font-weight:500}.opt.no{background:#FBE7E5;color:var(--no);text-decoration:line-through}
-.ex{display:none;margin-top:8px;font-size:14px;color:var(--mut)}.done .ex{display:block}
-.send{font:inherit;font-weight:700;background:var(--acc);color:#fff;border:0;border-radius:8px;padding:12px 24px;cursor:pointer;align-self:flex-start}
-.res{display:none;background:var(--card);border-radius:12px;padding:20px;border:2px solid var(--acc)}.res.on{display:block}
-.res .n{font-size:48px;font-weight:700;color:var(--acc);font-variant-numeric:tabular-nums}
-.miss{color:var(--no);font-size:14px}
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>בוחן: ויסות זרימת הדם לרקמות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Atlas lab worksheet: students write what they see, then reveal the identification cues and self-mark once (locked); mistakes page + PDF report */
+:root{--bg:#F4F7FA;--paper:#fff;--ink:#13233A;--muted:#5E6E82;--rich:#D7263D;--poor:#2457C5;--line:#DCE3EA;--accent:#13233A;--accent-soft:#EAF0F6;--tag:#D7263D;--tag-ink:#fff;--good:#1E7B4D;--good-bg:#E8F4EE;--bad:#B3261E;--bad-bg:#FBE7E5;--warn-bg:#FFF8E1;--gold:#F2B705}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Assistant,Arial,sans-serif;font-size:18px;line-height:1.5;padding-inline:16px;overflow-x:hidden}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:1000px;margin:auto;padding-block:14px 40px;display:flex;flex-direction:column;gap:14px}
+.homebar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.homebar a{background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:20px;padding:4px 14px;font-weight:800;font-size:14px;text-decoration:none}
+.homebar .who{margin-inline-start:auto;font-weight:800;color:var(--rich)}
+.kick{font-weight:800;color:var(--rich);font-size:14px}
+h1{font-size:clamp(30px,5vw,46px);font-weight:800;line-height:1.05}h1 span{color:var(--rich)}
+h2{font-size:clamp(20px,2.6vw,26px);font-weight:800}
+.hero{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset-inline:0;bottom:0;height:6px;background:linear-gradient(to left,var(--rich),var(--poor))}
+.routine{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:15px}
+.routine b{background:var(--accent-soft);border-radius:20px;padding:3px 12px}.routine i{font-style:normal;color:var(--muted)}
+.part-h{display:flex;gap:12px;align-items:center;margin-top:14px}
+.part-h .n{width:44px;height:44px;border-radius:12px;background:var(--ink);color:#fff;font-weight:800;font-size:22px;display:flex;align-items:center;justify-content:center;flex:none}
+.part-h:nth-of-type(even) .n{background:var(--poor)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.hint{color:var(--muted);font-size:.92rem}
+.fb{border-radius:12px;padding:10px 14px;line-height:1.5}
+.fb:empty{display:none}
+.fb.ok{background:var(--good-bg);border-inline-start:6px solid var(--good)}
+.fb.no{background:var(--bad-bg);border-inline-start:6px solid var(--bad)}
+.note{background:var(--warn-bg);border-inline-start:6px solid var(--gold);border-radius:12px;padding:10px 14px}
+.ck{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:9px 18px;font-weight:700;align-self:flex-start}
+.ck[disabled]{opacity:.45;cursor:not-allowed}
+.ck.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+/* worksheet table */
+.tbl{display:flex;flex-direction:column;border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+.tr{display:grid;grid-template-columns:minmax(9em,.6fr) minmax(0,2fr);border-top:1px solid var(--line)}
+.tr:first-child{border-top:0}
+.tr.th{background:var(--ink);color:#fff;font-weight:800}
+.tr.th>div{padding:8px 12px}
+.tr .nm{padding:10px 12px;font-weight:800;background:var(--accent-soft);display:flex;align-items:flex-start}
+.tr .cell{padding:8px 10px;display:flex;flex-direction:column;gap:8px;min-width:0}
+textarea{width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);resize:vertical}
+textarea[readonly]{opacity:.85}
+.key{background:var(--warn-bg);border-radius:10px;padding:8px 12px;font-size:16px}
+.key b{display:block;font-size:14px;color:var(--muted)}
+.key label{display:flex;gap:8px;align-items:flex-start;margin-top:6px;font-weight:700;cursor:pointer}
+.key input{margin-top:5px;accent-color:var(--good);flex:none}
+.tr.y .nm{background:var(--good-bg)}.tr.n .nm{background:var(--bad-bg)}
+ol.do{padding-inline-start:1.4em;display:flex;flex-direction:column;gap:4px}
+.done-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.mi{border-inline-start:4px solid var(--bad);background:var(--bg);border-radius:8px;padding:8px 12px;margin-bottom:8px}.mi p{margin:2px 0}
+.ri{color:var(--good);font-weight:700}
+.dl{background:var(--tag);color:var(--tag-ink);border:0;border-radius:14px;font-size:1.15rem;font-weight:800;padding:14px 24px;align-self:flex-start}
+.sgate{position:fixed;inset:0;z-index:100;background:rgba(19,35,58,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.sgate[hidden]{display:none}
+.sgate .gbox{background:#fff;border:3px solid var(--tag);border-radius:18px;max-width:420px;width:100%;padding:20px;display:grid;gap:10px}
+.sgate label{display:grid;gap:4px;font-weight:700}
+.sgate input{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.sgate .gerr{color:var(--bad);font-weight:700;min-height:1em}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:10px 20px;font-weight:800}
+#report{position:fixed;left:0;top:0;display:none;z-index:-1;pointer-events:none;width:760px;background:#fff;color:#13233A;font-family:Arial,sans-serif;padding:24px;direction:rtl}
+#report h1{font-size:24px;margin-bottom:6px}
+#report .rr{border-bottom:1px solid #DCE3EA;padding:5px 0;font-size:14px;display:flex;gap:8px}
+#report .rr b{min-width:200px}
+#report .y{color:#1E7B4D;font-weight:700}#report .n{color:#B3261E;font-weight:700}
+.qn{display:inline-block;align-self:flex-start;font-size:.78rem;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--tag);color:var(--tag-ink)}
+.src{font-size:.8rem;color:var(--muted)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opts label{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;line-height:1.45;cursor:pointer}
+.opts label:hover{border-color:var(--accent)}
+.opts label input{margin-top:5px;accent-color:var(--accent);flex:none}
+.opts label.right{background:var(--good-bg);border-color:var(--good)}
+.opts label.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.vid{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden}
+.vid iframe,.vid #yt{position:absolute;inset:0;width:100%;height:100%;border:0}
+.sub{position:absolute;inset-inline:4%;bottom:15%;text-align:center;pointer-events:none;z-index:2}
+.sub span{background:rgba(0,0,0,.78);color:#fff;font-size:clamp(15px,2.4vw,22px);font-weight:600;line-height:1.55;padding:2px 10px;border-radius:6px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.vid:fullscreen{border-radius:0}.vid:fullscreen .sub span{font-size:clamp(20px,3vw,34px)}
+.vbar{display:flex;gap:8px;flex-wrap:wrap}
+.vbar button{background:#fff;color:var(--ink);border:1.5px solid var(--ink);border-radius:20px;padding:4px 14px;font-weight:700;font-size:15px}
+.vbar button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:6px 14px;font-size:15px}
+.terms b{color:var(--rich)}
+.vq .lockmsg{display:none;font-weight:800;color:var(--muted)}
+.vq.locked{border-style:dashed;background:#FAFBFC}
+.vq.locked>*:not(.qn):not(.lockmsg){display:none}
+.vq.locked .lockmsg{display:block}
+.resume{background:transparent;color:var(--accent);border:1.5px solid var(--accent);border-radius:12px;padding:7px 16px;font-weight:700;align-self:flex-start;display:none}
+.vq.answered .resume{display:inline-block}
+footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:12px}
+@media(max-width:640px){.tr{grid-template-columns:1fr}.tr.th>div+div{display:none}.tr .nm{padding:8px 12px}}
+</style>
+<style>
+.prog{position:sticky;top:0;z-index:5;background:var(--ink);color:#fff;border-radius:0 0 12px 12px;padding:6px 14px;font-weight:800;font-size:16px;display:flex;gap:14px;flex-wrap:wrap}
+.prog span:last-child{margin-inline-start:auto}
+#qs{display:grid;gap:14px}
+.opts label:has(input:disabled){cursor:default}
+</style>
+</head>
+<body>
+<div class="sgate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו שם מלא וכיתה. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button class="btn" id="gGo" type="button">מתחילים ←</button></div></div>
 
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}</style><link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet"></head>
-<body><nav class="homebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav><div class="wrap"><div class="head"><h1>ויסות זרימת הדם לרקמות</h1><p>11 שאלות רב־ברירה. כתבו שם וכיתה, ענו על כל השאלות ולחצו על "בדיקה". בסוף תקבלו ציון ובדיקה של כל תשובה. את העבודה הבדוקה שומרים כ־PDF ומעלים ל־Classroom.</p>
-<div class="who"><label>שם<input type="text" id="nm"></label><label>כיתה<input type="text" id="cl"></label></div></div>
-<form id="f"></form><p class="miss" id="miss"></p><button type="button" class="send" id="send">בדיקה ✓</button>
-<div class="res" id="res"></div></div><script>const Q=[{"q": "האם כמות הדם הזורמת לאיברים השונים בגוף משתנה במעבר ממנוחה לפעילות גופנית מאומצת?", "o": ["לא. כמות הדם המוזרמת לכל איבר נשארת תמיד קבועה", "לא, מכיוון שכמות הדם הכללית בגוף אינה משתנה", "כן. כמות הדם המוזרמת לשרירים עולה, ואילו כמות הדם המוזרמת למערכת העיכול יורדת", "כן. כמות הדם המוזרמת לשרירים עולה, וגם כמות הדם המוזרמת למערכת העיכול עולה"], "a": 2, "e": "כמות הדם הכללית קבועה, אבל החלוקה שלה בין האיברים משתנה."}, {"q": "בטבלה: קצב זרימת הדם לשרירי הרגליים במנוחה 1,200 מ\"ל לדקה וברכיבה על אופניים 12,500 מ\"ל לדקה. קצב הזרימה למעיים במנוחה 1,400 מ\"ל לדקה וברכיבה 600 מ\"ל לדקה. איזה תיאור מתאים לנתונים?", "o": ["ברכיבה הזרימה לשני האיברים עולה", "ברכיבה הזרימה לרגליים גדלה פי 10 בערך, והזרימה למעיים קטנה לפחות ממחצית", "ברכיבה הזרימה לשני האיברים קטנה", "ברכיבה הזרימה לרגליים קטנה, והזרימה למעיים גדלה"], "a": 1, "e": "12,500 ÷ 1,200 ≈ 10; 600 קטן ממחצית 1,400."}, {"q": "על פי אותה טבלה: מה היתרון בעלייה בזרימת הדם לשרירי הרגליים בזמן רכיבה?", "o": ["יותר חמצן וגלוקוז מגיעים לתאי השריר, והנשימה התאית בהם מתרחשת בקצב גבוה", "יותר דם מגיע לרגליים, ולכן כמות הדם בגוף גדלה", "פחות חום נוצר בשרירים", "תאי השריר מפסיקים לייצר פחמן דו־חמצני"], "a": 0, "e": "בשרירים פעילים קצב הנשימה התאית גבוה. זרימת דם מוגברת מספקת להם יותר חמצן וגלוקוז ומסלקת מהם יותר פחמן דו־חמצני."}, {"q": "ילדה קופצת בחבל, ולאחר מכן אוכלת גלידה. האם כמות הדם המוזרמת אל המוח שלה תהיה גדולה יותר בזמן הקפיצה בחבל?", "o": ["כן, כי במאמץ כל האיברים מקבלים יותר דם", "כן, כי המוח צורך יותר חמצן בזמן קפיצה", "לא, כמות הדם הזורמת למוח נשארת כמעט קבועה", "לא, בזמן מאמץ לא זורם דם למוח"], "a": 2, "e": "אספקת הדם למוח כמעט קבועה במנוחה, במאמץ ואחרי ארוחה."}, {"q": "אותה ילדה אוכלת גלידה אחרי הקפיצה. לאיזה איבר תגדל זרימת הדם בזמן העיכול?", "o": ["לשרירי הרגליים", "למערכת העיכול", "למוח", "לעור"], "a": 1, "e": "בזמן עיכול וספיגה כלי הדם המובילים לקיבה ולמעיים מתרחבים."}, {"q": "בזמן מאמץ גופני הפנים מאדימות. מה היתרון בהגברה של זרימת הדם לעור בזמן מאמץ?", "o": ["יותר חמצן מגיע לתאי העור", "יותר חום עובר מהגוף לסביבה, וטמפרטורת הגוף נשמרת", "העור מייצר יותר תאי דם אדומים", "פחות דם מגיע לשרירים"], "a": 1, "e": "במאמץ משתחרר חום רב בשרירים. זרימת דם מוגברת בכלי הדם ההיקפיים שבעור מגבירה את מעבר החום לסביבה."}, {"q": "המשתתפים בתחרות ריצה מזיעים, גם כאשר טמפרטורת הסביבה נמוכה. מה גורם לכך?", "o": ["נשימה תאית מוגברת בתאי שריר", "הגברה של זרימת הדם למוח", "ירידה בזרימת הדם לעור", "הפרשה מוגברת של אריתרופויטין"], "a": 0, "e": "בנשימה תאית מוגברת בשרירים משתחרר חום רב, וטמפרטורת הגוף עולה גם בסביבה קרה."}, {"q": "איזה מן השינויים יגדיל את תפוקת הלב?", "o": ["הגברה של קצב חילוף הגזים בנאדיות", "הגברת ההזעה", "האטת הדופק", "הגדלה של נפח הפעימה"], "a": 3, "e": "תפוקת לב = קצב לב × נפח פעימה."}, {"q": "בשתי הדקות הראשונות של פעילות גופנית עולים גם קצב הלב וגם נפח הפעימה. מה התוצאה של שני השינויים יחד?", "o": ["כמות הדם בגוף גדלה", "תפוקת הלב עולה, ויותר דם מגיע בכל דקה לשרירים הפעילים", "לחץ הדם בוורידים עולה על לחץ הדם בעורקים", "זרימת הדם למוח גדלה פי 10"], "a": 1, "e": "קצב לב גבוה ונפח פעימה גדול מגדילים את כמות הדם שהלב מזרים בכל דקה."}, {"q": "באיזו דרך משתנה כמות הדם שמגיעה לאיבר מסוים במצבי פעילות שונים?", "o": ["דרך שינוי בכמות הדם הכללית בגוף", "דרך התרחבות או הצטמצמות של כלי הדם המובילים אל האיבר", "דרך מעבר דם מהוורידים ישירות לעורקים", "דרך הוספה של נימים חדשים בכל מאמץ"], "a": 1, "e": "כשכלי הדם המובילים לאיבר מתרחבים, יותר דם זורם אליו; כשהם מצטמצמים, פחות דם זורם אליו."}, {"q": "מדוע לא כל האיברים יכולים לקבל זרימת דם מרבית באותו זמן?", "o": ["כי כמות הדם בגוף קבועה, ותפוקת הלב מוגבלת", "כי הדם זורם רק בכיוון אחד", "כי במוח אין נימים", "כי העורקים אינם גמישים"], "a": 0, "e": "הדם מתחלק בין האיברים לפי הפעילות שלהם, מתוך כמות קבועה."}];const L="אבגד";const f=document.getElementById('f');
-f.innerHTML=Q.map((x,i)=>`<fieldset id="q${i}"><legend>${i+1}. ${x.q}</legend>${x.o.map((o,j)=>`<label class="opt"><input type="radio" name="q${i}" value="${j}">${L[j]}. ${o}</label>`).join('')}<p class="ex">${x.e}</p></fieldset>`).join('');
-document.getElementById('send').onclick=()=>{if(!document.getElementById('nm').value.trim()){document.getElementById('miss').textContent='כתבו את השם שלכם למעלה.';document.getElementById('nm').focus();return}const miss=Q.map((x,i)=>f.querySelector(`[name=q${i}]:checked`)?null:i+1).filter(Boolean);
- if(miss.length){document.getElementById('miss').textContent='לא עניתם על שאלות: '+miss.join(', ');return}
- document.getElementById('miss').textContent='';let s=0;
- Q.forEach((x,i)=>{const fs=document.getElementById('q'+i),v=+f.querySelector(`[name=q${i}]:checked`).value;fs.classList.add('done');
-  fs.querySelectorAll('.opt').forEach((l,j)=>{if(j===x.a)l.classList.add('ok');else if(j===v)l.classList.add('no')});
-  fs.querySelectorAll('input').forEach(n=>n.disabled=true);if(v===x.a)s++});
- const r=document.getElementById('res'),nm=document.getElementById('nm').value.trim(),cl=document.getElementById('cl').value.trim();
- r.innerHTML=`<div>${nm?nm.replace(/[<>&]/g,''):''} ${cl?'· '+cl.replace(/[<>&]/g,''):''}</div><div class="n">${Math.round(s/Q.length*100)}</div><div>${s} תשובות נכונות מתוך ${Q.length}</div>`;r.classList.add('on');r.insertAdjacentHTML('beforeend',`<button type="button" class="pdfbtn" onclick="window.print()">📄 שמירה כ־PDF</button><p class="pdfhint">בחלון שנפתח בחרו "שמירה כ־PDF" (Save as PDF), ואז העלו את הקובץ הבדוק למשימה ב־Classroom.</p>`);
- document.getElementById('send').disabled=true;r.scrollIntoView({behavior:'smooth'});
-};</script><style id="atlas">:root{--bg:#F4F7FA;--ink:#13233A;--mut:#5E6E82;--acc:#D7263D;--card:#fff;--line:#DCE3EA;--ok:#1E7B4D;--no:#B3261E}
-body{font-family:Assistant,Arial,sans-serif;font-size:17px}h1{font-weight:800}
-.head{border-top:8px solid var(--acc)}.opt:hover{background:#EEF2F6}.opt input{accent-color:var(--ink)}
-.send{background:var(--ink)!important;color:#fff!important;border-radius:10px!important;font-family:inherit;font-weight:800}
-.opt.ok{background:#E3F2EA}.opt.no{background:#FBE7E5}</style><p class="credit" style="max-width:1080px;margin:8px auto 24px;color:#5E6E82;font-size:13px;text-align:center;font-family:Assistant,Arial,sans-serif">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים · ביולוגיה, כיתה י'</p><style id="pdf">.pdfbtn{font:inherit;font-weight:800;background:#fff;color:#13233A;border:2px solid #13233A;border-radius:10px;padding:10px 20px;cursor:pointer;margin-top:12px}
-.pdfhint{font-size:14px;color:#5E6E82;margin-top:6px}
-@media print{.pdfbtn,.pdfhint,.send,#send,.trail,.btn,.nav,.seg{display:none!important}body{background:#fff!important}fieldset,.q,.card{break-inside:avoid}.step{display:flex!important}.res{display:block}}</style><style id="homenav">.homebar{max-width:1080px;margin:12px auto 0;padding-inline:16px;display:flex;gap:8px;flex-wrap:wrap;font-family:Assistant,Arial,sans-serif;position:relative;z-index:20}
-.homefix{position:fixed;top:10px;inset-inline-end:12px;display:flex;gap:8px;z-index:50;font-family:Assistant,Arial,sans-serif}
-.homebar a,.homefix a{background:#fff;color:#13233A;border:2px solid #13233A;border-radius:20px;padding:4px 14px;font-weight:800;font-size:14px;text-decoration:none;line-height:1.5}
-.homebar a:hover,.homefix a:hover{background:#13233A;color:#fff}
-.s>.sn{top:56px!important}
-@media print{.homebar,.homefix{display:none!important}}</style><div id="gate" role="dialog" aria-modal="true" aria-labelledby="g_t"><div class="gbox">
-<h2 id="g_t">לפני שמתחילים</h2><p>כתבו שם וכיתה. הם יופיעו בבדיקה ובקובץ ה־PDF.</p>
-<label>שם התלמיד/ה<input id="g_nm" type="text" autocomplete="name"></label>
-<label>כיתה<input id="g_cl" type="text" placeholder="לדוגמה: י'3"></label>
-<button type="button" id="g_go" disabled>התחלה ←</button><p class="g_hint" id="g_hint">צריך לכתוב שם (לפחות 2 אותיות).</p></div></div>
-<style id="gatecss">#gate{position:fixed;inset:0;background:rgba(19,35,58,.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px;font-family:Assistant,Arial,sans-serif;direction:rtl}
-#gate .gbox{background:#fff;border-radius:16px;padding:22px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px;color:#13233A;box-shadow:0 10px 40px rgba(0,0,0,.25)}
-#gate h2{font-size:26px;font-weight:800;margin:0}#gate p{margin:0;color:#5E6E82}
-#gate label{display:flex;flex-direction:column;gap:4px;font-weight:700}
-#gate input{font:inherit;font-weight:400;padding:9px 12px;border:2px solid #DCE3EA;border-radius:10px}#gate input:focus{border-color:#13233A;outline:none}
-#g_go{font:inherit;font-weight:800;background:#13233A;color:#fff;border:0;border-radius:10px;padding:11px;cursor:pointer}#g_go:disabled{opacity:.35;cursor:not-allowed}
-.g_hint{font-size:14px}@media print{#gate{display:none!important}}</style>
-<script>(function(){const g=document.getElementById('gate'),nm=document.getElementById('g_nm'),cl=document.getElementById('g_cl'),go=document.getElementById('g_go');
-try{nm.value=localStorage.getItem('stu_nm')||'';cl.value=localStorage.getItem('stu_cl')||''}catch(e){}
-const ok=()=>{const v=nm.value.trim().length>=2;go.disabled=!v;document.getElementById('g_hint').style.visibility=v?'hidden':'visible'};
-nm.addEventListener('input',ok);ok();setTimeout(()=>nm.focus(),50);
-[nm,cl].forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'&&!go.disabled)go.click()}));
-go.onclick=()=>{const n=nm.value.trim(),c=cl.value.trim();try{localStorage.setItem('stu_nm',n);localStorage.setItem('stu_cl',c)}catch(e){}
- const set=(el,v)=>{if(el){el.value=v;el.dispatchEvent(new Event('input',{bubbles:true}))}};
- set(document.getElementById('nm'),n);set(document.getElementById('cl'),c);set(document.getElementById('sname'),n);set(document.getElementById('sclass'),c);
- const w=document.querySelectorAll('.who input');set(w[0],n);set(w[1],c);
- g.remove();document.body.style.overflow=''};
-document.body.style.overflow='hidden';})();</script></body></html>
+<div class="wrap">
+  <nav class="homebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a><span class="who" data-fill="name"></span></nav>
+  <section class="hero">
+    <div class="kick">ביולוגיה · כיתה י' · שיעור 3 · בוחן עם בדיקה עצמית</div>
+    <h1>ויסות זרימת הדם <span>לרקמות</span></h1>
+    <p>11 שאלות רב־ברירה. בכל שאלה יש <b>ניסיון אחד</b>: אחרי הבחירה התשובה ננעלת, ומופיעים התשובה הנכונה וההסבר. שאלה שבה טעיתם נכנסת ל"דף הטעויות שלי". בסוף מורידים קובץ PDF ומעלים אותו למשימה ב־Classroom.</p>
+    <div class="routine"><b>1 קוראים וחושבים</b><i>←</i><b>2 בוחרים פעם אחת</b><i>←</i><b>3 קוראים את ההסבר</b><i>←</i><b>⬇ קובץ</b></div>
+  </section>
+  <div class="prog" role="status"><span id="pDone">עניתם על 0 מתוך 11</span><span id="pOk"></span></div>
+  <div id="qs"></div>
+
+  <section class="card">
+    <h2>⬇ סיימתם? מורידים את הקובץ</h2>
+    <p class="hint">בקובץ: השם, הכיתה, התשובה שבחרתם בכל שאלה, הציון בניסיון הראשון ודף הטעויות. אחר כך מעלים אותו למשימה ב־Classroom.</p>
+    <button class="dl" id="dl" type="button">⬇ הורדת קובץ PDF</button><p class="hint" id="dlmsg"></p>
+  </section>
+
+  <footer>ביולוגיה · מערכת הדם · שיעור 3: ויסות זרימת הדם לרקמות · היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. נבנתה על ידי חגית ברגמן.</footer>
+</div>
+<div id="report"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../assets/lab.js"></script>
+<script src="../assets/pdf.js"></script>
+<script>
+window.REPORT_FOOT='ביולוגיה · מערכת הדם · שיעור 3: בוחן ויסות זרימת הדם לרקמות';
+const Q=[{"src": "בוחן שיעור 3", "stem": "האם כמות הדם הזורמת לאיברים השונים בגוף משתנה במעבר ממנוחה לפעילות גופנית מאומצת?", "opts": ["לא. כמות הדם המוזרמת לכל איבר נשארת תמיד קבועה", "לא, מכיוון שכמות הדם הכללית בגוף אינה משתנה", "כן. כמות הדם המוזרמת לשרירים עולה, ואילו כמות הדם המוזרמת למערכת העיכול יורדת", "כן. כמות הדם המוזרמת לשרירים עולה, וגם כמות הדם המוזרמת למערכת העיכול עולה"], "ans": 2, "ok": "נכון. כמות הדם הכללית קבועה, אבל החלוקה שלה בין האיברים משתנה.", "no": ["במאמץ הזרימה לשרירים גדלה פי כמה. מה נשאר קבוע: הזרימה לכל איבר, או כמות הדם הכללית בגוף?", "כמות הדם הכללית אכן קבועה, אבל החלוקה שלה בין האיברים משתנה.", "", "במאמץ כלי הדם המובילים אל מערכת העיכול מצטמצמים, והזרימה אליה יורדת."]}, {"src": "בוחן שיעור 3", "stem": "בטבלה: קצב זרימת הדם לשרירי הרגליים במנוחה 1,200 מ\"ל לדקה וברכיבה על אופניים 12,500 מ\"ל לדקה. קצב הזרימה למעיים במנוחה 1,400 מ\"ל לדקה וברכיבה 600 מ\"ל לדקה. איזה תיאור מתאים לנתונים?", "opts": ["ברכיבה הזרימה לשני האיברים עולה", "ברכיבה הזרימה לרגליים גדלה פי 10 בערך, והזרימה למעיים קטנה לפחות ממחצית", "ברכיבה הזרימה לשני האיברים קטנה", "ברכיבה הזרימה לרגליים קטנה, והזרימה למעיים גדלה"], "ans": 1, "ok": "נכון. 12,500 ÷ 1,200 ≈ 10; 600 קטן ממחצית 1,400.", "no": ["בדקו את המעיים: 1,400 מ\"ל לדקה במנוחה, ו־600 מ\"ל לדקה ברכיבה. הזרימה אליהם קטנה.", "", "בדקו את שרירי הרגליים: 1,200 מ\"ל לדקה במנוחה, ו־12,500 מ\"ל לדקה ברכיבה. הזרימה אליהם גדלה.", "המגמות הפוכות: ברגליים 1,200 ← 12,500 (עלייה), ובמעיים 1,400 ← 600 (ירידה)."]}, {"src": "בוחן שיעור 3", "stem": "על פי אותה טבלה: מה היתרון בעלייה בזרימת הדם לשרירי הרגליים בזמן רכיבה?", "opts": ["יותר חמצן וגלוקוז מגיעים לתאי השריר, והנשימה התאית בהם מתרחשת בקצב גבוה", "יותר דם מגיע לרגליים, ולכן כמות הדם בגוף גדלה", "פחות חום נוצר בשרירים", "תאי השריר מפסיקים לייצר פחמן דו־חמצני"], "ans": 0, "ok": "נכון. בשרירים פעילים קצב הנשימה התאית גבוה. זרימת דם מוגברת מספקת להם יותר חמצן וגלוקוז ומסלקת מהם יותר פחמן דו־חמצני.", "no": ["", "כמות הדם בגוף אינה משתנה. משתנה החלוקה שלה בין האיברים.", "בשריר פעיל קצב הנשימה התאית עולה, ומשתחרר בו יותר חום, לא פחות.", "בנשימה תאית מוגברת נוצר יותר פחמן דו־חמצני, והדם מסלק אותו מהשריר."]}, {"src": "בוחן שיעור 3", "stem": "ילדה קופצת בחבל, ולאחר מכן אוכלת גלידה. האם כמות הדם המוזרמת אל המוח שלה תהיה גדולה יותר בזמן הקפיצה בחבל?", "opts": ["כן, כי במאמץ כל האיברים מקבלים יותר דם", "כן, כי המוח צורך יותר חמצן בזמן קפיצה", "לא, כמות הדם הזורמת למוח נשארת כמעט קבועה", "לא, בזמן מאמץ לא זורם דם למוח"], "ans": 2, "ok": "נכון. אספקת הדם למוח כמעט קבועה במנוחה, במאמץ ואחרי ארוחה.", "no": ["לא כל האיברים מקבלים יותר דם במאמץ: הזרימה אל מערכת העיכול, למשל, יורדת.", "צריכת החמצן של המוח כמעט אינה משתנה בין מנוחה למאמץ גופני.", "", "תאי המוח תלויים באספקה רציפה של חמצן וגלוקוז. הזרימה אל המוח נמשכת בכל מצב."]}, {"src": "בוחן שיעור 3", "stem": "אותה ילדה אוכלת גלידה אחרי הקפיצה. לאיזה איבר תגדל זרימת הדם בזמן העיכול?", "opts": ["לשרירי הרגליים", "למערכת העיכול", "למוח", "לעור"], "ans": 1, "ok": "נכון. בזמן עיכול וספיגה כלי הדם המובילים לקיבה ולמעיים מתרחבים.", "no": ["אחרי שהמאמץ נפסק, הזרימה אל שרירי הרגליים יורדת. באיזו מערכת עולה הפעילות בזמן האכילה?", "", "אספקת הדם אל המוח כמעט קבועה בכל המצבים.", "הזרימה אל העור גדלה כשטמפרטורת הגוף עולה, במאמץ. בזמן עיכול היא אינה גדלה."]}, {"src": "בוחן שיעור 3", "stem": "בזמן מאמץ גופני הפנים מאדימות. מה היתרון בהגברה של זרימת הדם לעור בזמן מאמץ?", "opts": ["יותר חמצן מגיע לתאי העור", "יותר חום עובר מהגוף לסביבה, וטמפרטורת הגוף נשמרת", "העור מייצר יותר תאי דם אדומים", "פחות דם מגיע לשרירים"], "ans": 1, "ok": "נכון. במאמץ משתחרר חום רב בשרירים. זרימת דם מוגברת בכלי הדם ההיקפיים שבעור מגבירה את מעבר החום לסביבה.", "no": ["צריכת החמצן של תאי העור אינה עולה במאמץ. מה משתחרר בכמות גדולה בשרירים פעילים?", "", "תאי דם אדומים נוצרים במח העצם, לא בעור.", "במאמץ הזרימה אל השרירים עולה, במקביל לעלייה בזרימה אל העור."]}, {"src": "בוחן שיעור 3", "stem": "המשתתפים בתחרות ריצה מזיעים, גם כאשר טמפרטורת הסביבה נמוכה. מה גורם לכך?", "opts": ["נשימה תאית מוגברת בתאי שריר", "הגברה של זרימת הדם למוח", "ירידה בזרימת הדם לעור", "הפרשה מוגברת של אריתרופויטין"], "ans": 0, "ok": "נכון. בנשימה תאית מוגברת בשרירים משתחרר חום רב, וטמפרטורת הגוף עולה גם בסביבה קרה.", "no": ["", "אספקת הדם אל המוח כמעט קבועה, והיא אינה מקור החום. באילו תאים קצב הנשימה התאית עולה בריצה?", "במאמץ הזרימה אל העור עולה, ומעבר החום מהגוף לסביבה גדל.", "אריתרופויטין הוא הורמון שמגביר את יצירת תאי הדם האדומים. הוא אינו קשור להזעה."]}, {"src": "בוחן שיעור 3", "stem": "איזה מן השינויים יגדיל את תפוקת הלב?", "opts": ["הגברה של קצב חילוף הגזים בנאדיות", "הגברת ההזעה", "האטת הדופק", "הגדלה של נפח הפעימה"], "ans": 3, "ok": "נכון. תפוקת לב = קצב לב × נפח פעימה.", "no": ["קצב חילוף הגזים משפיע על כמות החמצן בדם, ולא על נפח הדם שהלב מזרים בדקה.", "הזעה מגבירה את מעבר החום מהגוף לסביבה. היא אינה משנה את תפוקת הלב.", "האטת הדופק מקטינה את תפוקת הלב: תפוקת לב = קצב לב × נפח פעימה.", ""]}, {"src": "בוחן שיעור 3", "stem": "בשתי הדקות הראשונות של פעילות גופנית עולים גם קצב הלב וגם נפח הפעימה. מה התוצאה של שני השינויים יחד?", "opts": ["כמות הדם בגוף גדלה", "תפוקת הלב עולה, ויותר דם מגיע בכל דקה לשרירים הפעילים", "לחץ הדם בוורידים עולה על לחץ הדם בעורקים", "זרימת הדם למוח גדלה פי 10"], "ans": 1, "ok": "נכון. קצב לב גבוה ונפח פעימה גדול מגדילים את כמות הדם שהלב מזרים בכל דקה.", "no": ["כמות הדם בגוף אינה משתנה. אותו דם עובר בלב יותר פעמים בכל דקה.", "", "לחץ הדם בעורקים גבוה מלחץ הדם בוורידים בכל מצב. הפרש הלחצים הזה מניע את זרימת הדם.", "אספקת הדם אל המוח כמעט קבועה. העלייה הגדולה היא בזרימה אל השרירים הפעילים."]}, {"src": "בוחן שיעור 3", "stem": "באיזו דרך משתנה כמות הדם שמגיעה לאיבר מסוים במצבי פעילות שונים?", "opts": ["דרך שינוי בכמות הדם הכללית בגוף", "דרך התרחבות או הצטמצמות של כלי הדם המובילים אל האיבר", "דרך מעבר דם מהוורידים ישירות לעורקים", "דרך הוספה של נימים חדשים בכל מאמץ"], "ans": 1, "ok": "נכון. כשכלי הדם המובילים לאיבר מתרחבים, יותר דם זורם אליו; כשהם מצטמצמים, פחות דם זורם אליו.", "no": ["כמות הדם הכללית בגוף קבועה. מה משתנה בכלי הדם שמובילים אל האיבר?", "", "הדם עובר מהוורידים אל העורקים רק דרך הלב (ובמחזור הקטן, דרך הריאות).", "נימים חדשים אינם נוצרים בתוך דקות. מה שמשתנה במהירות הוא הקוטר של כלי הדם המובילים אל האיבר."]}, {"src": "בוחן שיעור 3", "stem": "מדוע לא כל האיברים יכולים לקבל זרימת דם מרבית באותו זמן?", "opts": ["כי כמות הדם בגוף קבועה, ותפוקת הלב מוגבלת", "כי הדם זורם רק בכיוון אחד", "כי במוח אין נימים", "כי העורקים אינם גמישים"], "ans": 0, "ok": "נכון. הדם מתחלק בין האיברים לפי הפעילות שלהם, מתוך כמות קבועה.", "no": ["", "הזרימה אכן חד־כיוונית, אבל זה אינו מסביר את המגבלה. מה קבוע בגוף, ומה מוגבל בפעולת הלב?", "בכל איבר יש נימים, גם במוח.", "דופן העורקים גמישה, ושרירים בדופן כלי הדם משנים את הקוטר שלהם."]}];
+renderQuestions($('qs'),Q,'q');
+/* בדף הטעויות ובדוח: נוסח השאלה עצמה, לא רק המספר שלה */
+const key=i=>`שאלה ${i+1}: ${Q[i].stem}`,rec0=Lab.rec;Lab.rec=function(t,...a){return rec0.call(this,key(+t.match(/\d+/)[0]-1),...a)};
+function prog(){const r=Object.values(Lab.log),d=r.length,ok=r.filter(x=>x.ok).length;
+  $('pDone').textContent=`עניתם על ${d} מתוך ${Q.length}`;
+  $('pOk').textContent=d?`נכון בניסיון הראשון: ${ok} מתוך ${d}`+(d===Q.length?` · ציון ${Math.round(ok/d*100)}`:''):'';
+  if(d===Q.length)$('dlmsg').textContent='עניתם על כל השאלות. אפשר להוריד את הקובץ.'}
+$('qs').addEventListener('change',prog);
+$('dl').onclick=()=>{const left=Q.length-Object.keys(Lab.log).length;
+  if(left){$('dlmsg').textContent=`נשארו ${left} שאלות בלי תשובה. ענו עליהן, ואז הורידו את הקובץ.`;const f=Q.findIndex((q,i)=>!Lab.log[key(i)]);if(f>=0)$('q'+f).scrollIntoView({behavior:'smooth',block:'center'});return}
+  if(!(window.STUDENT&&window.STUDENT.name)){$('gate').hidden=false;$('gErr').textContent='לפני ההורדה: כתבו שם וכיתה, הם יופיעו בקובץ.';$('gName').focus();window.AFTER_GATE=()=>$('dl').click();return}
+  labPdf('בוחן: ויסות זרימת הדם לרקמות','בוחן-ויסות-זרימת-הדם')};
+</script>
+<script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
+try{const s=JSON.parse(localStorage.getItem('hadam-student')||'{}');n.value=s.name||'';c.value=s.cls||''}catch(e){}
+document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
+ if(nm.replace(/\s/g,'').length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}
+ try{localStorage.setItem('hadam-student',JSON.stringify({name:nm,cls:cl}))}catch(e){}
+ document.querySelectorAll('[data-fill="name"]').forEach(e=>e.textContent='👋 '+nm+' · '+cl);
+ window.STUDENT={name:nm,cls:cl};g.hidden=true;if(window.AFTER_GATE){const f=window.AFTER_GATE;window.AFTER_GATE=null;f()}};
+n.addEventListener('keydown',e=>{if(e.key==='Enter')c.focus()});c.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('gGo').click()});
+n.focus()})();</script>
+</body>
+</html>
