@@ -662,6 +662,14 @@ html,body{background:#f1e2df}
 .p4 .cd h3 i{font-style:normal;width:44px;height:44px;border-radius:50%;background:var(--c);color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center}
 .p4 .cd p{font-size:27px;line-height:1.35;margin-top:6px}
 .p4 .cd .n{font-weight:800;color:var(--c)}
+
+.p4b .wrow{position:absolute;left:70px;right:70px;top:170px;display:grid;grid-template-columns:repeat(5,1fr);gap:22px}
+.p4b .wc{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;border-top:10px solid var(--c);display:flex;flex-direction:column}
+.p4b .wc .ph{height:400px;background:#f3eef0;position:relative;overflow:hidden}.p4b .wc .ph img{width:100%;height:100%;object-fit:cover}.p4b .wc .ph img.z{position:absolute;height:auto;max-width:none;object-fit:fill}
+.p4b .wc h3{font-size:34px;color:var(--c);padding:14px 18px 0}
+.p4b .wc .pc{font-size:24px;font-weight:800;color:var(--dark);padding:2px 18px}
+.p4b .wc p{font-size:23px;line-height:1.35;padding:6px 18px 18px}
+.p4b .tip{position:absolute;left:80px;right:80px;top:920px;text-align:center;font-size:29px;font-weight:700;color:var(--dark)}
 .p4 .tip{position:absolute;left:80px;top:930px;width:1760px;text-align:center;font-size:30px;font-weight:700;color:var(--dark)}
 /* חנוכייה */
 .p5 .real{position:absolute;right:80px;top:165px;width:560px;border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 18px 40px -24px rgba(60,20,25,.5)}
@@ -682,6 +690,25 @@ html,body{background:#f1e2df}
 </style>
 
 <style>
+.tree2 .bx{position:absolute;padding:12px 16px;border-radius:20px;text-align:center;background:color-mix(in srgb,var(--c) 9%,#fff);border:2px solid color-mix(in srgb,var(--c) 60%,transparent)}
+.tree2 .bx b{display:block;font-size:31px;font-weight:800;color:var(--c);line-height:1.15}
+.tree2 .bx span{display:block;font-size:22px;font-weight:600;line-height:1.3;color:var(--fg);margin-top:3px}
+.tree2 svg.ar{position:absolute;inset:0;width:1920px;height:1080px}
+.tree2 svg.ar path{fill:none;stroke:#8a6b6f;stroke-width:4}
+.tree2 .hsc{left:760px;top:150px;width:400px;--c:var(--dark);border-width:3px}
+.tree2 .self{left:1300px;top:150px;width:360px;--c:var(--prot)}
+.tree2 .l2{top:400px;width:240px}
+.tree2 .mk{top:385px;padding:8px 10px}
+.tree2 .mk .ph{height:84px;border-radius:12px;overflow:hidden;margin-bottom:4px}.tree2 .mk .ph img{width:100%;height:100%;object-fit:cover}
+.tree2 .cl{position:absolute;top:640px;width:240px;background:#fff;border:1px solid var(--line);border-top:8px solid var(--c);border-radius:18px;overflow:hidden;text-align:center}
+.tree2 .cl .ph{height:170px;position:relative;overflow:hidden;background:#f3eef0}
+.tree2 .cl .ph img{width:100%;height:100%;object-fit:cover}
+.tree2 .cl .ph img.z{position:absolute;height:auto;max-width:none;object-fit:fill}
+.tree2 .cl b{display:block;font-size:28px;font-weight:800;color:var(--c);padding:8px 8px 0}
+.tree2 .cl span{display:block;font-size:20px;font-weight:600;line-height:1.25;padding:2px 10px 12px}
+.tree2 .nb{position:absolute;left:150px;right:150px;top:975px;text-align:center;font-size:27px;font-weight:700;color:var(--dark)}
+
+
 .s1 .ph{position:absolute;left:90px;top:190px;width:900px;height:620px;border-radius:30px;overflow:hidden;box-shadow:0 24px 50px -26px rgba(60,20,25,.6)}
 .s1 .ph img{width:100%;height:100%;object-fit:cover}
 .s1{background:radial-gradient(900px 600px at 20% 40%,rgba(179,32,47,.10),transparent 70%),linear-gradient(180deg,#fff,#fbf6f4 60%,#f5e6e3)}
@@ -764,25 +791,30 @@ html,body{background:#f1e2df}
   <div class="notes">ההגדרה של תא גזע לקוחה מתוכנית הלימודים (נושא התא, "מ־DNA לחלבון"): תא שלא עבר התמיינות סופית, בעל יכולת להתפתח לתאים מסוגים שונים, או להמשיך להתחלק כתא גזע. מגקריוציט אינו מושג חובה.</div>
 </section>
 
-<section class="slide glow tree" data-title="עץ התאים" style="--ga:var(--dark);--gb:var(--plt)">
+<section class="slide glow tree2" data-title="עץ התאים" style="--ga:var(--dark);--gb:var(--wbc)">
   <h2 class="t">מתא גזע אחד לכל תאי הדם</h2>
   <svg class="ar" viewBox="0 0 1920 1080" aria-hidden="true">
-    <path class="b" data-g="1" d="M1160 225 C1260 225 1300 260 1405 260"/>
-    <path class="b" data-g="2" d="M960 330 L1590 470 M960 330 L960 470 M960 330 L330 470"/>
-    <path class="b" data-g="3" d="M1590 610 L1590 740"/>
-    <path class="b" data-g="4" d="M960 610 L960 740"/>
-    <path class="b" data-g="5" d="M330 610 L330 740"/>
+    <path class="b" data-g="1" d="M1160 197 L1300 197"/>
+    <path class="b" data-g="2" d="M960 245 L1740 400 M960 245 L1480 400 M960 245 L700 400"/>
+    <path class="b" data-g="3" d="M1740 500 L1740 640"/>
+    <path class="b" data-g="4" d="M1480 520 L1480 640"/>
+    <path class="b" data-g="5" d="M700 470 L1220 640 M700 470 L960 640 M700 470 L700 640 M700 470 L440 640 M700 470 L180 640"/>
   </svg>
   <div class="bx hsc"><b>תא גזע של הדם</b><span>במח העצם האדום</span></div>
   <div class="bx self b" data-g="1"><b>עוד תא גזע</b><span>בחלוקה נשמר מאגר תאי הגזע</span></div>
-  <div class="bx rbcp b" data-g="2"><b>תאים מתמיינים</b><span>מכילים גרעין ומייצרים המוגלובין</span></div>
-  <div class="bx mk b" data-g="2"><b>מגקריוציט</b><span>תא ענק עם גרעין גדול</span></div>
-  <div class="bx wbcp b" data-g="2"><b>תאים מתמיינים</b><span>מסוגים שונים</span></div>
-  <div class="bx rbc b" data-g="3"><b>תא דם אדום</b><span>בסוף ההתמיינות הגרעין יוצא מהתא</span></div>
-  <div class="bx plt b" data-g="4"><b>טסיות דם</b><span>שברי ציטופלסמה של המגקריוציט</span></div>
-  <div class="bx wbc b" data-g="5"><b>תאי דם לבנים</b><span>סוגים שונים, כולם עם גרעין</span></div>
-  <p class="nb b" data-g="6">כל תאי הגוף מכילים את אותו מידע תורשתי. ההבדל בין סוגי התאים נובע מהגנים שפעילים בכל סוג.</p>
-  <div class="notes">התרשים מפושט: בין תא הגזע לתאים הבוגרים יש כמה שלבי ביניים. אין צורך להכיר את שמותיהם.</div>
+  <div class="bx l2 b" data-g="2" style="left:1620px;--c:var(--red)"><b>תאים מתמיינים</b><span>עם גרעין, מייצרים המוגלובין</span></div>
+  <div class="bx l2 mk b" data-g="2" style="left:1360px;--c:var(--plt)"><div class="ph"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Megakaryocyte_in_bone_marrow.jpg?width=500" alt="מגקריוציט במשטח מח עצם"></div><b>מגקריוציט</b><span>תא ענק</span></div>
+  <div class="bx l2 b" data-g="2" style="left:60px;width:1280px;--c:var(--wbc)"><b>תאים מתמיינים לתאי דם לבנים</b><span>חמישה סוגים, לכולם יש גרעין</span></div>
+  <div class="cl b" data-g="3" style="left:1620px;--c:var(--red)"><div class="ph"><img style="transform:scale(2.2);transform-origin:18% 50%" src="https://commons.wikimedia.org/wiki/Special:FilePath/Red_White_Blood_cells.jpg?width=700" alt="תא דם אדום במיקרוסקופ אלקטרונים סורק"></div><b>תא דם אדום</b><span>הגרעין יוצא בסוף ההתמיינות</span></div>
+  <div class="cl b" data-g="4" style="left:1360px;--c:var(--plt)"><div class="ph"><img style="transform:scale(3);transform-origin:50% 50%" src="https://commons.wikimedia.org/wiki/Special:FilePath/Red_White_Blood_cells.jpg?width=900" alt="טסית דם במיקרוסקופ אלקטרונים סורק"></div><b>טסיות דם</b><span>שברי ציטופלסמה של המגקריוציט</span></div>
+  <div class="cl b" data-g="5" style="left:1100px;--c:#4f57c4"><div class="ph"><img class="z" style="width:600px;left:-152px;top:-146px" src="https://commons.wikimedia.org/wiki/Special:FilePath/Blood-neutrophil1.jpg?width=829" alt="נויטרופיל"></div><b>נויטרופיל</b><span>גרעין מחולק לאונות</span></div>
+  <div class="cl b" data-g="5" style="left:840px;--c:#2b7a9e"><div class="ph"><img class="z" style="width:1575px;left:-746px;top:-541px" src="https://commons.wikimedia.org/wiki/Special:FilePath/Blood-lymphocyte1.jpg?width=2048" alt="לימפוציט"></div><b>לימפוציט</b><span>גרעין עגול וגדול</span></div>
+  <div class="cl b" data-g="5" style="left:580px;--c:#6b4fa0"><div class="ph"><img class="z" style="width:1344px;left:-820px;top:-509px" src="https://commons.wikimedia.org/wiki/Special:FilePath/Blood-monocyte.jpg?width=2048" alt="מונוציט"></div><b>מונוציט</b><span>גרעין בצורת כליה</span></div>
+  <div class="cl b" data-g="5" style="left:320px;--c:#c0602a"><div class="ph"><img class="z" style="width:942px;left:-464px;top:-225px" src="https://commons.wikimedia.org/wiki/Special:FilePath/Blood-eosinophil2.jpg?width=2048" alt="אאוזינופיל"></div><b>אאוזינופיל</b><span>גרגירים כתומים־אדומים</span></div>
+  <div class="cl b" data-g="5" style="left:60px;--c:#8e3fa8"><div class="ph"><img class="z" style="width:1066px;left:-332px;top:-243px" src="https://commons.wikimedia.org/wiki/Special:FilePath/Blood-basophil2.jpg?width=500" alt="בזופיל"></div><b>בזופיל</b><span>גרגירים סגולים כהים</span></div>
+  <p class="nb b" data-g="6">כל התאים האלה מתפתחים מאותו תא גזע, עם אותו מידע תורשתי. ההבדל ביניהם נובע מהגנים שפעילים בכל סוג במהלך ההתמיינות.</p>
+  <div class="credit">צילומים: תאי דם לבנים: Echinaceapallida, CC BY-SA 4.0 · מגקריוציט: Animalculist, CC BY-SA 4.0 · תא דם אדום וטסית: NCI (מיקרוסקופ אלקטרונים סורק), נחלת הכלל · ויקישיתוף</div>
+  <div class="notes">התרשים מפושט: בין תא הגזע לתאים הבוגרים יש כמה שלבי ביניים. אין צורך להכיר את שמותיהם. צילומי תאי הדם הלבנים: משטחי דם בצביעת רייט, ולכן הצבעים סגולים וורודים.</div>
 </section>
 
 <section class="slide glow s5" data-title="טסיות מתא ענק" style="--ga:var(--plt);--gb:var(--red)">
