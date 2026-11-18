@@ -753,7 +753,7 @@ html,body{background:#f1e2df}
 .p6 .qq div{padding:26px 34px;border-radius:24px;background:#fff;border:1px solid var(--line);border-right:9px solid var(--c);font-size:36px;line-height:1.4}
 .p6 .qq b{color:var(--c)}
 </style>
-</head>
+<style id="navcss">#navlinks{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:120;display:flex;gap:8px;direction:rtl;font-family:system-ui,-apple-system,sans-serif}#navlinks a{background:rgba(18,18,24,.78);color:#f2f0f5;text-decoration:none;font-size:14px;font-weight:700;padding:7px 13px;border-radius:999px;opacity:.6;transition:opacity .2s}#navlinks a:hover,#navlinks a:focus{opacity:1}:fullscreen #navlinks{display:none}@media print{#navlinks{display:none}}</style></head>
 <body>
 <div id="deck"><div id="stage">
 <section class="slide s1" data-title="פתיחה">
@@ -3539,5 +3539,5 @@ window.deck = {next, prev, goTo, openNotes, openGrid, closeGrid, toast, refresh,
 })();
 </script>
 
-</body>
+<nav id="navlinks" aria-label="ניווט"><a href="./">→ לדף השיעור</a><a href="../">🏠 דף הבית</a></nav></body>
 </html>

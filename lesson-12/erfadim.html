@@ -755,7 +755,7 @@ document.addEventListener('click',function(e){var s=e.target.closest('.rd .sn');
 var c=s.classList.contains('c1')?1:s.classList.contains('c2')?2:s.classList.contains('c3')?3:0;
 s.classList.remove('c1','c2','c3');c=(c+1)%4;if(c)s.classList.add('c'+c);},true);
 </script>
-</head>
+<style id="navcss">#navlinks{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:120;display:flex;gap:8px;direction:rtl;font-family:system-ui,-apple-system,sans-serif}#navlinks a{background:rgba(18,18,24,.78);color:#f2f0f5;text-decoration:none;font-size:14px;font-weight:700;padding:7px 13px;border-radius:999px;opacity:.6;transition:opacity .2s}#navlinks a:hover,#navlinks a:focus{opacity:1}:fullscreen #navlinks{display:none}@media print{#navlinks{display:none}}</style></head>
 <body>
 <div id="deck"><div id="stage">
 <section class="slide v1" data-title="פתיחה">
@@ -3577,5 +3577,5 @@ window.deck = {next, prev, goTo, openNotes, openGrid, closeGrid, toast, refresh,
 })();
 </script>
 
-</body>
+<nav id="navlinks" aria-label="ניווט"><a href="./">→ לדף השיעור</a><a href="../">🏠 דף הבית</a></nav></body>
 </html>

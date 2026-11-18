@@ -954,7 +954,7 @@ html,body{background:#f1e2df}
 .cz .grid div{display:grid;grid-template-columns:1fr 150px;gap:16px;align-items:center;padding:16px 24px;border-radius:18px;background:#fff;border:1px solid var(--line);border-right:9px solid var(--c);font-size:28px;line-height:1.35}
 .cz .grid span{text-align:center;font-size:24px;font-weight:800;border-radius:12px;padding:6px 4px}
 </style>
-</head>
+<style id="navcss">#navlinks{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:120;display:flex;gap:8px;direction:rtl;font-family:system-ui,-apple-system,sans-serif}#navlinks a{background:rgba(18,18,24,.78);color:#f2f0f5;text-decoration:none;font-size:14px;font-weight:700;padding:7px 13px;border-radius:999px;opacity:.6;transition:opacity .2s}#navlinks a:hover,#navlinks a:focus{opacity:1}:fullscreen #navlinks{display:none}@media print{#navlinks{display:none}}</style></head>
 <body>
 <div id="deck"><div id="stage">
 <section class="slide glow v2" data-title="פתיחה: בוב ביימון" style="--ga:var(--dark);--gb:var(--prot)">
@@ -3886,5 +3886,5 @@ window.deck = {next, prev, goTo, openNotes, openGrid, closeGrid, toast, refresh,
 })();
 </script>
 
-</body>
+<nav id="navlinks" aria-label="ניווט"><a href="./">→ לדף השיעור</a><a href="../">🏠 דף הבית</a></nav></body>
 </html>
