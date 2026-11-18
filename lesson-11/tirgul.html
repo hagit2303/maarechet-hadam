@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>תרגול: הרכב הדם ותאי גזע</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Atlas lab worksheet: students write what they see, then reveal the identification cues and self-mark once (locked); mistakes page + PDF report */
+:root{--bg:#F4F7FA;--paper:#fff;--ink:#13233A;--muted:#5E6E82;--rich:#D7263D;--poor:#2457C5;--line:#DCE3EA;--accent:#13233A;--accent-soft:#EAF0F6;--tag:#D7263D;--tag-ink:#fff;--good:#1E7B4D;--good-bg:#E8F4EE;--bad:#B3261E;--bad-bg:#FBE7E5;--warn-bg:#FFF8E1;--gold:#F2B705}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Assistant,Arial,sans-serif;font-size:18px;line-height:1.5;padding-inline:16px;overflow-x:hidden}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:1000px;margin:auto;padding-block:14px 40px;display:flex;flex-direction:column;gap:14px}
+.homebar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.homebar a{background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:20px;padding:4px 14px;font-weight:800;font-size:14px;text-decoration:none}
+.homebar .who{margin-inline-start:auto;font-weight:800;color:var(--rich)}
+.kick{font-weight:800;color:var(--rich);font-size:14px}
+h1{font-size:clamp(30px,5vw,46px);font-weight:800;line-height:1.05}h1 span{color:var(--rich)}
+h2{font-size:clamp(20px,2.6vw,26px);font-weight:800}
+.hero{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset-inline:0;bottom:0;height:6px;background:linear-gradient(to left,var(--rich),var(--poor))}
+.routine{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:15px}
+.routine b{background:var(--accent-soft);border-radius:20px;padding:3px 12px}.routine i{font-style:normal;color:var(--muted)}
+.part-h{display:flex;gap:12px;align-items:center;margin-top:14px}
+.part-h .n{width:44px;height:44px;border-radius:12px;background:var(--ink);color:#fff;font-weight:800;font-size:22px;display:flex;align-items:center;justify-content:center;flex:none}
+.part-h:nth-of-type(even) .n{background:var(--poor)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.hint{color:var(--muted);font-size:.92rem}
+.fb{border-radius:12px;padding:10px 14px;line-height:1.5}
+.fb:empty{display:none}
+.fb.ok{background:var(--good-bg);border-inline-start:6px solid var(--good)}
+.fb.no{background:var(--bad-bg);border-inline-start:6px solid var(--bad)}
+.note{background:var(--warn-bg);border-inline-start:6px solid var(--gold);border-radius:12px;padding:10px 14px}
+.ck{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:9px 18px;font-weight:700;align-self:flex-start}
+.ck[disabled]{opacity:.45;cursor:not-allowed}
+.ck.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+/* worksheet table */
+.tbl{display:flex;flex-direction:column;border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+.tr{display:grid;grid-template-columns:minmax(9em,.6fr) minmax(0,2fr);border-top:1px solid var(--line)}
+.tr:first-child{border-top:0}
+.tr.th{background:var(--ink);color:#fff;font-weight:800}
+.tr.th>div{padding:8px 12px}
+.tr .nm{padding:10px 12px;font-weight:800;background:var(--accent-soft);display:flex;align-items:flex-start}
+.tr .cell{padding:8px 10px;display:flex;flex-direction:column;gap:8px;min-width:0}
+textarea{width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);resize:vertical}
+textarea[readonly]{opacity:.85}
+.key{background:var(--warn-bg);border-radius:10px;padding:8px 12px;font-size:16px}
+.key b{display:block;font-size:14px;color:var(--muted)}
+.key label{display:flex;gap:8px;align-items:flex-start;margin-top:6px;font-weight:700;cursor:pointer}
+.key input{margin-top:5px;accent-color:var(--good);flex:none}
+.tr.y .nm{background:var(--good-bg)}.tr.n .nm{background:var(--bad-bg)}
+ol.do{padding-inline-start:1.4em;display:flex;flex-direction:column;gap:4px}
+.done-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.mi{border-inline-start:4px solid var(--bad);background:var(--bg);border-radius:8px;padding:8px 12px;margin-bottom:8px}.mi p{margin:2px 0}
+.ri{color:var(--good);font-weight:700}
+.dl{background:var(--tag);color:var(--tag-ink);border:0;border-radius:14px;font-size:1.15rem;font-weight:800;padding:14px 24px;align-self:flex-start}
+.sgate{position:fixed;inset:0;z-index:100;background:rgba(19,35,58,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.sgate[hidden]{display:none}
+.sgate .gbox{background:#fff;border:3px solid var(--tag);border-radius:18px;max-width:420px;width:100%;padding:20px;display:grid;gap:10px}
+.sgate label{display:grid;gap:4px;font-weight:700}
+.sgate input{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.sgate .gerr{color:var(--bad);font-weight:700;min-height:1em}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:10px 20px;font-weight:800}
+#report{position:fixed;left:0;top:0;display:none;z-index:-1;pointer-events:none;width:760px;background:#fff;color:#13233A;font-family:Arial,sans-serif;padding:24px;direction:rtl}
+#report h1{font-size:24px;margin-bottom:6px}
+#report .rr{border-bottom:1px solid #DCE3EA;padding:5px 0;font-size:14px;display:flex;gap:8px}
+#report .rr b{min-width:200px}
+#report .y{color:#1E7B4D;font-weight:700}#report .n{color:#B3261E;font-weight:700}
+.qn{display:inline-block;align-self:flex-start;font-size:.78rem;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--tag);color:var(--tag-ink)}
+.src{font-size:.8rem;color:var(--muted)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opts label{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;line-height:1.45;cursor:pointer}
+.opts label:hover{border-color:var(--accent)}
+.opts label input{margin-top:5px;accent-color:var(--accent);flex:none}
+.opts label.right{background:var(--good-bg);border-color:var(--good)}
+.opts label.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.vid{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden}
+.vid iframe,.vid #yt{position:absolute;inset:0;width:100%;height:100%;border:0}
+.sub{position:absolute;inset-inline:4%;bottom:15%;text-align:center;pointer-events:none;z-index:2}
+.sub span{background:rgba(0,0,0,.78);color:#fff;font-size:clamp(15px,2.4vw,22px);font-weight:600;line-height:1.55;padding:2px 10px;border-radius:6px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.vid:fullscreen{border-radius:0}.vid:fullscreen .sub span{font-size:clamp(20px,3vw,34px)}
+.vbar{display:flex;gap:8px;flex-wrap:wrap}
+.vbar button{background:#fff;color:var(--ink);border:1.5px solid var(--ink);border-radius:20px;padding:4px 14px;font-weight:700;font-size:15px}
+.vbar button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:6px 14px;font-size:15px}
+.terms b{color:var(--rich)}
+.vq .lockmsg{display:none;font-weight:800;color:var(--muted)}
+.vq.locked{border-style:dashed;background:#FAFBFC}
+.vq.locked>*:not(.qn):not(.lockmsg){display:none}
+.vq.locked .lockmsg{display:block}
+.resume{background:transparent;color:var(--accent);border:1.5px solid var(--accent);border-radius:12px;padding:7px 16px;font-weight:700;align-self:flex-start;display:none}
+.vq.answered .resume{display:inline-block}
+footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:12px}
+@media(max-width:640px){.tr{grid-template-columns:1fr}.tr.th>div+div{display:none}.tr .nm{padding:8px 12px}}
+</style>
+<style>
+.prog{position:sticky;top:0;z-index:5;background:var(--ink);color:#fff;border-radius:0 0 12px 12px;padding:6px 14px;font-weight:800;font-size:16px;display:flex;gap:14px;flex-wrap:wrap}
+.prog span:last-child{margin-inline-start:auto}
+#qs{display:grid;gap:14px}
+.opts label:has(input:disabled){cursor:default}
+</style>
+</head>
+<body>
+<div class="sgate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו שם מלא וכיתה. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button class="btn" id="gGo" type="button">מתחילים ←</button></div></div>
+
+<div class="wrap">
+  <nav class="homebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a><span class="who" data-fill="name"></span></nav>
+  <section class="hero">
+    <div class="kick">ביולוגיה · כיתה י' · שיעור 11 · תרגול עם בדיקה עצמית</div>
+    <h1>הרכב הדם <span>ותאי גזע</span></h1>
+    <p>5 שאלות רב־ברירה מתוך בחינות הבגרות. בכל שאלה יש <b>ניסיון אחד</b>: אחרי הבחירה התשובה ננעלת, ומופיעים התשובה הנכונה וההסבר. שאלה שבה טעיתם נכנסת ל"דף הטעויות שלי". בסוף מורידים קובץ PDF ומעלים אותו למשימה ב־Classroom.</p>
+    <div class="routine"><b>1 קוראים וחושבים</b><i>←</i><b>2 בוחרים פעם אחת</b><i>←</i><b>3 קוראים את ההסבר</b><i>←</i><b>⬇ קובץ</b></div>
+  </section>
+  <div class="prog" role="status"><span id="pDone">עניתם על 0 מתוך 5</span><span id="pOk"></span></div>
+  <div id="qs"></div>
+
+  <section class="card">
+    <h2>⬇ סיימתם? מורידים את הקובץ</h2>
+    <p class="hint">בקובץ: השם, הכיתה, התשובה שבחרתם בכל שאלה, הציון בניסיון הראשון ודף הטעויות. אחר כך מעלים אותו למשימה ב־Classroom.</p>
+    <button class="dl" id="dl" type="button">⬇ הורדת קובץ PDF</button><p class="hint" id="dlmsg"></p>
+  </section>
+
+  <footer>ביולוגיה · מערכת הדם · שיעור 11: רקמת הדם · היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. נבנתה על ידי חגית ברגמן.</footer>
+</div>
+<div id="report"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../assets/lab.js"></script>
+<script src="../assets/pdf.js"></script>
+<script>
+window.REPORT_FOOT='ביולוגיה · מערכת הדם · שיעור 11: תרגול הרכב הדם ותאי גזע';
+const Q=[{"src": "בגרות קיץ 2021, שאלה 1", "stem": "באיזה מן הזוגות שלפניכם יש התאמה בין רכיב הדם לבין תפקידו?", "opts": ["תאי דם אדומים — הובלת הורמונים", "נוזל הדם (פלסמה) — ייצור ATP", "תאי דם לבנים — הובלת CO₂", "טסיות (לוחיות) דם — קרישת דם"], "ans": 3, "ok": "נכון. הטסיות הן שברי תאים שנוצרים מהמגקריוציט במח העצם, והן משתתפות בקרישת הדם.", "no": ["תאי הדם האדומים מובילים בעיקר חמצן, הקשור להמוגלובין. ההורמונים נישאים בפלסמה.", "ATP נוצר בתאים, בתהליך הנשימה התאית. הפלסמה היא נוזל של מים, חלבונים ומומסים, והיא מובילה חומרים.", "תאי הדם הלבנים משתתפים בהגנה על הגוף. רוב ה־CO₂ נישא בפלסמה, בצורת יוני ביקרבונט.", ""]}, {"src": "בגרות קיץ 2025, שאלה 6", "stem": "באיזו מן האפשרויות שלפניכם סדר המושגים הוא מן הקטן לגדול?", "opts": ["המוגלובין, ריבוזום, תא דם אדום, נים דם", "תא דם אדום, ריבוזום, נים דם, המוגלובין", "ריבוזום, תא דם אדום, המוגלובין, נים דם", "המוגלובין, ריבוזום, נים דם, תא דם אדום"], "ans": 0, "ok": "נכון. המוגלובין הוא מולקולת חלבון. ריבוזום גדול ממנה, כי הוא בנוי מחלבונים רבים ומ־RNA. בתא דם אדום יש מאות מיליוני מולקולות המוגלובין, ונים דם הוא צינור שדופנו בנויה מתאים רבים.", "no": ["", "תא דם אדום הוא תא שלם, ובתוכו מאות מיליוני מולקולות המוגלובין. לכן הוא גדול מהמוגלובין ומריבוזום.", "ריבוזום בנוי מכמה חלבונים ומ־RNA, ולכן הוא גדול ממולקולת חלבון אחת כמו המוגלובין. ובתא דם אדום יש מולקולות המוגלובין רבות.", "תאי הדם האדומים זורמים בתוך נימי הדם, בזה אחר זה. דופן הנים בנויה מתאים רבים, ולכן הנים גדול מתא דם אדום."]}, {"src": "בגרות קיץ 2026 (מועד חלופי), שאלה 11", "stem": "בבלוטת הלבלב תאים מסוג אחד מייצרים את ההורמון אינסולין, ותאים מסוג אחר מייצרים אנזימי עיכול. מה גורם להבדל בין שני סוגי התאים?", "opts": ["השוני במבנה של מולקולות ה־DNA בשני סוגי התאים", "מבנה שונה של הריבוזומים בשני סוגי התאים", "מבנה שונה של מולקולות ה־RNA המוביל (tRNA) בשני סוגי התאים", "הפעלה של גנים שונים בשני סוגי התאים"], "ans": 3, "ok": "נכון. בכל תאי הגוף יש אותו מידע תורשתי. בתהליך ההתמיינות פועלים בכל סוג תא גנים אחרים, ולכן נוצרים בו חלבונים אחרים. כך גם מתא גזע אחד במח העצם מתפתחים סוגים שונים של תאי דם.", "no": ["כל תאי הגוף נוצרו מהביצית המופרית בחלוקות מיטוזה, ולכן יש בהם אותו DNA. מה שונה בין התאים?", "הריבוזומים בנויים באותו אופן בכל התאים, והם מתרגמים כל mRNA שמגיע אליהם.", "ה־tRNA מוביל חומצות אמינו לריבוזום, והוא זהה בכל סוגי התאים. ההבדל נוצר כבר בשלב שבו נקבע אילו גנים פועלים.", ""]}, {"src": "בגרות קיץ 2026 (מועד חלופי), שאלה 39 (מעובדת לשאלה רב־ברירה)", "stem": "אנמיה חרמשית היא מחלה תורשתית: במולקולות ההמוגלובין של החולים יש חומצה אמינית אחת שונה מזו שבהמוגלובין התקין. האלל הפגום נמצא בכל תאי הגוף של החולים. מדוע נפגעים רק תאי הדם האדומים?", "opts": ["כי הגן להמוגלובין פועל רק בתאים שמתמיינים לתאי דם אדומים, ולכן רק בהם נוצר המוגלובין", "כי האלל הפגום נמצא רק בתאי הגזע של מח העצם", "כי לתאי הדם האדומים הבוגרים אין גרעין, ולכן אין בהם DNA", "כי המוטציה מתרחשת מחדש בכל פעם שנוצר תא דם אדום"], "ans": 0, "ok": "נכון. האלל נמצא בכל התאים, אבל הגן להמוגלובין פועל רק בתאים שמתמיינים לתאי דם אדומים במח העצם. בתאים האחרים הגן אינו פועל, ולכן לא נוצר בהם המוגלובין.", "no": ["", "לפי הנתון, האלל הפגום נמצא בכל תאי הגוף. כל התאים נוצרו מאותה ביצית מופרית.", "נכון שלתא דם אדום בוגר אין גרעין. אבל ההמוגלובין נוצר עוד לפני כן, בתאים שמהם הוא מתפתח במח העצם, וכשהיה בהם גרעין.", "המחלה תורשתית: האלל עובר מההורים, והוא נמצא בכל תאי הגוף מההתחלה."]}, {"src": "בגרות קיץ 2026 (מועד חלופי), שאלה 39 (מעובדת לשאלה רב־ברירה)", "stem": "לפניכם שתי דרכים לטיפול באנמיה חרמשית: I. השתלה של מח עצם המכיל תאי גזע שמהם נוצרים תאי דם. II. מתן עירוי דם. איזה טיפול הוא פתרון לטווח קצר יותר, ואיזה הוא פתרון לטווח ארוך יותר?", "opts": ["טיפול I לטווח קצר, וטיפול II לטווח ארוך", "טיפול II לטווח קצר, וטיפול I לטווח ארוך", "שני הטיפולים הם פתרון לטווח ארוך, כי בשניהם מקבלים תאי דם אדומים תקינים", "שני הטיפולים הם פתרון לטווח קצר, כי תאי דם אדומים מתקיימים כ־120 יום"], "ans": 1, "ok": "נכון. בעירוי מקבלים תאי דם אדומים בוגרים. אין בהם גרעין, הם אינם מתחלקים, והם מתקיימים כ־120 יום, ולכן צריך לחזור על העירוי. בהשתלה תאי הגזע מתיישבים במח העצם, מתחלקים ומתמיינים, ויוצרים תאי דם תקינים לאורך זמן.", "no": ["תאי הדם שבעירוי מתקיימים כ־120 יום ואינם מתחלקים. מה ממשיך לייצר תאים חדשים לאורך זמן?", "", "בעירוי מקבלים תאים בוגרים שאינם מתחלקים. אחרי כ־120 יום הם מתפרקים, ותאים חדשים לא נוצרים מהם.", "זה נכון לגבי העירוי. אבל תאי הגזע שבהשתלה מתחלקים במח העצם ויוצרים תאי דם חדשים כל הזמן."]}];
+renderQuestions($('qs'),Q,'q');
+/* בדף הטעויות ובדוח: נוסח השאלה עצמה, לא רק המספר שלה */
+const key=i=>`שאלה ${i+1}: ${Q[i].stem}`,rec0=Lab.rec;Lab.rec=function(t,...a){return rec0.call(this,key(+t.match(/\d+/)[0]-1),...a)};
+function prog(){const r=Object.values(Lab.log),d=r.length,ok=r.filter(x=>x.ok).length;
+  $('pDone').textContent=`עניתם על ${d} מתוך ${Q.length}`;
+  $('pOk').textContent=d?`נכון בניסיון הראשון: ${ok} מתוך ${d}`+(d===Q.length?` · ציון ${Math.round(ok/d*100)}`:''):'';
+  if(d===Q.length)$('dlmsg').textContent='עניתם על כל השאלות. אפשר להוריד את הקובץ.'}
+$('qs').addEventListener('change',prog);
+$('dl').onclick=()=>{const left=Q.length-Object.keys(Lab.log).length;
+  if(left){$('dlmsg').textContent=`נשארו ${left} שאלות בלי תשובה. ענו עליהן, ואז הורידו את הקובץ.`;const f=Q.findIndex((q,i)=>!Lab.log[key(i)]);if(f>=0)$('q'+f).scrollIntoView({behavior:'smooth',block:'center'});return}
+  if(!(window.STUDENT&&window.STUDENT.name)){$('gate').hidden=false;$('gErr').textContent='לפני ההורדה: כתבו שם וכיתה, הם יופיעו בקובץ.';$('gName').focus();window.AFTER_GATE=()=>$('dl').click();return}
+  labPdf('תרגול: הרכב הדם ותאי גזע','תרגול-הרכב-הדם-ותאי-גזע')};
+</script>
+<script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
+try{const s=JSON.parse(localStorage.getItem('hadam-student')||'{}');n.value=s.name||'';c.value=s.cls||''}catch(e){}
+document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
+ if(nm.replace(/\s/g,'').length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}
+ try{localStorage.setItem('hadam-student',JSON.stringify({name:nm,cls:cl}))}catch(e){}
+ document.querySelectorAll('[data-fill="name"]').forEach(e=>e.textContent='👋 '+nm+' · '+cl);
+ window.STUDENT={name:nm,cls:cl};g.hidden=true;if(window.AFTER_GATE){const f=window.AFTER_GATE;window.AFTER_GATE=null;f()}};
+n.addEventListener('keydown',e=>{if(e.key==='Enter')c.focus()});c.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('gGo').click()});
+n.focus()})();</script>
+</body>
+</html>
