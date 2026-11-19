@@ -1,5 +1,6 @@
 /* דפי עבודה עם בדיקה: ניסיון אחד לכל שאלה, משוב, ציון בסוף וקובץ PDF עם קוד אימות */
 :root{--bg:#F4F7FA;--paper:#fff;--ink:#13233A;--muted:#5E6E82;--rich:#D7263D;--red:#D7263D;--poor:#2457C5;--prot:#7B3FA0;--wbc:#2457C5;--line:#DCE3EA;--soft:#EAF0F6;--good:#1E7B4D;--good-bg:#E8F4EE;--bad:#B3261E;--bad-bg:#FBE7E5;--warn:#B07A00;--warn-bg:#FFF8E1;--gold:#F2B705}
+[hidden]{display:none!important}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:Assistant,Arial,sans-serif;font-size:18px;line-height:1.55;padding-inline:16px;overflow-x:hidden}
 button,input,textarea,select{font:inherit}button{cursor:pointer}
