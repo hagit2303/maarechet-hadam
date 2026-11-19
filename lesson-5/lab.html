@@ -176,7 +176,7 @@ footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);paddin
 <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="../assets/lab.js"></script>
-<script src="../assets/pdf.js"></script>
+<script src="../assets/pdf.js?v=2"></script>
 <script>
 window.REPORT_FOOT='ביולוגיה · מערכת הדם · שיעור 5: מעבדת ניתוח לב חזיר';
 
@@ -303,5 +303,6 @@ document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.t
  window.STUDENT={name:nm,cls:cl};g.hidden=true;if(window.AFTER_GATE){const f=window.AFTER_GATE;window.AFTER_GATE=null;f()}};
 n.addEventListener('keydown',e=>{if(e.key==='Enter')c.focus()});c.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('gGo').click()});
 n.focus()})();</script>
+<script src="../assets/upload-note.js?v=1"></script>
 </body>
 </html>
