@@ -1,0 +1,35 @@
+{
+  "rules": {
+    "games": {
+      "$g": {
+        ".read": "auth != null",
+        "host": {
+          ".write": "auth != null && !data.exists() && newData.val() === auth.uid"
+        },
+        "created": {
+          ".write": "auth != null && root.child('games').child($g).child('host').val() === auth.uid"
+        },
+        "state": {
+          ".write": "auth != null && root.child('games').child($g).child('host').val() === auth.uid"
+        },
+        "reveal": {
+          ".write": "auth != null && root.child('games').child($g).child('host').val() === auth.uid"
+        },
+        "players": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && root.child('games').child($g).child('host').exists()",
+            ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 40"
+          }
+        },
+        "answers": {
+          "$q": {
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid && !data.exists() && root.child('games').child($g).child('state/qk').val() === $q && root.child('games').child($g).child('state/phase').val() === 'question'",
+              ".validate": "newData.child('a').isNumber() && newData.child('a').val() >= 0 && newData.child('a').val() <= 3"
+            }
+          }
+        }
+      }
+    }
+  }
+}

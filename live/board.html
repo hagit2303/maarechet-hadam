@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>משחק חי · לוח המורה</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="live.css">
+<style>
+body{font-size:clamp(18px,1.55vw,28px)}
+.wrap{max-width:1500px;margin:auto;padding:clamp(12px,2vw,28px);display:flex;flex-direction:column;gap:18px;min-height:100vh}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.top h1{font-size:1.2em;font-weight:800}
+.top h1 span{color:var(--rich)}
+.pill{background:#fff;border:1px solid var(--line);border-radius:30px;padding:4px 16px;font-weight:700}
+.login{max-width:460px;margin:12vh auto 0;display:flex;flex-direction:column;gap:14px;font-size:19px}
+.err{color:var(--no);font-weight:700}
+.lobby{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:18px;align-items:start}
+.join{text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+.code{font-size:3.4em;font-weight:800;letter-spacing:.12em;line-height:1;color:var(--rich);font-variant-numeric:tabular-nums}
+#qr{background:#fff;padding:12px;border-radius:12px;line-height:0}
+#qr img,#qr canvas{width:min(30vh,280px)!important;height:auto!important}
+.url{font-weight:700;direction:ltr;word-break:break-all;font-size:.8em}
+.players{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{background:var(--soft);border-radius:30px;padding:3px 14px;font-weight:700;font-size:.85em}
+.chip.ok{background:var(--okbg);color:var(--ok)}.chip.no{background:var(--nobg);color:var(--no)}
+.chip.done{background:var(--ink);color:#fff}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.stage.wide{grid-template-columns:minmax(0,1fr)}
+.qcard .qimg{max-height:30vh;width:auto}
+.qcard .opts{grid-template-columns:1fr 1fr}
+@media(max-width:1100px){.qcard .opts{grid-template-columns:1fr}}
+.opt{font-size:.95em;position:relative;overflow:hidden;flex-wrap:wrap}
+.opt .tx{flex:1 1 0;min-width:0}
+.opt .cnt{flex:none;font-weight:800;font-variant-numeric:tabular-nums}
+.opt .bar{position:absolute;inset-block:0;inset-inline-start:0;background:rgba(19,35,58,.06);z-index:0;transition:width .5s}
+.opt>*:not(.bar){position:relative;z-index:1}
+.opt .names{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;margin-inline-start:46px}
+.opt .names .chip{font-size:.7em;padding:1px 10px;background:#fff;border:1px solid var(--line)}
+.side{display:flex;flex-direction:column;gap:12px}
+.big{font-size:2.6em;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.lead ol{padding-inline-start:1.3em;display:flex;flex-direction:column;gap:4px}
+.lead li b{font-variant-numeric:tabular-nums;float:left}
+table.res{width:100%;border-collapse:collapse;font-size:.85em;background:#fff}
+table.res th,table.res td{border-bottom:1px solid var(--line);padding:6px 10px;text-align:start}
+table.res td.n{font-variant-numeric:tabular-nums;font-weight:800}
+.qstats{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:8px;margin-top:10px}
+.qs{border-radius:10px;padding:6px;text-align:center;font-weight:800;font-size:.8em;background:var(--soft)}
+.qs small{display:block;font-weight:600;color:var(--mut)}
+.qs.lo{background:var(--nobg);color:var(--no)}.qs.hi{background:var(--okbg);color:var(--ok)}
+@media(max-width:900px){.lobby,.stage{grid-template-columns:1fr}.qstats{grid-template-columns:repeat(5,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>🩸 משחק חי · <span>מבחן רבעון א'</span></h1>
+    <div id="topinfo" class="pill hide"></div>
+  </div>
+
+  <section id="vLogin" class="login card">
+    <h2>לוח המורה</h2>
+    <p class="mut">הלוח מיועד למקרן. הזיני את קוד המורה כדי לפתוח משחק חדש.</p>
+    <input id="tcode" type="password" placeholder="קוד מורה" autocomplete="current-password">
+    <button id="bLogin" class="btn">פתיחה</button>
+    <button id="bResume" class="btn alt hide">המשך את המשחק הקודם</button>
+    <p id="loginErr" class="err" role="alert"></p>
+  </section>
+
+  <section id="vLobby" class="lobby hide">
+    <div class="card join">
+      <p class="mut">פותחים בטלפון ומקלידים את הקוד:</p>
+      <div id="gcode" class="code"></div>
+      <div id="qr"></div>
+      <div id="jurl" class="url"></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <h2>מי התחבר? <span id="pcount" class="qnum">0</span></h2>
+        <button id="bStart" class="btn red" disabled>התחלה ←</button>
+      </div>
+      <div id="plist" class="players"></div>
+    </div>
+  </section>
+
+  <section id="vGame" class="stage hide">
+    <div class="card qcard">
+      <div id="qbody"></div>
+      <div id="qopts" class="opts"></div>
+      <div id="qexp" class="exp hide"></div>
+    </div>
+    <aside class="side">
+      <div class="card">
+        <p class="mut">ענו</p>
+        <div class="big"><span id="nAns">0</span><span class="mut" style="font-size:.5em"> / <span id="nAll">0</span></span></div>
+        <div id="waitNames" class="players"></div>
+      </div>
+      <div class="ctrl">
+        <button id="bReveal" class="btn red">הצג תשובות</button>
+        <button id="bNext" class="btn hide">שאלה הבאה ←</button>
+        <button id="bEnd" class="btn hide">סיום ותוצאות</button>
+      </div>
+      <label class="mut" style="font-size:.7em"><input type="checkbox" id="showNames" checked> להציג שמות ליד כל תשובה</label>
+      <div id="lead" class="card lead hide"><b>🏆 מובילים</b><ol id="leadList"></ol></div>
+    </aside>
+  </section>
+
+  <section id="vEnd" class="hide" style="display:flex;flex-direction:column;gap:18px">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <h2>🏁 תוצאות המשחק</h2>
+        <div class="ctrl"><button id="bCsv" class="btn alt">הורדת תוצאות (CSV)</button><button id="bNew" class="btn">משחק חדש</button></div>
+      </div>
+      <p class="mut" style="margin-top:8px">אחוז התשובות הנכונות בכל שאלה (אדום: פחות מ-50%):</p>
+      <div id="qstats" class="qstats"></div>
+    </div>
+    <div class="card"><table class="res" id="resTable"></table></div>
+  </section>
+</div>
+
+<script src="questions.js"></script>
+<script src="key.enc.js"></script>
+<script src="qrcode.min.js"></script>
+<script type="module">
+import { connect, isConfigured } from "./fb.js";
+import { $, el, LETTERS, questionBody, decryptKey, store } from "./common.js";
+
+const Q = window.QUESTIONS;
+const DEMO = new URLSearchParams(location.search).has("demo");
+let KEY = null, api = null, G = null, st = null, players = {}, answers = {}, reveal = {};
+const show = (id) => ["vLogin", "vLobby", "vGame", "vEnd"].forEach((v) => $("#" + v).classList.toggle("hide", v !== id));
+
+if (!isConfigured()) {
+  $("#loginErr").textContent = "המשחק עדיין לא מחובר לשרת (Firebase). אחרי ההגדרה הוא יעבוד.";
+}
+const prev = store.get("live-host");
+if (prev && prev.g) $("#bResume").classList.remove("hide");
+
+async function login(resume) {
+  $("#loginErr").textContent = "";
+  try { KEY = await decryptKey($("#tcode").value.trim()); }
+  catch { $("#loginErr").textContent = "קוד המורה שגוי."; return; }
+  try {
+    api = await connect();
+    if (resume && prev) {
+      const host = await api.get(`games/${prev.g}/host`);
+      if (host === api.uid) { G = prev.g; return attach(); }
+      $("#loginErr").textContent = "אי אפשר להמשיך את המשחק הקודם מהמחשב הזה. נפתח משחק חדש.";
+    }
+    await newGame();
+  } catch (e) { console.error(e); $("#loginErr").textContent = "אין חיבור לשרת. בדקי את האינטרנט ונסי שוב."; }
+}
+$("#bLogin").onclick = () => login(false);
+$("#bResume").onclick = () => login(true);
+$("#tcode").addEventListener("keydown", (e) => e.key === "Enter" && login(false));
+
+async function newGame() {
+  for (let i = 0; i < 20; i++) {
+    const g = String(1000 + Math.floor(Math.random() * 9000));
+    if (await api.get(`games/${g}/host`)) continue;
+    await api.set(`games/${g}/host`, api.uid);
+    await api.set(`games/${g}/created`, api.stamp());
+    await api.set(`games/${g}/state`, { phase: "lobby", qi: -1, qk: "" });
+    G = g; store.set("live-host", { g }); return attach();
+  }
+  throw new Error("no free code");
+}
+
+function attach() {
+  const base = location.href.replace(/board\.html.*$/, "");
+  const url = `${base}?g=${G}${DEMO ? "&demo=1" : ""}`;
+  $("#gcode").textContent = G;
+  $("#jurl").textContent = url.replace(/^https?:\/\//, "");
+  $("#qr").textContent = "";
+  if (window.QRCode) new QRCode($("#qr"), { text: url, width: 280, height: 280, correctLevel: QRCode.CorrectLevel.M });
+  $("#topinfo").textContent = `קוד משחק: ${G}`; $("#topinfo").classList.remove("hide");
+  api.on(`games/${G}/state`, (v) => { st = v; render(); });
+  api.on(`games/${G}/players`, (v) => { players = v || {}; render(); });
+  api.on(`games/${G}/answers`, (v) => { answers = v || {}; render(); });
+  api.on(`games/${G}/reveal`, (v) => { reveal = v || {}; render(); });
+}
+
+const name = (u) => (players[u] && players[u].name) || "?";
+function score(u) {
+  let s = 0;
+  for (let i = 0; i < Q.length; i++) { const k = "q" + i; if (reveal[k] && answers[k] && answers[k][u] && answers[k][u].a === KEY[i].c) s++; }
+  return s;
+}
+const ranked = () => Object.keys(players).map((u) => ({ u, n: name(u), s: score(u) })).sort((a, b) => b.s - a.s || a.n.localeCompare(b.n, "he"));
+
+function render() {
+  if (!st) return;
+  if (st.phase === "lobby") return renderLobby();
+  if (st.phase === "end") return renderEnd();
+  renderQ();
+}
+
+function renderLobby() {
+  show("vLobby");
+  const ids = Object.keys(players);
+  $("#pcount").textContent = ids.length;
+  $("#plist").replaceChildren(...ids.map((u) => el("span", { class: "chip" }, name(u))));
+  $("#bStart").disabled = ids.length === 0;
+}
+
+function renderQ() {
+  show("vGame");
+  const i = st.qi, q = Q[i], k = "q" + i, rev = st.phase === "reveal";
+  const A = answers[k] || {}, ids = Object.keys(players);
+  const body = $("#qbody");
+  if (body.dataset.q !== k) { body.replaceChildren(questionBody(q)); body.dataset.q = k; }
+  const counts = [0, 0, 0, 0], who = [[], [], [], []];
+  Object.entries(A).forEach(([u, v]) => { counts[v.a]++; who[v.a].push(name(u)); });
+  const total = Object.keys(A).length;
+  const showN = $("#showNames").checked;
+  $("#qopts").replaceChildren(...q.opts.map((t, j) => {
+    const cls = "opt o" + j + (rev ? (j === KEY[i].c ? " right" : counts[j] ? " wrong" : "") : "");
+    const kids = [el("span", { class: "L" }, LETTERS[j]), el("span", { class: "tx" }, t)];
+    if (rev) {
+      kids.unshift(el("span", { class: "bar", style: `width:${total ? (100 * counts[j]) / total : 0}%` }));
+      kids.push(el("span", { class: "cnt" }, (j === KEY[i].c ? "✅ " : "") + counts[j]));
+      if (showN && who[j].length) kids.push(el("span", { class: "names" }, who[j].map((n) => el("span", { class: "chip" }, n))));
+    }
+    return el("div", { class: cls }, kids);
+  }));
+  const ex = $("#qexp");
+  ex.classList.toggle("hide", !rev);
+  if (rev) ex.replaceChildren(el("b", {}, `התשובה הנכונה: ${LETTERS[KEY[i].c]}`), KEY[i].e);
+  $("#nAns").textContent = total; $("#nAll").textContent = ids.length;
+  $("#waitNames").replaceChildren(...ids.map((u) => {
+    const a = A[u];
+    const c = !a ? "chip" : !rev ? "chip done" : a.a === KEY[i].c ? "chip ok" : "chip no";
+    return el("span", { class: c }, name(u));
+  }));
+  $("#bReveal").classList.toggle("hide", rev);
+  $("#bNext").classList.toggle("hide", !rev || i >= Q.length - 1);
+  $("#bEnd").classList.toggle("hide", !rev || i < Q.length - 1);
+  $("#lead").classList.toggle("hide", !rev);
+  if (rev) $("#leadList").replaceChildren(...ranked().slice(0, 5).map((r) => el("li", {}, r.n, el("b", {}, `${r.s}`))));
+  $("#topinfo").textContent = `קוד משחק: ${G} · שאלה ${i + 1} מתוך ${Q.length}`;
+}
+$("#showNames").onchange = render;
+
+function renderEnd() {
+  show("vEnd");
+  const R = ranked();
+  $("#resTable").replaceChildren(
+    el("tr", {}, el("th", {}, "#"), el("th", {}, "שם"), el("th", {}, "נכונות"), el("th", {}, "ציון")),
+    ...R.map((r, x) => el("tr", {}, el("td", { class: "n" }, x + 1), el("td", {}, r.n), el("td", { class: "n" }, `${r.s} / ${Q.length}`), el("td", { class: "n" }, Math.round((100 * r.s) / Q.length))))
+  );
+  $("#qstats").replaceChildren(...Q.map((q, i) => {
+    const A = answers["q" + i] || {}; const n = Object.keys(A).length;
+    const ok = Object.values(A).filter((v) => v.a === KEY[i].c).length;
+    const p = n ? Math.round((100 * ok) / n) : null;
+    return el("div", { class: "qs" + (p == null ? "" : p < 50 ? " lo" : p >= 80 ? " hi" : "") }, `ש' ${i + 1}`, el("small", {}, p == null ? "–" : p + "%"));
+  }));
+  $("#topinfo").textContent = `קוד משחק: ${G} · סיום`;
+}
+
+const setState = (s) => api.set(`games/${G}/state`, s);
+$("#bStart").onclick = () => setState({ phase: "question", qi: 0, qk: "q0" });
+$("#bReveal").onclick = async () => {
+  const i = st.qi;
+  await api.set(`games/${G}/reveal/q${i}`, { c: KEY[i].c, e: KEY[i].e });
+  await setState({ phase: "reveal", qi: i, qk: "q" + i });
+};
+$("#bNext").onclick = () => { const i = st.qi + 1; setState({ phase: "question", qi: i, qk: "q" + i }); };
+$("#bEnd").onclick = () => setState({ phase: "end", qi: st.qi, qk: "" });
+$("#bNew").onclick = () => { store.del("live-host"); newGame(); };
+$("#bCsv").onclick = () => {
+  const head = ["שם", "ציון", "נכונות", ...Q.map((_, i) => `ש${i + 1}`)];
+  const rows = ranked().map((r) => [r.n, Math.round((100 * r.s) / Q.length), r.s, ...Q.map((_, i) => { const a = (answers["q" + i] || {})[r.u]; return a ? LETTERS[a.a] + (a.a === KEY[i].c ? " ✓" : " ✗") : "-"; })]);
+  const csv = "﻿" + [head, ...rows].map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+  const a = el("a", { href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })), download: `משחק-חי-${G}.csv` });
+  document.body.append(a); a.click(); a.remove();
+};
+</script>
+</body>
+</html>

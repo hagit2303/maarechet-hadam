@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>משחק חי · מבחן רבעון א'</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="live.css">
+<style>
+body{padding-inline:16px}
+.wrap{max-width:640px;margin:auto;padding-block:16px 40px;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.top b{font-size:1.05em}
+.me{background:#fff;border:1px solid var(--line);border-radius:30px;padding:2px 12px;font-weight:700;font-size:.9em;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+form{display:flex;flex-direction:column;gap:12px}
+.err{color:var(--no);font-weight:700}
+.wait{text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;padding-block:30px}
+.wait .e{font-size:48px;line-height:1}
+.status{text-align:center;font-weight:800;border-radius:14px;padding:12px;margin-top:12px}
+.status.ok{background:var(--okbg);color:var(--ok)}.status.no{background:var(--nobg);color:var(--no)}.status.sent{background:var(--soft)}
+.opt{font-size:1em;min-height:56px}
+.opt:not(:disabled):active{transform:scale(.99)}
+.score{font-size:56px;font-weight:800;color:var(--rich);line-height:1;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><b>🩸 משחק חי</b><span id="me" class="me hide"></span></div>
+
+  <section id="vJoin" class="card">
+    <form id="fJoin">
+      <h1 style="font-size:1.4em">הצטרפות למשחק</h1>
+      <label>קוד המשחק (מהלוח)<input id="gcode" inputmode="numeric" maxlength="4" autocomplete="off" required></label>
+      <label>שם מלא<input id="pname" type="text" maxlength="40" autocomplete="name" required></label>
+      <button class="btn red" type="submit">הצטרפות ←</button>
+      <p id="jErr" class="err" role="alert"></p>
+    </form>
+  </section>
+
+  <section id="vWait" class="card wait hide">
+    <div class="e">⏳</div>
+    <b id="waitT">נרשמת! מחכים שהמורה תתחיל</b>
+    <p class="mut" id="waitS">השאלות יופיעו כאן אחת אחת.</p>
+  </section>
+
+  <section id="vQ" class="card hide">
+    <div id="qbody"></div>
+    <div id="qopts" class="opts"></div>
+    <div id="qstat" class="status hide" role="status"></div>
+    <div id="qexp" class="exp hide"></div>
+  </section>
+
+  <section id="vEnd" class="card wait hide">
+    <div class="e">🏁</div>
+    <b>סיימנו!</b>
+    <div class="score" id="fScore"></div>
+    <p class="mut" id="fDet"></p>
+  </section>
+</div>
+
+<script src="questions.js"></script>
+<script type="module">
+import { connect, isConfigured } from "./fb.js";
+import { $, el, LETTERS, questionBody, store } from "./common.js";
+
+const Q = window.QUESTIONS;
+const params = new URLSearchParams(location.search);
+let api = null, G = null, st = null, mine = {}, reveal = {}, offs = [];
+const show = (id) => ["vJoin", "vWait", "vQ", "vEnd"].forEach((v) => $("#" + v).classList.toggle("hide", v !== id));
+
+const saved = store.get("live-player");
+$("#gcode").value = params.get("g") || (saved && saved.g) || "";
+if (saved && saved.name) $("#pname").value = saved.name;
+if (!isConfigured()) $("#jErr").textContent = "המשחק עדיין לא פעיל. בקשו מהמורה.";
+
+$("#fJoin").onsubmit = async (e) => {
+  e.preventDefault();
+  const g = $("#gcode").value.trim(), n = $("#pname").value.trim().replace(/\s+/g, " ");
+  $("#jErr").textContent = "";
+  if (!/^\d{4}$/.test(g)) return ($("#jErr").textContent = "קוד המשחק הוא 4 ספרות.");
+  if (n.length < 2) return ($("#jErr").textContent = "כתבו שם מלא.");
+  try {
+    api = api || (await connect());
+    if (!(await api.get(`games/${g}/host`))) return ($("#jErr").textContent = "לא נמצא משחק עם הקוד הזה.");
+    await api.set(`games/${g}/players/${api.uid}`, { name: n });
+    G = g; store.set("live-player", { g, name: n });
+    $("#me").textContent = n; $("#me").classList.remove("hide");
+    attach();
+  } catch (err) { console.error(err); $("#jErr").textContent = "אין חיבור. בדקו את האינטרנט ונסו שוב."; }
+};
+
+function attach() {
+  offs.forEach((f) => typeof f === "function" && f());
+  show("vWait");
+  offs = [
+    api.on(`games/${G}/state`, (v) => { st = v; render(); }),
+    api.on(`games/${G}/reveal`, (v) => { reveal = v || {}; render(); }),
+  ];
+  // התשובות שלי בלבד
+  for (let i = 0; i < Q.length; i++) {
+    offs.push(api.on(`games/${G}/answers/q${i}/${api.uid}`, (v) => { if (v) mine["q" + i] = v.a; else delete mine["q" + i]; render(); }));
+  }
+}
+
+function render() {
+  if (!st) return;
+  if (st.phase === "lobby") return show("vWait");
+  if (st.phase === "end") {
+    show("vEnd");
+    let s = 0, n = 0;
+    Q.forEach((_, i) => { const r = reveal["q" + i]; if (r) { n++; if (mine["q" + i] === r.c) s++; } });
+    $("#fScore").textContent = `${s} / ${n}`;
+    $("#fDet").textContent = `ענית נכון על ${s} שאלות מתוך ${n}. כל הכבוד על ההשתתפות! 🌟`;
+    return;
+  }
+  show("vQ");
+  const i = st.qi, k = "q" + i, q = Q[i], my = mine[k], r = st.phase === "reveal" ? reveal[k] : null;
+  const body = $("#qbody");
+  if (body.dataset.q !== k) { body.replaceChildren(questionBody(q)); body.dataset.q = k; }
+  const locked = my != null || st.phase !== "question";
+  $("#qopts").replaceChildren(...q.opts.map((t, j) => {
+    let cls = "opt o" + j;
+    if (my === j) cls += " picked";
+    if (r) cls += j === r.c ? " right" : my === j ? " wrong" : "";
+    const b = el("button", { class: cls, type: "button" }, el("span", { class: "L" }, LETTERS[j]), el("span", {}, t));
+    b.disabled = locked;
+    if (!locked) b.onclick = () => answer(i, j);
+    return b;
+  }));
+  const s = $("#qstat"), ex = $("#qexp");
+  s.className = "status"; ex.classList.add("hide");
+  if (r) {
+    if (my == null) { s.classList.add("no"); s.textContent = `לא נשלחה תשובה. התשובה הנכונה: ${LETTERS[r.c]}`; }
+    else if (my === r.c) { s.classList.add("ok"); s.textContent = "✅ נכון!"; }
+    else { s.classList.add("no"); s.textContent = `❌ לא נכון. התשובה הנכונה: ${LETTERS[r.c]}`; }
+    ex.replaceChildren(el("b", {}, "הסבר"), r.e); ex.classList.remove("hide");
+  } else if (my != null) { s.classList.add("sent"); s.textContent = "התשובה נשלחה ✔ מחכים שכולם יענו"; }
+  else if (st.phase === "reveal") { s.classList.add("sent"); s.textContent = "רגע, התשובות נחשפות…"; }
+  else s.classList.add("hide");
+}
+
+async function answer(i, j) {
+  if (mine["q" + i] != null) return;
+  mine["q" + i] = j; render();
+  try { await api.set(`games/${G}/answers/q${i}/${api.uid}`, { a: j, t: api.stamp() }); }
+  catch (e) { console.error(e); delete mine["q" + i]; render(); $("#qstat").className = "status no"; $("#qstat").textContent = "התשובה לא נשלחה (אולי הזמן לשאלה הסתיים)."; }
+}
+
+// חזרה אוטומטית אחרי רענון הדף
+if (saved && saved.g && saved.name && (!params.get("g") || params.get("g") === saved.g)) {
+  (async () => {
+    try {
+      api = await connect();
+      const p = await api.get(`games/${saved.g}/players/${api.uid}`);
+      const ph = await api.get(`games/${saved.g}/state/phase`);
+      if (p && ph && ph !== "end") { G = saved.g; $("#me").textContent = p.name; $("#me").classList.remove("hide"); attach(); }
+    } catch {}
+  })();
+}
+</script>
+</body>
+</html>
