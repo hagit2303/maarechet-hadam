@@ -99,24 +99,22 @@ async function gameCtx(g) {
   const ctx = { key, h }; games.set(g, ctx); return ctx;
 }
 
-async function connectBroker(m) {
-  for (const url of BROKERS) {
-    try {
-      const client = m.connect(url, { clean: true, reconnectPeriod: 2000, connectTimeout: 8000, clientId: "bl_" + Math.random().toString(16).slice(2, 12) });
-      await new Promise((ok, bad) => {
-        const t = setTimeout(() => bad(new Error("timeout")), 9000);
-        client.once("connect", () => { clearTimeout(t); ok(); });
-        client.once("error", (e) => { clearTimeout(t); bad(e); });
-      });
-      return client;
-    } catch (e) { console.warn("broker failed", url, e); }
-  }
-  throw new Error("no broker");
+// מתחברים לשני הממסרים במקביל, שולחים לשניהם ומקשיבים לשניהם.
+// כך לוח ותלמיד נפגשים גם אם רשת אחת חוסמת את אחד הממסרים.
+async function connectBrokers(m) {
+  const tries = BROKERS.map((url) => new Promise((ok) => {
+    const client = m.connect(url, { clean: true, reconnectPeriod: 2000, connectTimeout: 8000, clientId: "bl_" + Math.random().toString(16).slice(2, 12) });
+    const t = setTimeout(() => { client.end(true); ok(null); }, 9000);
+    client.once("connect", () => { clearTimeout(t); ok(client); });
+  }));
+  const clients = (await Promise.all(tries)).filter(Boolean);
+  if (!clients.length) throw new Error("no broker");
+  return clients;
 }
 
 async function mqttConnect() {
   const m = await loadMqtt();
-  const client = await connectBroker(m);
+  const clients = await connectBrokers(m);
   const tester = params.get("tester");
   const uid = persistentId(localStorage, "live-uid") + (tester ? "_" + tester : "");
   const leaves = new Map(), listeners = new Set(), subs = new Map(); // g -> Promise(ready)
@@ -124,7 +122,7 @@ async function mqttConnect() {
 
   const notify = (path) => listeners.forEach((l) => { if (related(l.p, path)) l.cb(readTree(leaves, l.p)); });
 
-  client.on("message", (topic, payload) => {
+  const onMsg = (topic, payload) => {
     chain = chain.then(async () => {
       const parts = topic.split("/"); // ROOT(2) / h / rest...
       const h = parts[2];
@@ -139,14 +137,15 @@ async function mqttConnect() {
         notify(path);
       } catch (e) { /* הודעה שאינה של המשחק */ }
     });
-  });
+  };
+  clients.forEach((c) => c.on("message", onMsg));
 
   // נרשמים לכל הערוץ של המשחק, ומחכים רגע להודעות השמורות (retained)
   const ensure = (g) => {
     if (!subs.has(g)) subs.set(g, (async () => {
       const { h } = await gameCtx(g);
-      await new Promise((ok, bad) => client.subscribe(`${ROOT}/${h}/#`, { qos: 1 }, (e) => (e ? bad(e) : ok())));
-      await new Promise((r) => setTimeout(r, 1500));
+      await Promise.all(clients.map((c) => new Promise((ok) => c.subscribe(`${ROOT}/${h}/#`, { qos: 1 }, () => ok()))));
+      await new Promise((r) => setTimeout(r, 2000));
       await chain;
     })());
     return subs.get(g);
@@ -165,7 +164,8 @@ async function mqttConnect() {
     }
     if (v == null) leaves.delete(p); else leaves.set(p, v);
     notify(p);
-    await new Promise((ok, bad) => client.publish(`${ROOT}/${h}/${rest}`, payload, { qos: 1, retain: true }, (e) => (e ? bad(e) : ok())));
+    const sends = clients.map((c) => new Promise((ok, bad) => c.publish(`${ROOT}/${h}/${rest}`, payload, { qos: 1, retain: true }, (e) => (e ? bad(e) : ok()))));
+    await Promise.any(sends);
   };
 
   return {

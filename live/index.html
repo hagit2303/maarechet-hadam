@@ -33,7 +33,7 @@ form{display:flex;flex-direction:column;gap:12px}
       <h1 style="font-size:1.4em">הצטרפות למשחק</h1>
       <label>קוד המשחק (מהלוח)<input id="gcode" inputmode="numeric" maxlength="4" autocomplete="off" required></label>
       <label>שם מלא<input id="pname" type="text" maxlength="40" autocomplete="name" required></label>
-      <button class="btn red" type="submit">הצטרפות ←</button>
+      <button class="btn red" type="submit" id="bJoin">הצטרפות ←</button>
       <p id="jErr" class="err" role="alert"></p>
     </form>
   </section>
@@ -82,12 +82,14 @@ $("#fJoin").onsubmit = async (e) => {
   if (n.length < 2) return ($("#jErr").textContent = "כתבו שם מלא.");
   try {
     api = api || (await connect());
-    if (!(await api.get(`games/${g}/host`))) return ($("#jErr").textContent = "לא נמצא משחק עם הקוד הזה.");
+    let host = await api.get(`games/${g}/host`);
+    for (let i = 0; !host && i < 8; i++) { await new Promise((r) => setTimeout(r, 1000)); host = await api.get(`games/${g}/host`); }
+    if (!host) return ($("#jErr").textContent = "לא נמצא משחק עם הקוד הזה. בדקו את 4 הספרות שעל הלוח.");
     await api.set(`games/${g}/players/${api.uid}`, { name: n });
     G = g; store.set("live-player", { g, name: n });
     $("#me").textContent = n; $("#me").classList.remove("hide");
     attach();
-  } catch (err) { console.error(err); $("#jErr").textContent = "אין חיבור. בדקו את האינטרנט ונסו שוב."; }
+  } catch (err) { console.error(err); $("#jErr").textContent = "אין חיבור לשרת המשחק. אם אתם על ה-Wi-Fi של בית הספר, עברו לגלישה סלולרית ונסו שוב."; }
 };
 
 function attach() {
