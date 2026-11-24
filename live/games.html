@@ -60,7 +60,7 @@ const mk = (t, a = {}, txt = "") => { const e = document.createElement(t); Objec
     acts.replaceChildren(
       mk("a", { class: "btn red", href: root + "board.html" }, "🖥️ פתיחת הלוח"),
       mk("a", { class: "btn alt", href: root }, "📱 דף התלמידים"),
-      mk("a", { class: "btn alt", href: root + "teacher.html" }, "👩‍🏫 מסך מורה"));
+      m.noTeacher ? "" : mk("a", { class: "btn alt", href: root + "teacher.html" }, "👩‍🏫 מסך מורה"));
     const cp = mk("button", { class: "btn alt", type: "button" }, "🔗 העתקת קישור לתלמידים");
     cp.onclick = async () => { try { await navigator.clipboard.writeText(root); msg.textContent = "✔ הקישור הועתק"; } catch { msg.textContent = root; } };
     acts.append(cp);

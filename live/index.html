@@ -85,7 +85,7 @@ $("#fJoin").onsubmit = async (e) => {
     let host = await api.get(`games/${g}/host`);
     for (let i = 0; !host && i < 8; i++) { await new Promise((r) => setTimeout(r, 1000)); host = await api.get(`games/${g}/host`); }
     if (!host) return ($("#jErr").textContent = "לא נמצא משחק עם הקוד הזה. בדקו את 4 הספרות שעל הלוח.");
-    if ((await api.get(`games/${g}/kind`)) === "open") return ($("#jErr").textContent = "הקוד הזה שייך למשחק של שאלות פתוחות. פתחו את הקישור שעל הלוח.");
+    { const kd = await api.get(`games/${g}/kind`); if (kd === "open" || kd === "judge") return ($("#jErr").textContent = "הקוד הזה שייך למשחק אחר. פתחו את הקישור שעל הלוח."); }
     await api.set(`games/${g}/players/${api.uid}`, { name: n });
     G = g; store.set("live-player", { g, name: n });
     $("#me").textContent = n; $("#me").classList.remove("hide");

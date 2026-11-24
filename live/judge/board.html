@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>תנו ניקוד · לוח</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../live.css">
+<link rel="stylesheet" href="../open/open.css">
+<link rel="stylesheet" href="judge.css">
+<style>
+body{font-size:clamp(18px,1.45vw,26px)}
+.wrap{max-width:1500px;margin:auto;padding:clamp(12px,2vw,28px);display:flex;flex-direction:column;gap:16px;min-height:100vh}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.top h1{font-size:1.2em;font-weight:800}
+.top h1 span{color:var(--rich)}
+.pill{background:#fff;border:1px solid var(--line);border-radius:30px;padding:4px 16px;font-weight:700}
+.login{max-width:460px;margin:12vh auto 0;display:flex;flex-direction:column;gap:14px;font-size:19px}
+.err{color:var(--no);font-weight:700}
+.lobby{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:18px;align-items:start}
+.join{text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+.code{font-size:3.4em;font-weight:800;letter-spacing:.12em;line-height:1;color:var(--rich);font-variant-numeric:tabular-nums}
+#qr{background:#fff;padding:12px;border-radius:12px;line-height:0}
+#qr img,#qr canvas{width:min(30vh,280px)!important;height:auto!important}
+.url{font-weight:700;direction:ltr;word-break:break-all;font-size:.8em}
+.dots{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.dot{display:inline-block;width:26px;height:26px;border-radius:50%;background:var(--line)}
+.dot.done{background:var(--poor)}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+.qcard .qimg{max-height:28vh;width:auto}
+.big{font-size:2.4em;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.side{display:flex;flex-direction:column;gap:12px}
+details.q summary{cursor:pointer;font-weight:800}
+@media(max-width:1000px){.lobby,.stage{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>🎯 תנו ניקוד · <span>מבחן רבעון א' · שאלות פתוחות</span></h1>
+    <div id="topinfo" class="pill hide"></div>
+  </div>
+
+  <section id="vLogin" class="card login">
+    <h2>כניסת מורה</h2>
+    <p class="mut">התלמידים הם השופטים: הם נותנים ניקוד לתשובות של "תלמיד" לפי המחוון, ואז חושפים את הניקוד הנכון.</p>
+    <label>קוד מורה<input id="tcode" type="password" autocomplete="off"></label>
+    <button id="bLogin" class="btn red" type="button">פתיחת משחק חדש</button>
+    <button id="bResume" class="btn alt hide" type="button">המשך המשחק הקודם</button>
+    <p id="loginErr" class="err" role="alert"></p>
+    <a href="../games.html" class="mut">🎮 לכל המשחקים שלי</a>
+  </section>
+
+  <section id="vLobby" class="lobby hide">
+    <div class="card join">
+      <b>נכנסים מהטלפון:</b>
+      <div id="qr"></div>
+      <div class="url" id="jurl"></div>
+      <div>קוד משחק</div><div class="code" id="gcode"></div>
+    </div>
+    <div class="card">
+      <h2>נרשמו: <span id="pcount">0</span></h2>
+      <div class="dots" id="plist"></div>
+      <div class="ctrl" style="margin-top:16px"><button id="bStart" class="btn red" type="button" disabled>מתחילים ←</button></div>
+    </div>
+  </section>
+
+  <section id="vGame" class="hide">
+    <div class="stage">
+      <div class="side">
+        <div class="card qcard"><div id="qbody"></div></div>
+        <div class="ans"><h3 id="ansT"></h3><div id="ansTx"></div></div>
+      </div>
+      <div class="side">
+        <div class="card">
+          <b>📋 המחוון</b>
+          <div class="rub" id="rub"></div>
+          <div id="note" class="note hide"></div>
+        </div>
+        <div class="card" id="judgeBox">
+          <div class="mut">נתנו ניקוד</div>
+          <div><span class="big" id="nJ">0</span> / <span id="nAll">0</span></div>
+          <div class="dots" id="dots"></div>
+        </div>
+        <div class="card hide" id="revBox">
+          <b>📊 הניקוד שהכיתה נתנה</b>
+          <div class="hist" id="hist"></div>
+          <div class="verdict"><div class="b"><div class="mut">ממוצע הכיתה</div><div class="v" id="avg"></div></div><div class="b ok"><div class="mut">✅ הניקוד הנכון</div><div class="v" id="right"></div></div></div>
+          <div class="why" id="why"></div>
+        </div>
+        <div class="model hide" id="model"></div>
+        <div class="ctrl">
+          <button id="bReveal" class="btn red" type="button">🔓 חשיפת הניקוד הנכון</button>
+          <button id="bModel" class="btn alt hide" type="button">✅ התשובה הנכונה</button>
+          <button id="bNext" class="btn red hide" type="button">לתשובה הבאה ←</button>
+          <button id="bEnd" class="btn red hide" type="button">סיום</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="vEnd" class="card hide" style="text-align:center">
+    <h2 style="font-size:1.6em">🏁 סיימנו! כל הכבוד לשופטים</h2>
+    <p class="mut">כמה התלמידים קלעו לניקוד הנכון בכל תשובה</p>
+    <table class="res" id="resT" style="margin-top:12px;width:100%;border-collapse:collapse"></table>
+    <div class="ctrl" style="margin-top:16px;justify-content:center"><button id="bNew" class="btn alt" type="button">משחק חדש</button></div>
+  </section>
+</div>
+
+<script src="../open/questions.js"></script>
+<script>window.OPEN.forEach((q) => { if (q.img) q.img = "../open/" + q.img; });</script>
+<script src="key.enc.js"></script>
+<script src="../qrcode.min.js"></script>
+<script type="module">
+import { connect } from "../fb.js";
+import { $, el, decryptKey, store } from "../common.js";
+import { Q, label, itemBody } from "../open/oq.js";
+
+const DEMO = new URLSearchParams(location.search).has("demo");
+const HK = "live-judge-host";
+let KEY = null, R = [], api = null, G = null, st = null, players = {}, judges = {};
+const show = (id) => ["vLogin", "vLobby", "vGame", "vEnd"].forEach((v) => $("#" + v).classList.toggle("hide", v !== id));
+const prev = store.get(HK);
+if (prev && prev.g) $("#bResume").classList.remove("hide");
+const fmt = (n) => String(Math.round(n * 100) / 100);
+const cpts = (it, c) => fmt((Q[it.qi].pts * c.p) / 100);
+
+async function login(resume) {
+  $("#loginErr").textContent = "";
+  try { KEY = await decryptKey($("#tcode").value.trim()); }
+  catch { $("#loginErr").textContent = "קוד המורה שגוי."; return; }
+  R = KEY.flatMap((it, ii) => it.rounds.map((r, j) => ({ it, ii, j, r })));
+  try {
+    api = await connect();
+    if (resume && prev) {
+      if ((await api.get(`games/${prev.g}/host`)) === api.uid) { G = prev.g; return attach(); }
+      $("#loginErr").textContent = "אי אפשר להמשיך את המשחק הקודם מהמחשב הזה. נפתח משחק חדש.";
+    }
+    await newGame();
+  } catch (e) { console.error(e); $("#loginErr").textContent = "אין חיבור לשרת. בדקי את האינטרנט ונסי שוב."; }
+}
+$("#bLogin").onclick = () => login(false);
+$("#bResume").onclick = () => login(true);
+$("#tcode").addEventListener("keydown", (e) => e.key === "Enter" && login(false));
+
+async function newGame() {
+  for (let i = 0; i < 20; i++) {
+    const g = String(1000 + Math.floor(Math.random() * 9000));
+    if (await api.get(`games/${g}/host`)) continue;
+    await api.set(`games/${g}/host`, api.uid);
+    await api.set(`games/${g}/kind`, "judge");
+    await api.set(`games/${g}/created`, api.stamp());
+    await api.set(`games/${g}/state`, { phase: "lobby", r: -1 });
+    G = g; store.set(HK, { g }); return attach();
+  }
+  throw new Error("no free code");
+}
+
+function attach() {
+  const base = location.href.replace(/board\.html.*$/, "");
+  const url = `${base}?g=${G}${DEMO ? "&demo=1" : ""}`;
+  $("#gcode").textContent = G;
+  $("#jurl").textContent = url.replace(/^https?:\/\//, "");
+  $("#qr").textContent = "";
+  if (window.QRCode) new QRCode($("#qr"), { text: url, width: 280, height: 280, correctLevel: QRCode.CorrectLevel.M });
+  $("#topinfo").textContent = `קוד משחק: ${G}`; $("#topinfo").classList.remove("hide");
+  api.on(`games/${G}/state`, (v) => { st = v; render(); });
+  api.on(`games/${G}/players`, (v) => { players = v || {}; render(); });
+  api.on(`games/${G}/judges`, (v) => { judges = v || {}; render(); });
+}
+
+// מה שהתלמידים רואים: הסעיף, התשובה והמחוון. בלי הניקוד הנכון.
+const pub = (k) => { const { it, ii, j, r } = R[k]; return { qi: it.qi, txt: r.txt, comps: it.comps, n: it.n || "", num: j + 1, of: it.rounds.length, k }; };
+
+function render() {
+  if (!st) return;
+  const ids = Object.keys(players);
+  if (st.phase === "lobby") {
+    show("vLobby");
+    $("#pcount").textContent = ids.length;
+    $("#plist").replaceChildren(...ids.map(() => el("span", { class: "dot done" })));
+    $("#bStart").disabled = !ids.length;
+    return;
+  }
+  if (st.phase === "end") return renderEnd();
+  show("vGame");
+  const k = st.r, { it, j, r } = R[k], q = Q[it.qi], rev = st.phase === "reveal", J = judges["r" + k] || {};
+  const body = $("#qbody");
+  if (body.dataset.k !== String(it.qi)) { body.replaceChildren(itemBody(q, it.qi)); body.querySelector(".step")?.remove(); body.dataset.k = it.qi; }
+  $("#ansT").textContent = `📝 תשובה ${j + 1} מתוך ${it.rounds.length} של "תלמיד"`;
+  $("#ansTx").textContent = r.txt;
+  const n = Object.keys(J).length;
+  $("#rub").replaceChildren(...it.comps.map((c, x) => {
+    const pc = n ? Math.round((100 * Object.values(J).filter((v) => v.m && v.m[x]).length) / n) : 0;
+    return el("div", { class: "comp" + (rev ? (r.mk[x] ? " good" : " bad") : "") }, el("span", { class: "num" }, x + 1), el("span", {}, c.t),
+      el("span", { class: "p" }, rev ? `${r.mk[x] ? "✔" : "✗"} · ${pc}% סימנו` : `${cpts(it, c)} נק'`));
+  }), el("div", { class: "comp tel" + (rev && r.tel ? " telon" : "") }, el("span", { class: "num" }, "🚫"), el("span", {}, "האנשה או טלאולוגיה (בזכות, בשביל, כדי ש, רוצה, צריך)"),
+    el("span", { class: "p" }, rev ? `${r.tel ? "✔ יש" : "✗ אין"} · ${n ? Math.round((100 * Object.values(J).filter((v) => v.tel).length) / n) : 0}% סימנו` : "−2 נק'")));
+  $("#note").textContent = it.n ? "💡 " + it.n : ""; $("#note").classList.toggle("hide", !it.n);
+  $("#nJ").textContent = n; $("#nAll").textContent = ids.length;
+  $("#dots").replaceChildren(...ids.map((u) => el("span", { class: "dot" + (J[u] ? " done" : "") })));
+  $("#judgeBox").classList.toggle("hide", rev);
+  $("#revBox").classList.toggle("hide", !rev);
+  if (rev) {
+    const step = q.pts >= 8 ? 1 : 0.5, cols = [];
+    for (let v = 0; v <= q.pts + 1e-9; v += step) cols.push(v);
+    const bucket = (s) => Math.min(q.pts, Math.round(s / step) * step);
+    const cnt = cols.map((v) => Object.values(J).filter((x) => Math.abs(bucket(x.s || 0) - v) < 1e-9).length), mx = Math.max(1, ...cnt);
+    const okv = bucket(r.s);
+    $("#hist").replaceChildren(...cols.map((v, x) => el("div", { class: "col" + (Math.abs(v - okv) < 1e-9 ? " ok" : "") },
+      el("div", { class: "bar" + (Math.abs(v - okv) < 1e-9 ? " ok" : ""), style: `height:${(100 * cnt[x]) / mx}%` }, el("span", {}, cnt[x] || "")), el("div", { class: "lbl" }, fmt(v)))));
+    const sv = Object.values(J).map((x) => x.s || 0);
+    $("#avg").textContent = sv.length ? fmt(sv.reduce((a, b) => a + b, 0) / sv.length) : "–";
+    $("#right").textContent = `${fmt(r.s)} מתוך ${q.pts}`;
+    $("#why").textContent = r.why;
+  }
+  $("#model").classList.toggle("hide", !(rev && st.model));
+  $("#model").replaceChildren(el("b", {}, "✅ התשובה הנכונה: "), it.m);
+  $("#bReveal").classList.toggle("hide", rev);
+  $("#bModel").classList.toggle("hide", !rev || st.model);
+  $("#bNext").classList.toggle("hide", !rev || k >= R.length - 1);
+  $("#bEnd").classList.toggle("hide", !rev || k < R.length - 1);
+  $("#topinfo").textContent = `קוד משחק: ${G} · ${label(q)} · תשובה ${j + 1}/${it.rounds.length}`;
+}
+
+function renderEnd() {
+  show("vEnd");
+  $("#resT").replaceChildren(el("tr", {}, el("th", {}, "סעיף"), el("th", {}, "תשובה"), el("th", {}, "ניקוד נכון"), el("th", {}, "ממוצע הכיתה"), el("th", {}, "קלעו בדיוק")),
+    ...R.map(({ it, j, r }, k) => {
+      const v = Object.values(judges["r" + k] || {}), q = Q[it.qi];
+      const ex = v.filter((x) => Math.abs((x.s || 0) - r.s) < 0.01).length;
+      return el("tr", {}, el("td", {}, `${q.qn}${q.l}`), el("td", {}, j + 1), el("td", {}, `${fmt(r.s)} מתוך ${q.pts}`),
+        el("td", {}, v.length ? fmt(v.reduce((a, x) => a + (x.s || 0), 0) / v.length) : "–"), el("td", {}, v.length ? `${Math.round((100 * ex) / v.length)}%` : "–"));
+    }));
+  $("#topinfo").textContent = `קוד משחק: ${G} · סיום`;
+}
+
+const go = async (k) => {
+  await api.set(`games/${G}/round`, pub(k));
+  await api.set(`games/${G}/state`, { phase: "judge", r: k, model: false });
+};
+$("#bStart").onclick = () => go(0);
+$("#bReveal").onclick = async () => {
+  const { r } = R[st.r];
+  await api.set(`games/${G}/rev/r${st.r}`, { mk: r.mk, tel: r.tel, s: r.s, why: r.why });
+  await api.set(`games/${G}/state`, { ...st, phase: "reveal" });
+};
+$("#bModel").onclick = async () => {
+  const { it } = R[st.r];
+  await api.set(`games/${G}/model/q${it.qi}`, it.m);
+  await api.set(`games/${G}/state`, { ...st, model: true });
+};
+$("#bNext").onclick = () => go(st.r + 1);
+$("#bEnd").onclick = () => api.set(`games/${G}/state`, { phase: "end", r: st.r });
+$("#bNew").onclick = () => { store.del(HK); newGame(); };
+</script>
+</body>
+</html>

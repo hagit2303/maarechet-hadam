@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>תנו ניקוד</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../live.css">
+<link rel="stylesheet" href="../open/open.css">
+<link rel="stylesheet" href="judge.css">
+<style>
+body{padding-inline:16px}
+.wrap{max-width:680px;margin:auto;padding-block:16px 40px;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.me{background:#fff;border:1px solid var(--line);border-radius:30px;padding:2px 12px;font-weight:700;font-size:.9em;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+form{display:flex;flex-direction:column;gap:12px}
+.err{color:var(--no);font-weight:700}
+.wait{text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;padding-block:30px}
+.wait .e{font-size:48px;line-height:1}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:12px}
+details.q{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+details.q summary{cursor:pointer;font-weight:800}
+.qimg{max-width:100%}
+.comp .num{flex:none;font-weight:800;color:var(--mut)}
+.res{font-weight:800}
+.res.ok{color:var(--ok)}.res.no{color:var(--no)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><b>🎯 תנו ניקוד</b><span id="me" class="me hide"></span></div>
+
+  <section id="vJoin" class="card">
+    <form id="fJoin">
+      <h1 style="font-size:1.4em">הצטרפות למשחק</h1>
+      <label>קוד המשחק (מהלוח)<input id="gcode" inputmode="numeric" maxlength="4" autocomplete="off" required></label>
+      <label>שם מלא<input id="pname" type="text" maxlength="40" autocomplete="name" required></label>
+      <button class="btn red" type="submit">הצטרפות ←</button>
+      <p id="jErr" class="err" role="alert"></p>
+    </form>
+  </section>
+
+  <section id="vWait" class="card wait hide">
+    <div class="e">⏳</div>
+    <b>נרשמת! מחכים שהמורה תתחיל</b>
+    <p class="mut">היום אתם השופטים: תקבלו תשובות של "תלמיד", ותתנו להן ניקוד לפי המחוון.</p>
+  </section>
+
+  <section id="vQ" class="card hide">
+    <details class="q" id="qd"><summary id="qsum"></summary><div id="qbody"></div></details>
+    <div class="ans" style="margin-top:12px"><h3 id="ansT"></h3><div id="ansTx"></div></div>
+    <p style="margin-top:14px"><b>📋 סמנו כל רכיב שמופיע בתשובה</b></p>
+    <p class="mut" style="font-size:.9em" id="hint">מותר במילים אחרות, אם הרעיון זהה ונכון.</p>
+    <div class="comps" id="comps"></div>
+    <label class="comp tel" id="telRow"><input type="checkbox" id="tel"><span>🚫 יש בתשובה האנשה או טלאולוגיה (בזכות, בשביל, כדי ש, רוצה, צריך)</span><span class="p">‎−2 נק'</span></label>
+    <div id="note" class="note hide"></div>
+    <div class="row"><span>הניקוד שאני נותן/ת:</span><span id="myScore" class="sc"></span></div>
+    <div class="row"><span id="sent" class="mut"></span><button id="bSend" class="btn red" type="button">שליחת הניקוד</button></div>
+    <div id="revBox" class="hide">
+      <div class="verdict"><div class="b"><div class="mut">אני נתתי</div><div class="v" id="mine"></div></div><div class="b ok"><div class="mut">✅ הניקוד הנכון</div><div class="v" id="right"></div></div></div>
+      <div class="why" id="why"></div>
+    </div>
+    <div class="model hide" id="model"></div>
+  </section>
+
+  <section id="vEnd" class="card wait hide">
+    <div class="e">🏁</div>
+    <b>סיימנו! כל הכבוד, שופטים</b>
+    <p class="mut">עכשיו תקבלו את המבחנים שלכם. בדקו אותם עם אותו מחוון.</p>
+  </section>
+</div>
+
+<script src="../open/questions.js"></script>
+<script>window.OPEN.forEach((q) => { if (q.img) q.img = "../open/" + q.img; });</script>
+<script type="module">
+import { connect } from "../fb.js";
+import { $, el, store } from "../common.js";
+import { Q, label, itemBody } from "../open/oq.js";
+
+const params = new URLSearchParams(location.search);
+let api = null, G = null, st = null, round = null, rev = {}, model = {}, mine = {}, marks = {}, offs = [];
+const show = (id) => ["vJoin", "vWait", "vQ", "vEnd"].forEach((v) => $("#" + v).classList.toggle("hide", v !== id));
+const SK = "live-judge-player";
+const saved = store.get(SK);
+$("#gcode").value = params.get("g") || (saved && saved.g) || "";
+if (saved && saved.name) $("#pname").value = saved.name;
+const fmt = (n) => String(Math.round(n * 100) / 100);
+
+$("#fJoin").onsubmit = async (e) => {
+  e.preventDefault();
+  const g = $("#gcode").value.trim(), n = $("#pname").value.trim().replace(/\s+/g, " ");
+  $("#jErr").textContent = "";
+  if (!/^\d{4}$/.test(g)) return ($("#jErr").textContent = "קוד המשחק הוא 4 ספרות.");
+  if (n.length < 2) return ($("#jErr").textContent = "כתבו שם מלא.");
+  try {
+    api = api || (await connect());
+    let host = await api.get(`games/${g}/host`);
+    for (let i = 0; !host && i < 8; i++) { await new Promise((r) => setTimeout(r, 1000)); host = await api.get(`games/${g}/host`); }
+    if (!host) return ($("#jErr").textContent = "לא נמצא משחק עם הקוד הזה. בדקו את 4 הספרות שעל הלוח.");
+    if ((await api.get(`games/${g}/kind`)) !== "judge") return ($("#jErr").textContent = "הקוד הזה שייך למשחק אחר. פתחו את הקישור שעל הלוח.");
+    await api.set(`games/${g}/players/${api.uid}`, { name: n });
+    G = g; store.set(SK, { g, name: n });
+    $("#me").textContent = n; $("#me").classList.remove("hide");
+    attach();
+  } catch (err) { console.error(err); $("#jErr").textContent = "אין חיבור לשרת המשחק. אם אתם על ה-Wi-Fi של בית הספר, עברו לגלישה סלולרית ונסו שוב."; }
+};
+
+function attach() {
+  offs.forEach((f) => typeof f === "function" && f());
+  show("vWait");
+  offs = [
+    api.on(`games/${G}/state`, (v) => { st = v; render(); }),
+    api.on(`games/${G}/round`, (v) => { round = v; render(); }),
+    api.on(`games/${G}/rev`, (v) => { rev = v || {}; render(); }),
+    api.on(`games/${G}/model`, (v) => { model = v || {}; render(); }),
+  ];
+}
+
+const score = (q, c) => {
+  const pct = round.comps.reduce((s, x, j) => s + (c.m[j] ? x.p : 0), 0);
+  return Math.max(0, Math.round(q.pts * pct - (c.tel ? 200 : 0)) / 100);
+};
+
+function render() {
+  if (!st) return;
+  if (st.phase === "lobby") return show("vWait");
+  if (st.phase === "end") return show("vEnd");
+  if (!round || round.k !== st.r) return;
+  show("vQ");
+  const k = "r" + round.k, q = Q[round.qi], R = st.phase === "reveal" ? rev[k] : null;
+  const c = marks[k] || (marks[k] = { m: round.comps.map(() => 0), tel: 0 });
+  if ($("#vQ").dataset.k !== k) {
+    $("#vQ").dataset.k = k;
+    if ($("#qbody").dataset.q !== String(round.qi)) {
+      $("#qbody").replaceChildren(itemBody(q, round.qi)); $("#qbody").querySelector(".step")?.remove(); $("#qbody").dataset.q = round.qi;
+      $("#qd").open = round.num === 1;
+    }
+    $("#qsum").textContent = `📄 ${label(q)} · ${q.pts} נק' (לחצו לשאלה)`;
+    $("#ansT").textContent = `📝 תשובה ${round.num} מתוך ${round.of} של "תלמיד"`;
+    $("#ansTx").textContent = round.txt;
+    $("#comps").replaceChildren(...round.comps.map((x, j) => {
+      const cb = el("input", { type: "checkbox" }); cb.checked = !!c.m[j];
+      const row = el("label", { class: "comp" + (c.m[j] ? " on" : "") }, cb, el("span", { class: "num" }, `${j + 1}.`), el("span", {}, x.t), el("span", { class: "p" }, `${fmt((q.pts * x.p) / 100)} נק'`));
+      cb.onchange = () => { c.m[j] = cb.checked ? 1 : 0; row.classList.toggle("on", cb.checked); upd(); };
+      return row;
+    }));
+    $("#tel").checked = !!c.tel;
+    $("#note").textContent = round.n ? "💡 " + round.n : ""; $("#note").classList.toggle("hide", !round.n);
+  }
+  const lock = !!R;
+  $("#comps").querySelectorAll("input").forEach((x) => (x.disabled = lock));
+  $("#tel").disabled = lock;
+  $("#telRow").classList.toggle("on", !!c.tel);
+  $("#myScore").textContent = `${fmt(score(q, c))} מתוך ${q.pts}`;
+  const my = mine[k];
+  $("#bSend").classList.toggle("hide", lock);
+  $("#bSend").textContent = my ? "עדכון הניקוד" : "שליחת הניקוד";
+  $("#sent").textContent = lock ? "" : my ? `✔ נשלח: ${fmt(my.s)}. אפשר לשנות עד החשיפה.` : "";
+  $("#revBox").classList.toggle("hide", !R);
+  if (R) {
+    $("#comps").querySelectorAll(".comp").forEach((row, j) => { row.classList.toggle("good", !!R.mk[j]); row.classList.toggle("bad", !R.mk[j]); row.classList.toggle("diff", !!c.m[j] !== !!R.mk[j]); });
+    $("#telRow").classList.toggle("telon", !!R.tel); $("#telRow").classList.toggle("diff", !!c.tel !== !!R.tel);
+    $("#mine").textContent = my ? fmt(my.s) : "–";
+    $("#right").textContent = `${fmt(R.s)} מתוך ${q.pts}`;
+    const hit = my && Math.abs(my.s - R.s) < 0.01;
+    $("#why").replaceChildren(el("div", { class: "res " + (hit ? "ok" : "no") }, !my ? "לא שלחת ניקוד לתשובה הזאת." : hit ? "🎯 קלעת בדיוק לניקוד הנכון!" : "לא בדיוק. הרכיבים שסימנת אחרת מסומנים במסגרת אדומה."), el("div", {}, R.why));
+  } else {
+    $("#comps").querySelectorAll(".comp").forEach((row) => row.classList.remove("good", "bad", "diff"));
+    $("#telRow").classList.remove("telon", "diff");
+  }
+  const m = model["q" + round.qi];
+  $("#model").classList.toggle("hide", !(R && st.model && m));
+  if (m) $("#model").replaceChildren(el("b", {}, "✅ התשובה הנכונה: "), m);
+}
+function upd() { render(); }
+$("#tel").onchange = () => { marks["r" + round.k].tel = $("#tel").checked ? 1 : 0; render(); };
+$("#bSend").onclick = async () => {
+  const k = "r" + round.k, c = marks[k], v = { m: c.m, tel: c.tel, s: score(Q[round.qi], c) };
+  $("#bSend").disabled = true;
+  try { await api.set(`games/${G}/judges/${k}/${api.uid}`, v); mine[k] = v; }
+  catch (e) { console.error(e); $("#sent").textContent = "לא נשלח. נסו שוב."; }
+  $("#bSend").disabled = false; render();
+};
+
+if (saved && saved.g && saved.name && (!params.get("g") || params.get("g") === saved.g)) {
+  (async () => {
+    try {
+      api = await connect();
+      const p = await api.get(`games/${saved.g}/players/${api.uid}`);
+      const ph = await api.get(`games/${saved.g}/state/phase`);
+      if (p && ph && ph !== "end") { G = saved.g; $("#me").textContent = p.name; $("#me").classList.remove("hide"); attach(); }
+    } catch {}
+  })();
+}
+</script>
+</body>
+</html>
