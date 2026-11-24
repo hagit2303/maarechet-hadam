@@ -28,6 +28,14 @@ body{font-size:clamp(18px,1.45vw,26px)}
 .dots{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .dot{display:inline-block;width:26px;height:26px;border-radius:50%;background:var(--line)}
 .dot.done{background:var(--poor)}
+.toggles{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tbtn{border:2px solid var(--ink);background:#fff;border-radius:30px;padding:4px 14px;font-weight:800;font-size:.8em;cursor:pointer}
+.tbtn.on{background:var(--ink);color:#fff}
+.nchip{display:inline-block;border-radius:20px;padding:3px 12px;font-weight:700;font-size:.85em;background:var(--soft);border:2px solid var(--line)}
+.nchip.done{background:#e6edff;border-color:var(--poor)}
+.nchip.ok{background:var(--okbg);border-color:var(--ok)}
+.nchip.no{background:#fff;border-color:var(--line)}
+.who{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
 .qcard .qimg{max-height:28vh;width:auto}
 .big{font-size:2.4em;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
@@ -41,7 +49,7 @@ details.q summary{cursor:pointer;font-weight:800}
 <div class="wrap">
   <div class="top">
     <h1>🎯 תנו ניקוד · <span>מבחן רבעון א' · שאלות פתוחות</span></h1>
-    <div id="topinfo" class="pill hide"></div>
+    <div class="toggles"><button id="bNames" class="tbtn hide" type="button">🙈 שמות: מוסתרים</button><div id="topinfo" class="pill hide"></div></div>
   </div>
 
   <section id="vLogin" class="card login">
@@ -89,6 +97,7 @@ details.q summary{cursor:pointer;font-weight:800}
           <b>📊 הניקוד שהכיתה נתנה</b>
           <div class="hist" id="hist"></div>
           <div class="verdict"><div class="b"><div class="mut">ממוצע הכיתה</div><div class="v" id="avg"></div></div><div class="b ok"><div class="mut">✅ הניקוד הנכון</div><div class="v" id="right"></div></div></div>
+          <div class="who hide" id="who"></div>
           <div class="why" id="why"></div>
         </div>
         <div class="model hide" id="model"></div>
@@ -106,6 +115,7 @@ details.q summary{cursor:pointer;font-weight:800}
     <h2 style="font-size:1.6em">🏁 סיימנו! כל הכבוד לשופטים</h2>
     <p class="mut">כמה התלמידים קלעו לניקוד הנכון בכל תשובה</p>
     <table class="res" id="resT" style="margin-top:12px;width:100%;border-collapse:collapse"></table>
+    <div id="endNames" class="hide" style="margin-top:18px"><b>🏆 השופטים המדויקים (כמה פעמים קלעו בדיוק)</b><table class="res" id="resN" style="margin-top:8px;width:100%;border-collapse:collapse"></table></div>
     <div class="ctrl" style="margin-top:16px;justify-content:center"><button id="bNew" class="btn alt" type="button">משחק חדש</button></div>
   </section>
 </div>
@@ -121,7 +131,7 @@ import { Q, label, itemBody } from "../open/oq.js";
 
 const DEMO = new URLSearchParams(location.search).has("demo");
 const HK = "live-judge-host";
-let KEY = null, R = [], api = null, G = null, st = null, players = {}, judges = {};
+let NAMES = false, KEY = null, R = [], api = null, G = null, st = null, players = {}, judges = {};
 const show = (id) => ["vLogin", "vLobby", "vGame", "vEnd"].forEach((v) => $("#" + v).classList.toggle("hide", v !== id));
 const prev = store.get(HK);
 if (prev && prev.g) $("#bResume").classList.remove("hide");
@@ -166,7 +176,7 @@ function attach() {
   $("#jurl").textContent = url.replace(/^https?:\/\//, "");
   $("#qr").textContent = "";
   if (window.QRCode) new QRCode($("#qr"), { text: url, width: 280, height: 280, correctLevel: QRCode.CorrectLevel.M });
-  $("#topinfo").textContent = `קוד משחק: ${G}`; $("#topinfo").classList.remove("hide");
+  $("#topinfo").textContent = `קוד משחק: ${G}`; $("#topinfo").classList.remove("hide"); $("#bNames").classList.remove("hide");
   api.on(`games/${G}/state`, (v) => { st = v; render(); });
   api.on(`games/${G}/players`, (v) => { players = v || {}; render(); });
   api.on(`games/${G}/judges`, (v) => { judges = v || {}; render(); });
@@ -181,7 +191,7 @@ function render() {
   if (st.phase === "lobby") {
     show("vLobby");
     $("#pcount").textContent = ids.length;
-    $("#plist").replaceChildren(...ids.map(() => el("span", { class: "dot done" })));
+    $("#plist").replaceChildren(...ids.map((u) => (NAMES ? el("span", { class: "nchip done" }, nm(u)) : el("span", { class: "dot done" }))));
     $("#bStart").disabled = !ids.length;
     return;
   }
@@ -201,7 +211,7 @@ function render() {
     el("span", { class: "p" }, rev ? `${r.tel ? "✔ יש" : "✗ אין"} · ${n ? Math.round((100 * Object.values(J).filter((v) => v.tel).length) / n) : 0}% סימנו` : "−2 נק'")));
   $("#note").textContent = it.n ? "💡 " + it.n : ""; $("#note").classList.toggle("hide", !it.n);
   $("#nJ").textContent = n; $("#nAll").textContent = ids.length;
-  $("#dots").replaceChildren(...ids.map((u) => el("span", { class: "dot" + (J[u] ? " done" : "") })));
+  $("#dots").replaceChildren(...ids.map((u) => (NAMES ? el("span", { class: "nchip" + (J[u] ? " done" : "") }, nm(u)) : el("span", { class: "dot" + (J[u] ? " done" : "") }))));
   $("#judgeBox").classList.toggle("hide", rev);
   $("#revBox").classList.toggle("hide", !rev);
   if (rev) {
@@ -216,6 +226,8 @@ function render() {
     $("#avg").textContent = sv.length ? fmt(sv.reduce((a, b) => a + b, 0) / sv.length) : "–";
     $("#right").textContent = `${fmt(r.s)} מתוך ${q.pts}`;
     $("#why").textContent = r.why;
+    $("#who").classList.toggle("hide", !NAMES);
+    if (NAMES) $("#who").replaceChildren(...ids.filter((u) => J[u]).sort((a, b) => (J[b].s || 0) - (J[a].s || 0)).map((u) => el("span", { class: "nchip " + (Math.abs((J[u].s || 0) - r.s) < 0.01 ? "ok" : "no") }, `${nm(u)} · ${fmt(J[u].s || 0)}`)));
   }
   $("#model").classList.toggle("hide", !(rev && st.model));
   $("#model").replaceChildren(el("b", {}, "✅ התשובה הנכונה: "), it.m);
@@ -235,9 +247,16 @@ function renderEnd() {
       return el("tr", {}, el("td", {}, `${q.qn}${q.l}`), el("td", {}, j + 1), el("td", {}, `${fmt(r.s)} מתוך ${q.pts}`),
         el("td", {}, v.length ? fmt(v.reduce((a, x) => a + (x.s || 0), 0) / v.length) : "–"), el("td", {}, v.length ? `${Math.round((100 * ex) / v.length)}%` : "–"));
     }));
+  $("#endNames").classList.toggle("hide", !NAMES);
+  if (NAMES) {
+    const hits = Object.keys(players).map((u) => [u, R.filter(({ r }, k) => { const v = (judges["r" + k] || {})[u]; return v && Math.abs((v.s || 0) - r.s) < 0.01; }).length]).sort((a, b) => b[1] - a[1]);
+    $("#resN").replaceChildren(el("tr", {}, el("th", {}, "שם"), el("th", {}, "קלעו בדיוק"), el("th", {}, "מתוך")), ...hits.map(([u, h]) => el("tr", {}, el("td", {}, nm(u)), el("td", {}, h), el("td", {}, R.length))));
+  }
   $("#topinfo").textContent = `קוד משחק: ${G} · סיום`;
 }
 
+const nm = (u) => (players[u] && players[u].name) || "?";
+$("#bNames").onclick = () => { NAMES = !NAMES; const b = $("#bNames"); b.textContent = NAMES ? "👁 שמות: גלויים" : "🙈 שמות: מוסתרים"; b.classList.toggle("on", NAMES); render(); };
 const go = async (k) => {
   await api.set(`games/${G}/round`, pub(k));
   await api.set(`games/${G}/state`, { phase: "judge", r: k, model: false });
