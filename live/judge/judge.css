@@ -28,9 +28,9 @@ table.res th{background:var(--soft)}
 .seg{display:inline-flex;border:2px solid var(--line);border-radius:10px;overflow:hidden}
 .seg button{background:#fff;border:0;padding:6px 10px;font:inherit;font-weight:700;font-size:.85em;cursor:pointer;color:var(--mut)}
 .seg button+button{border-inline-start:1px solid var(--line)}
-.seg button.sel[data-v="1"]{background:var(--ok);color:#fff}
-.seg button.sel[data-v="0.5"]{background:#f0a500;color:#fff}
-.seg button.sel[data-v="0"]{background:#888;color:#fff}
+.seg button.sel[data-f="1"]{background:var(--ok);color:#fff}
+.seg button.sel[data-f="h"]{background:#f0a500;color:#fff}
+.seg button.sel[data-f="0"]{background:#888;color:#fff}
 .seg button:disabled{cursor:default}
 .comp.half{border-color:#f0a500;background:#fff7e0}
 .comp.halfok{border-color:#f0a500;background:#fff7e0}

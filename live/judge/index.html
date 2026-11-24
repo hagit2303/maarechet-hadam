@@ -140,14 +140,16 @@ function render() {
     $("#ansT").textContent = `📝 תשובה ${round.num} מתוך ${round.of} של "תלמיד"`;
     $("#ansTx").textContent = round.txt;
     $("#comps").replaceChildren(...round.comps.map((x, j) => {
-      const opts = [[1, "✔ מלא"], [0.5, "½ חלקי"], [0, "✗ אין"]];
-      const seg = el("div", { class: "seg" }, ...opts.map(([v, t]) => {
-        const b = el("button", { type: "button", "data-v": v, class: c.m[j] === v ? "sel" : "" }, t);
-        b.onclick = () => { if (b.disabled) return; c.m[j] = v; seg.querySelectorAll("button").forEach((y) => y.classList.toggle("sel", y === b)); row.classList.toggle("on", v === 1); row.classList.toggle("half", v === 0.5); upd(); };
+      const cp = (q.pts * x.p) / 100, opts = [];
+      for (let v = 0; v < cp - 1e-9; v += 0.5) opts.push(v);
+      opts.push(cp);
+      const seg = el("div", { class: "seg" }, ...opts.map((v) => {
+        const f = v / cp, b = el("button", { type: "button", "data-f": f === 1 ? "1" : f > 0 ? "h" : "0", class: Math.abs((c.m[j] || 0) - f) < 1e-6 ? "sel" : "" }, fmt(v));
+        b.onclick = () => { if (b.disabled) return; c.m[j] = f; seg.querySelectorAll("button").forEach((y) => y.classList.toggle("sel", y === b)); row.classList.toggle("on", f === 1); row.classList.toggle("half", f > 0 && f < 1); upd(); };
         return b;
       }));
-      const row = el("div", { class: "comp" + (c.m[j] === 1 ? " on" : c.m[j] === 0.5 ? " half" : "") }, el("span", { class: "num" }, `${j + 1}.`),
-        el("div", { class: "ct" }, el("span", {}, x.t), el("div", { class: "crow" }, seg, el("span", { class: "p" }, `${fmt((q.pts * x.p) / 100)} נק'`))));
+      const row = el("div", { class: "comp" + (c.m[j] === 1 ? " on" : c.m[j] > 0 ? " half" : "") }, el("span", { class: "num" }, `${j + 1}.`),
+        el("div", { class: "ct" }, el("span", {}, x.t), el("div", { class: "crow" }, el("span", { class: "mut" }, "כמה נקודות?"), seg, el("span", { class: "p" }, `מתוך ${fmt(cp)}`))));
       return row;
     }));
     $("#tel").checked = !!c.tel;
@@ -164,14 +166,14 @@ function render() {
   $("#sent").textContent = lock ? "" : my ? `✔ נשלח: ${fmt(my.s)}. אפשר לשנות עד החשיפה.` : "";
   $("#revBox").classList.toggle("hide", !R);
   if (R) {
-    $("#comps").querySelectorAll(".comp").forEach((row, j) => { row.classList.toggle("good", !!R.mk[j]); row.classList.toggle("bad", !R.mk[j]); row.classList.toggle("diff", (c.m[j] || 0) !== (R.mk[j] || 0)); });
+    $("#comps").querySelectorAll(".comp").forEach((row, j) => { row.classList.toggle("good", R.mk[j] === 1); row.classList.toggle("bad", !R.mk[j]); row.classList.toggle("diff", Math.abs((c.m[j] || 0) - (R.mk[j] || 0)) > 1e-6); row.classList.toggle("halfok", R.mk[j] > 0 && R.mk[j] < 1); });
     $("#telRow").classList.toggle("telon", !!R.tel); $("#telRow").classList.toggle("diff", !!c.tel !== !!R.tel);
     $("#mine").textContent = my ? fmt(my.s) : "–";
     $("#right").textContent = `${fmt(R.s)} מתוך ${q.pts}`;
     const hit = my && Math.abs(my.s - R.s) < 0.01;
     $("#why").replaceChildren(el("div", { class: "res " + (hit ? "ok" : "no") }, !my ? "לא שלחת ניקוד לתשובה הזאת." : hit ? "🎯 קלעת בדיוק לניקוד הנכון!" : "לא בדיוק. הרכיבים שסימנת אחרת מסומנים במסגרת אדומה."), el("div", {}, R.why));
   } else {
-    $("#comps").querySelectorAll(".comp").forEach((row) => row.classList.remove("good", "bad", "diff"));
+    $("#comps").querySelectorAll(".comp").forEach((row) => row.classList.remove("good", "bad", "diff", "halfok"));
     $("#telRow").classList.remove("telon", "diff");
   }
   const m = model["q" + round.qi];
