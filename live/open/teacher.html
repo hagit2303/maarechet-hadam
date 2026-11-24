@@ -123,7 +123,7 @@ function render() {
       return el("div", { class: "ans" + (on ? " onb" : "") },
         el("div", { class: "h" }, el("b", {}, players[u].name || "?"), el("span", { class: "n" }, c ? `בדיקה עצמית: ${c.s} / ${q.pts}` : a ? "עוד לא בדק/ה" : ""), btn),
         a ? (a.kind === "ok" ? el("div", { class: "t" }, "✅ קיבל/ה ניקוד מלא במבחן") : el("div", { class: "t" }, KL[a.kind] ? el("b", {}, KL[a.kind] + " ") : "", a.txt)) : el("div", { class: "t none" }, "לא ענה/תה"),
-        c && c.tel ? el("div", { class: "t telw" }, el("b", {}, "🚫 סימן/ה טלאולוגיה (−1). ניסוח מחדש: "), c.re || "עוד לא נכתב") : "",
+        c && c.tel ? el("div", { class: "t telw" }, el("b", {}, "🚫 סימן/ה טלאולוגיה (−2). ניסוח מחדש: "), c.re || "עוד לא נכתב") : "",
         c ? el("div", { class: "tags" }, KEY[view].comps.map((x, j) => el("span", { class: "tag" + (c.m && c.m[j] ? " on" : "") }, (c.m && c.m[j] ? "✔ " : "✗ ") + x.t.slice(0, 40) + (x.t.length > 40 ? "…" : "")))) : "");
     }));
   }

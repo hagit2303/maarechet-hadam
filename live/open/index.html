@@ -63,7 +63,7 @@ form{display:flex;flex-direction:column;gap:12px}
       <p class="mut" style="font-size:.9em" id="chkS"></p>
       <div id="comps" class="comps"></div>
       <div id="telWrap" class="hide">
-        <label class="comp tel" id="telRow"><input type="checkbox" id="tel"><span>🚫 יש בתשובה שלי ניסוח טלאולוגי או האנשה (בזכות, בשביל, כדי ש, רוצה, צריך)</span><span class="p">‎−1 נק'</span></label>
+        <label class="comp tel" id="telRow"><input type="checkbox" id="tel"><span>🚫 יש בתשובה שלי ניסוח טלאולוגי או האנשה (בזכות, בשביל, כדי ש, רוצה, צריך)</span><span class="p">‎−2 נק'</span></label>
         <div id="reWrap" class="hide"><label class="mut" for="re" style="display:block;margin-top:8px;font-size:.9em">נסחו מחדש את המשפט, בלי טלאולוגיה ובלי האנשה:</label><textarea id="re" maxlength="800" style="min-height:90px"></textarea></div>
       </div>
       <div class="row" id="scRow"><span>הניקוד שלי:</span><span id="myScore" class="sc"></span></div>
@@ -126,7 +126,7 @@ function attach() {
   }
 }
 
-const score = (q, r, c) => (c ? Math.max(0, Math.round((selfScore(q, r.comps, c.m) - (q.ex && c.tel ? 1 : 0)) * 10) / 10) : 0);
+const score = (q, r, c) => (c ? Math.max(0, Math.round((selfScore(q, r.comps, c.m) - (q.ex && c.tel ? 2 : 0)) * 100) / 100) : 0);
 
 function render() {
   if (!st) return;
@@ -168,7 +168,7 @@ function render() {
     $("#comps").replaceChildren(...r.comps.map((x, j) => {
       const cb = el("input", { type: "checkbox" }); cb.checked = !!c.m[j]; cb.disabled = !can;
       if (!SELF) cb.classList.add("hide");
-      const row = el("label", { class: "comp" + (c.m[j] ? " on" : "") }, cb, el("span", {}, x.t), el("span", { class: "p" }, `${Math.round((q.pts * x.p) / 10) / 10} נק'`));
+      const row = el("label", { class: "comp" + (c.m[j] ? " on" : "") }, cb, el("span", {}, x.t), el("span", { class: "p" }, `${Math.round(q.pts * x.p) / 100} נק'`));
       cb.onchange = () => { c.m[j] = cb.checked ? 1 : 0; row.classList.toggle("on", cb.checked); saveCheck(i); };
       return row;
     }));

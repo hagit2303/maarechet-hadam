@@ -18,5 +18,5 @@ export function itemBody(q, i) {
 export function selfScore(q, comps, marks) {
   if (!comps || !marks) return 0;
   const pct = comps.reduce((s, c, j) => s + (marks[j] ? c.p : 0), 0);
-  return Math.round((q.pts * pct) / 10) / 10;
+  return Math.round(q.pts * pct) / 100;
 }
