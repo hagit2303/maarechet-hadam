@@ -74,7 +74,7 @@ table.res td.n{font-variant-numeric:tabular-nums;font-weight:800}
 <div class="wrap">
   <div class="top">
     <h1>✍️ משחק חי · <span>מבחן רבעון א' · שאלות פתוחות</span></h1>
-    <div class="toggles"><button id="bTeacher" class="tbtn hide" type="button">📱 מסך מורה</button><div id="topinfo" class="pill hide"></div></div>
+    <div class="toggles"><button id="bNames" class="tbtn hide" type="button">🙈 שמות: מוסתרים</button><button id="bLead" class="tbtn on hide" type="button">🏆 מובילים: גלוי</button><button id="bSelf" class="tbtn on hide" type="button">✔ בדיקה עצמית: פועלת</button><button id="bTeacher" class="tbtn hide" type="button">📱 מסך מורה</button><div id="topinfo" class="pill hide"></div></div>
   </div>
 
   <div id="tlink" class="card tlink hide"><b>📱 מסך מורה (רק לך)</b><p class="mut">פתחי בטלפון או במחשב שלך, והזיני את קוד המורה. שם רואים את כל התשובות עם השמות.</p><p id="tlinkUrl" class="url" style="margin-top:6px"></p><button id="bTclose" class="btn alt" type="button" style="margin-top:8px">סגירה</button></div>
@@ -109,7 +109,7 @@ table.res td.n{font-variant-numeric:tabular-nums;font-weight:800}
     <div class="card qcard">
       <div id="qbody"></div>
       <div id="rv" class="hide">
-        <p style="margin-top:14px"><b>✔ רכיבי המחוון</b> <span class="mut" style="font-size:.8em">(כמה מהתלמידים סימנו שהרכיב מופיע בתשובה שלהם)</span></p>
+        <p style="margin-top:14px"><b>✔ רכיבי המחוון</b> <span id="rsub" class="mut" style="font-size:.8em">(כמה מהתלמידים סימנו שהרכיב מופיע בתשובה שלהם)</span></p>
         <div id="rcomps" class="comps"></div>
         <div id="rmodel" class="model"></div>
       </div>
@@ -120,6 +120,7 @@ table.res td.n{font-variant-numeric:tabular-nums;font-weight:800}
         <div class="big"><span id="nAns">0</span><span class="mut" style="font-size:.5em"> / <span id="nAll">0</span></span></div>
         <div id="dots" class="players"></div>
       </div>
+      <div id="lead" class="card lead hide"><b>🏆 מובילים</b> <span class="mut" style="font-size:.7em">(לפי הבדיקה העצמית)</span><ol id="leadList"></ol></div>
       <div class="ctrl">
         <button id="bReveal" class="btn red">פתיחת המחוון</button>
         <button id="bNext" class="btn hide">הסעיף הבא ←</button>
@@ -137,6 +138,7 @@ table.res td.n{font-variant-numeric:tabular-nums;font-weight:800}
       <p class="mut" style="margin-top:8px">ממוצע הניקוד העצמי בכל סעיף, באחוזים (אדום: פחות מ-50%). התשובות עם השמות והקובץ להורדה נמצאים במסך המורה.</p>
       <div id="qstats" class="qstats"></div>
     </div>
+    <div class="card"><p id="resHidden" class="hiddenNote">הטבלה עם השמות מוסתרת. אפשר להציג אותה בכפתור "שמות" למעלה, או לראות אותה במסך המורה.</p><table class="res hide" id="resTable"></table></div>
   </section>
 </div>
 
@@ -150,7 +152,8 @@ import { Q, label, itemBody } from "./oq.js";
 
 const DEMO = new URLSearchParams(location.search).has("demo");
 const HK = "live-open-host";
-let KEY = null, api = null, G = null, st = null, players = {}, answers = {}, checks = {};
+let KEY = null, api = null, G = null, st = null, players = {}, answers = {}, checks = {}, SELF = true;
+let NAMES = false, LEAD = true;
 const show = (id) => ["vLogin", "vLobby", "vGame", "vEnd"].forEach((v) => $("#" + v).classList.toggle("hide", v !== id));
 const prev = store.get(HK);
 if (prev && prev.g) $("#bResume").classList.remove("hide");
@@ -178,6 +181,7 @@ async function newGame() {
     if (await api.get(`games/${g}/host`)) continue;
     await api.set(`games/${g}/host`, api.uid);
     await api.set(`games/${g}/kind`, "open");
+    await api.set(`games/${g}/selfcheck`, true);
     await api.set(`games/${g}/created`, api.stamp());
     await api.set(`games/${g}/state`, { phase: "lobby", qi: -1 });
     G = g; store.set(HK, { g }); return attach();
@@ -193,7 +197,8 @@ function attach() {
   $("#qr").textContent = "";
   if (window.QRCode) new QRCode($("#qr"), { text: url, width: 280, height: 280, correctLevel: QRCode.CorrectLevel.M });
   $("#topinfo").textContent = `קוד משחק: ${G}`; $("#topinfo").classList.remove("hide");
-  $("#bTeacher").classList.remove("hide");
+  ["#bTeacher", "#bNames", "#bLead", "#bSelf"].forEach((b) => $(b).classList.remove("hide"));
+  api.on(`games/${G}/selfcheck`, (v) => { SELF = v !== false; const b = $("#bSelf"); b.textContent = SELF ? "✔ בדיקה עצמית: פועלת" : "✖ בדיקה עצמית: כבויה"; b.classList.toggle("on", SELF); render(); });
   $("#tlinkUrl").textContent = `${base}teacher.html?g=${G}${DEMO ? "&demo=1" : ""}`.replace(/^https?:\/\//, "");
   api.on(`games/${G}/state`, (v) => { st = v; render(); });
   api.on(`games/${G}/players`, (v) => { players = v || {}; render(); });
@@ -207,7 +212,7 @@ function render() {
     show("vLobby");
     const ids = Object.keys(players);
     $("#pcount").textContent = ids.length;
-    $("#plist").replaceChildren(...ids.map(() => el("span", { class: "dot done" })));
+    $("#plist").replaceChildren(...ids.map((u) => NAMES ? el("span", { class: "chip" }, name(u)) : el("span", { class: "dot done" })));
     $("#bStart").disabled = ids.length === 0;
     return;
   }
@@ -218,16 +223,25 @@ function render() {
   const body = $("#qbody");
   if (body.dataset.q !== k) { body.replaceChildren(itemBody(q, i)); body.dataset.q = k; }
   $("#rv").classList.toggle("hide", !rev);
-  $("#cntLbl").textContent = rev ? "בדקו את עצמם" : "ענו";
-  $("#nAns").textContent = rev ? Object.keys(C).length : Object.keys(A).length;
+  const chk = rev && SELF;
+  $("#cntLbl").textContent = chk ? "בדקו את עצמם" : "ענו";
+  $("#nAns").textContent = chk ? Object.keys(C).length : Object.keys(A).length;
+  $("#rsub").classList.toggle("hide", !SELF);
   $("#nAll").textContent = ids.length;
-  $("#dots").replaceChildren(...ids.map((u) => el("span", { class: "dot" + (rev ? (C[u] ? " ok" : A[u] ? " done" : "") : A[u] ? " done" : "") })));
+  $("#dots").replaceChildren(...ids.map((u) => {
+    const c = C[u], a = A[u];
+    const st2 = rev && c ? (c.s >= q.pts / 2 ? " ok" : " no") : a ? " done" : "";
+    if (!NAMES) return el("span", { class: "dot" + st2 });
+    return el("span", { class: "chip" + st2 }, name(u) + (rev && c ? ` · ${c.s}/${q.pts}` : ""));
+  }));
+  $("#lead").classList.toggle("hide", !rev || !LEAD || !SELF);
+  if (rev) $("#leadList").replaceChildren(...ranked().slice(0, 5).map((r) => el("li", {}, r.n, el("b", {}, `${r.s}`))));
   if (rev) {
     const n = Object.keys(C).length;
     $("#rcomps").replaceChildren(...KEY[i].comps.map((c, j) => {
       const m = Object.values(C).filter((v) => v.m && v.m[j]).length;
       const p = n ? Math.round((100 * m) / n) : 0;
-      return el("div", { class: "rc" }, el("span", { class: "bar", style: `width:${p}%` }), el("span", { class: "tx" }, c.t), el("span", { class: "pc" }, n ? p + "%" : "–"));
+      return el("div", { class: "rc" }, el("span", { class: "bar", style: `width:${SELF ? p : 0}%` }), el("span", { class: "tx" }, c.t), SELF ? el("span", { class: "pc" }, n ? p + "%" : "–") : "");
     }));
     $("#rmodel").replaceChildren(el("b", {}, "תשובה לדוגמה: "), KEY[i].m);
   }
@@ -239,6 +253,10 @@ function render() {
 
 function renderEnd() {
   show("vEnd");
+  const R = ranked(), done = Q.filter((_, i) => checks["q" + i]).reduce((x, q) => x + q.pts, 0);
+  $("#resTable").classList.toggle("hide", !NAMES); $("#resHidden").classList.toggle("hide", NAMES);
+  $("#resTable").replaceChildren(el("tr", {}, el("th", {}, "#"), el("th", {}, "שם"), el("th", {}, "ניקוד עצמי")),
+    ...R.map((r, x) => el("tr", {}, el("td", { class: "n" }, x + 1), el("td", {}, r.n), el("td", { class: "n" }, `${r.s} / ${done}`))));
   $("#qstats").replaceChildren(...Q.map((q, i) => {
     const C = Object.values(checks["q" + i] || {});
     const p = C.length ? Math.round((100 * C.reduce((s, v) => s + (v.s || 0), 0)) / (C.length * q.pts)) : null;
@@ -247,6 +265,17 @@ function renderEnd() {
   $("#topinfo").textContent = `קוד משחק: ${G} · סיום`;
 }
 
+const name = (u) => (players[u] && players[u].name) || "?";
+function ranked() {
+  return Object.keys(players).map((u) => {
+    let s = 0; Q.forEach((_, i) => { const c = (checks["q" + i] || {})[u]; if (c) s += c.s || 0; });
+    return { u, n: name(u), s: Math.round(s * 10) / 10 };
+  }).sort((a, b) => b.s - a.s || a.n.localeCompare(b.n, "he"));
+}
+function setNames(v) { NAMES = v; const b = $("#bNames"); b.textContent = v ? "👁 שמות: גלויים" : "🙈 שמות: מוסתרים"; b.classList.toggle("on", v); render(); }
+$("#bNames").onclick = () => setNames(!NAMES);
+$("#bLead").onclick = () => { LEAD = !LEAD; const b = $("#bLead"); b.textContent = LEAD ? "🏆 מובילים: גלוי" : "🏆 מובילים: מוסתר"; b.classList.toggle("on", LEAD); render(); };
+$("#bSelf").onclick = () => api.set(`games/${G}/selfcheck`, !SELF);
 const setState = (s) => api.set(`games/${G}/state`, s);
 $("#bStart").onclick = () => setState({ phase: "question", qi: 0 });
 $("#bReveal").onclick = async () => {

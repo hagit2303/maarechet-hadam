@@ -55,10 +55,10 @@ form{display:flex;flex-direction:column;gap:12px}
     <div id="check" class="hide">
       <p style="margin-top:12px"><b>התשובה שלי:</b></p>
       <div id="mine" class="mybox"></div>
-      <p style="margin-top:14px"><b>✔ בדיקה עצמית לפי המחוון</b></p>
-      <p class="mut" style="font-size:.9em">סמנו כל רכיב שמופיע בתשובה שלכם. מותר גם במילים אחרות, אם הרעיון זהה.</p>
+      <p style="margin-top:14px"><b id="chkT">✔ בדיקה עצמית לפי המחוון</b></p>
+      <p class="mut" style="font-size:.9em" id="chkS">סמנו כל רכיב שמופיע בתשובה שלכם. מותר גם במילים אחרות, אם הרעיון זהה.</p>
       <div id="comps" class="comps"></div>
-      <div class="row"><span>הניקוד שלי:</span><span id="myScore" class="sc"></span></div>
+      <div class="row" id="scRow"><span>הניקוד שלי:</span><span id="myScore" class="sc"></span></div>
       <div id="model" class="model"></div>
     </div>
     <div id="qstat" class="status hide" role="status"></div>
@@ -77,7 +77,7 @@ import { $, el, store } from "../common.js";
 import { Q, TOTAL, label, itemBody, selfScore } from "./oq.js";
 
 const params = new URLSearchParams(location.search);
-let api = null, G = null, st = null, mine = {}, reveal = {}, checks = {}, offs = [], drafts = {};
+let api = null, G = null, st = null, SELF = true, mine = {}, reveal = {}, checks = {}, offs = [], drafts = {};
 const show = (id) => ["vJoin", "vWait", "vQ", "vEnd"].forEach((v) => $("#" + v).classList.toggle("hide", v !== id));
 const SK = "live-open-player";
 const saved = store.get(SK);
@@ -109,6 +109,7 @@ function attach() {
   offs = [
     api.on(`games/${G}/state`, (v) => { st = v; render(); }),
     api.on(`games/${G}/reveal`, (v) => { reveal = v || {}; render(); }),
+    api.on(`games/${G}/selfcheck`, (v) => { SELF = v !== false; $("#comps").dataset.q = ""; render(); }),
   ];
   for (let i = 0; i < Q.length; i++) {
     offs.push(api.on(`games/${G}/answers/q${i}/${api.uid}`, (v) => { if (v) mine["q" + i] = v.txt; render(); }));
@@ -144,11 +145,15 @@ function render() {
     $("#comps").dataset.q = k;
     $("#comps").replaceChildren(...r.comps.map((c, j) => {
       const cb = el("input", { type: "checkbox" }); cb.checked = !!marks[j]; cb.disabled = my == null;
+      if (!SELF) cb.classList.add("hide");
       const row = el("label", { class: "comp" + (marks[j] ? " on" : "") }, cb, el("span", {}, c.t), el("span", { class: "p" }, `${Math.round((q.pts * c.p) / 10) / 10} נק'`));
       cb.onchange = () => { marks[j] = cb.checked ? 1 : 0; row.classList.toggle("on", cb.checked); saveCheck(i); };
       return row;
     }));
   }
+  $("#chkT").textContent = SELF ? "✔ בדיקה עצמית לפי המחוון" : "📋 רכיבי המחוון";
+  $("#chkS").textContent = SELF ? "סמנו כל רכיב שמופיע בתשובה שלכם. מותר גם במילים אחרות, אם הרעיון זהה." : "השוו את התשובה שלכם לרכיבים האלה.";
+  $("#scRow").classList.toggle("hide", !SELF);
   $("#myScore").textContent = `${selfScore(q, r.comps, marks)} / ${q.pts}`;
   $("#model").replaceChildren(el("b", {}, "תשובה לדוגמה: "), r.m);
 }
@@ -176,8 +181,9 @@ function renderEnd() {
   let s = 0;
   const rows = Q.map((q, i) => {
     const k = "q" + i, r = reveal[k];
-    const v = r && mine[k] != null ? selfScore(q, r.comps, checks[k]) : 0; s += v;
-    return el("tr", {}, el("td", {}, label(q)), el("td", { class: "n" }, r ? `${v} / ${q.pts}` : "–"));
+    const has = r && mine[k] != null && checks[k] && checks[k].some(Boolean);
+    const v = has ? selfScore(q, r.comps, checks[k]) : 0; s += v;
+    return el("tr", {}, el("td", {}, label(q)), el("td", { class: "n" }, has ? `${v} / ${q.pts}` : "–"));
   });
   $("#fScore").textContent = `${Math.round(s * 10) / 10} / ${TOTAL}`;
   $("#fTable").replaceChildren(...rows);
