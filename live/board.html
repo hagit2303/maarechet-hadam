@@ -27,6 +27,13 @@ body{font-size:clamp(18px,1.55vw,28px)}
 .chip{background:var(--soft);border-radius:30px;padding:3px 14px;font-weight:700;font-size:.85em}
 .chip.ok{background:var(--okbg);color:var(--ok)}.chip.no{background:var(--nobg);color:var(--no)}
 .chip.done{background:var(--ink);color:#fff}
+.dot{display:inline-block;width:26px;height:26px;border-radius:50%;background:var(--line)}
+.dot.done{background:var(--poor)}.dot.ok{background:var(--ok)}.dot.no{background:var(--no)}
+.toggles{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tbtn{border:2px solid var(--ink);background:#fff;border-radius:30px;padding:4px 14px;font-weight:800;font-size:.8em}
+.tbtn.on{background:var(--ink);color:#fff}
+.tlink{position:fixed;inset-block-start:70px;inset-inline-end:20px;z-index:5;max-width:420px;font-size:.8em}
+.hiddenNote{color:var(--mut);font-size:.8em}
 .stage{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
 .stage.wide{grid-template-columns:minmax(0,1fr)}
 .qcard .qimg{max-height:30vh;width:auto}
@@ -58,8 +65,10 @@ table.res td.n{font-variant-numeric:tabular-nums;font-weight:800}
 <div class="wrap">
   <div class="top">
     <h1>🩸 משחק חי · <span>מבחן רבעון א'</span></h1>
-    <div id="topinfo" class="pill hide"></div>
+    <div class="toggles"><button id="bNames" class="tbtn hide" type="button">👁 שמות: מוסתרים</button><button id="bLead" class="tbtn on hide" type="button">🏆 מובילים: גלוי</button><button id="bTeacher" class="tbtn hide" type="button">📱 מסך מורה</button><div id="topinfo" class="pill hide"></div></div>
   </div>
+
+  <div id="tlink" class="card tlink hide"><b>📱 מסך מורה (רק לך)</b><p class="mut">פתחי בטלפון או במחשב שלך, והזיני את קוד המורה. שם תמיד רואים את כל השמות.</p><p id="tlinkUrl" class="url" style="margin-top:6px"></p><button id="bTclose" class="btn alt" type="button" style="margin-top:8px">סגירה</button></div>
 
   <section id="vLogin" class="login card">
     <h2>לוח המורה</h2>
@@ -103,8 +112,7 @@ table.res td.n{font-variant-numeric:tabular-nums;font-weight:800}
         <button id="bNext" class="btn hide">שאלה הבאה ←</button>
         <button id="bEnd" class="btn hide">סיום ותוצאות</button>
       </div>
-      <label class="mut" style="font-size:.7em"><input type="checkbox" id="showNames" checked> להציג שמות ליד כל תשובה</label>
-      <div id="lead" class="card lead hide"><b>🏆 מובילים</b><ol id="leadList"></ol></div>
+            <div id="lead" class="card lead hide"><b>🏆 מובילים</b><ol id="leadList"></ol></div>
     </aside>
   </section>
 
@@ -117,7 +125,7 @@ table.res td.n{font-variant-numeric:tabular-nums;font-weight:800}
       <p class="mut" style="margin-top:8px">אחוז התשובות הנכונות בכל שאלה (אדום: פחות מ-50%):</p>
       <div id="qstats" class="qstats"></div>
     </div>
-    <div class="card"><table class="res" id="resTable"></table></div>
+    <div class="card"><p id="resHidden" class="hiddenNote hide">הטבלה עם השמות מוסתרת. אפשר להציג אותה בכפתור "שמות" למעלה, או לראות אותה במסך המורה.</p><table class="res" id="resTable"></table></div>
   </section>
 </div>
 
@@ -131,6 +139,7 @@ import { $, el, LETTERS, questionBody, decryptKey, store } from "./common.js";
 const Q = window.QUESTIONS;
 const DEMO = new URLSearchParams(location.search).has("demo");
 let KEY = null, api = null, G = null, st = null, players = {}, answers = {}, reveal = {};
+let NAMES = false, LEAD = true;
 const show = (id) => ["vLogin", "vLobby", "vGame", "vEnd"].forEach((v) => $("#" + v).classList.toggle("hide", v !== id));
 
 if (!isConfigured()) {
@@ -177,6 +186,9 @@ function attach() {
   $("#qr").textContent = "";
   if (window.QRCode) new QRCode($("#qr"), { text: url, width: 280, height: 280, correctLevel: QRCode.CorrectLevel.M });
   $("#topinfo").textContent = `קוד משחק: ${G}`; $("#topinfo").classList.remove("hide");
+  $("#bNames").classList.remove("hide"); $("#bLead").classList.remove("hide"); $("#bTeacher").classList.remove("hide"); setNames(false);
+  const tUrl = `${base}teacher.html?g=${G}${DEMO ? "&demo=1" : ""}`;
+  $("#tlinkUrl").textContent = tUrl.replace(/^https?:\/\//, "");
   api.on(`games/${G}/state`, (v) => { st = v; render(); });
   api.on(`games/${G}/players`, (v) => { players = v || {}; render(); });
   api.on(`games/${G}/answers`, (v) => { answers = v || {}; render(); });
@@ -202,7 +214,7 @@ function renderLobby() {
   show("vLobby");
   const ids = Object.keys(players);
   $("#pcount").textContent = ids.length;
-  $("#plist").replaceChildren(...ids.map((u) => el("span", { class: "chip" }, name(u))));
+  $("#plist").replaceChildren(...ids.map((u) => NAMES ? el("span", { class: "chip" }, name(u)) : el("span", { class: "dot done", title: "" })));
   $("#bStart").disabled = ids.length === 0;
 }
 
@@ -215,7 +227,7 @@ function renderQ() {
   const counts = [0, 0, 0, 0], who = [[], [], [], []];
   Object.entries(A).forEach(([u, v]) => { counts[v.a]++; who[v.a].push(name(u)); });
   const total = Object.keys(A).length;
-  const showN = $("#showNames").checked;
+  const showN = NAMES;
   $("#qopts").replaceChildren(...q.opts.map((t, j) => {
     const cls = "opt o" + j + (rev ? (j === KEY[i].c ? " right" : counts[j] ? " wrong" : "") : "");
     const kids = [el("span", { class: "L" }, LETTERS[j]), el("span", { class: "tx" }, t)];
@@ -233,20 +245,25 @@ function renderQ() {
   $("#waitNames").replaceChildren(...ids.map((u) => {
     const a = A[u];
     const c = !a ? "chip" : !rev ? "chip done" : a.a === KEY[i].c ? "chip ok" : "chip no";
-    return el("span", { class: c }, name(u));
+    return NAMES ? el("span", { class: c }, name(u)) : el("span", { class: c.replace("chip", "dot") });
   }));
   $("#bReveal").classList.toggle("hide", rev);
   $("#bNext").classList.toggle("hide", !rev || i >= Q.length - 1);
   $("#bEnd").classList.toggle("hide", !rev || i < Q.length - 1);
-  $("#lead").classList.toggle("hide", !rev);
+  $("#lead").classList.toggle("hide", !rev || !LEAD);
   if (rev) $("#leadList").replaceChildren(...ranked().slice(0, 5).map((r) => el("li", {}, r.n, el("b", {}, `${r.s}`))));
   $("#topinfo").textContent = `קוד משחק: ${G} · שאלה ${i + 1} מתוך ${Q.length}`;
 }
-$("#showNames").onchange = render;
+function setNames(v) { NAMES = v; const b = $("#bNames"); b.textContent = v ? "👁 שמות: גלויים" : "🙈 שמות: מוסתרים"; b.classList.toggle("on", v); render(); }
+$("#bNames").onclick = () => setNames(!NAMES);
+$("#bLead").onclick = () => { LEAD = !LEAD; const b = $("#bLead"); b.textContent = LEAD ? "🏆 מובילים: גלוי" : "🏆 מובילים: מוסתר"; b.classList.toggle("on", LEAD); render(); };
+$("#bTeacher").onclick = () => { $("#tlink").classList.remove("hide"); };
+$("#bTclose").onclick = () => $("#tlink").classList.add("hide");
 
 function renderEnd() {
   show("vEnd");
   const R = ranked();
+  $("#resTable").classList.toggle("hide", !NAMES); $("#resHidden").classList.toggle("hide", NAMES);
   $("#resTable").replaceChildren(
     el("tr", {}, el("th", {}, "#"), el("th", {}, "שם"), el("th", {}, "נכונות"), el("th", {}, "ציון")),
     ...R.map((r, x) => el("tr", {}, el("td", { class: "n" }, x + 1), el("td", {}, r.n), el("td", { class: "n" }, `${r.s} / ${Q.length}`), el("td", { class: "n" }, Math.round((100 * r.s) / Q.length))))

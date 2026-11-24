@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>משחק חי · מסך מורה</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="live.css">
+<style>
+body{padding-inline:16px}
+.wrap{max-width:1100px;margin:auto;padding-block:16px 40px;display:flex;flex-direction:column;gap:14px}
+.login{display:flex;flex-direction:column;gap:12px;max-width:420px}
+.err{color:var(--no);font-weight:700}
+.now{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.now b{font-size:1.15em}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stats span{background:var(--soft);border-radius:30px;padding:2px 12px;font-weight:700;font-size:.9em}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;background:#fff;font-size:.95em}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:start;white-space:nowrap}
+th{font-size:.8em;color:var(--mut);position:sticky;top:0;background:#fff}
+td.n{font-weight:800;font-variant-numeric:tabular-nums}
+.cell{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;font-weight:800;font-size:.85em;background:var(--soft);color:var(--mut)}
+.cell.ok{background:var(--okbg);color:var(--ok)}.cell.no{background:var(--nobg);color:var(--no)}
+.cell.cur{outline:2px solid var(--ink)}
+.cur-ans{font-weight:800}
+.cur-ans.ok{color:var(--ok)}.cur-ans.no{color:var(--no)}
+th.q.cur{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <b>🩸 משחק חי · מסך מורה <span class="mut" style="font-weight:600">(לא להציג במקרן)</span></b>
+
+  <section id="vLogin" class="card login">
+    <label>קוד המשחק (מהלוח)<input id="gcode" inputmode="numeric" maxlength="4" autocomplete="off"></label>
+    <label>קוד מורה<input id="tcode" type="password" autocomplete="current-password"></label>
+    <button id="bGo" class="btn">כניסה</button>
+    <p id="err" class="err" role="alert"></p>
+  </section>
+
+  <section id="vMain" class="hide" style="display:flex;flex-direction:column;gap:14px">
+    <div class="card now">
+      <b id="nowT"></b>
+      <div class="stats"><span id="sJoined"></span><span id="sAns"></span><span id="sOk"></span></div>
+    </div>
+    <div class="card scroll"><table id="tbl"></table></div>
+    <p class="mut" style="font-size:.85em">ירוק = נכון, אדום = לא נכון, אפור = לא ענה. המסגרת מסמנת את השאלה הנוכחית. ההתאמה לתשובה הנכונה מוצגת כאן מיד, גם לפני החשיפה במקרן.</p>
+  </section>
+</div>
+
+<script src="questions.js"></script>
+<script src="key.enc.js"></script>
+<script type="module">
+import { connect } from "./fb.js";
+import { $, el, LETTERS, decryptKey, store } from "./common.js";
+
+const Q = window.QUESTIONS;
+let KEY = null, api = null, G = null, st = null, players = {}, answers = {};
+const params = new URLSearchParams(location.search);
+$("#gcode").value = params.get("g") || "";
+
+$("#bGo").onclick = async () => {
+  $("#err").textContent = "";
+  const g = $("#gcode").value.trim();
+  if (!/^\d{4}$/.test(g)) return ($("#err").textContent = "קוד המשחק הוא 4 ספרות.");
+  try { KEY = await decryptKey($("#tcode").value.trim()); } catch { return ($("#err").textContent = "קוד המורה שגוי."); }
+  try {
+    api = api || (await connect());
+    if (!(await api.get(`games/${g}/host`))) return ($("#err").textContent = "לא נמצא משחק עם הקוד הזה.");
+    G = g;
+    $("#vLogin").classList.add("hide"); $("#vMain").classList.remove("hide");
+    api.on(`games/${G}/state`, (v) => { st = v; render(); });
+    api.on(`games/${G}/players`, (v) => { players = v || {}; render(); });
+    api.on(`games/${G}/answers`, (v) => { answers = v || {}; render(); });
+  } catch (e) { console.error(e); $("#err").textContent = "אין חיבור. בדקי את האינטרנט ונסי שוב."; }
+};
+$("#tcode").addEventListener("keydown", (e) => e.key === "Enter" && $("#bGo").click());
+
+function render() {
+  if (!st) return;
+  const cur = st.phase === "question" || st.phase === "reveal" ? st.qi : -1;
+  const asked = st.phase === "end" ? Q.length : Math.max(cur + 1, 0);
+  $("#nowT").textContent = st.phase === "lobby" ? "ממתינים להתחלה" : st.phase === "end" ? "המשחק הסתיים" : `שאלה ${cur + 1} מתוך ${Q.length}` + (st.phase === "reveal" ? " · התשובות נחשפו" : "");
+  const ids = Object.keys(players).sort((a, b) => (players[a].name || "").localeCompare(players[b].name || "", "he"));
+  const A = cur >= 0 ? answers["q" + cur] || {} : {};
+  $("#sJoined").textContent = `👥 ${ids.length} מחוברים`;
+  $("#sAns").textContent = cur >= 0 ? `✍️ ${Object.keys(A).length} ענו` : "";
+  $("#sOk").textContent = cur >= 0 ? `✅ ${Object.values(A).filter((v) => v.a === KEY[cur].c).length} נכון` : "";
+
+  const head = el("tr", {}, el("th", {}, "שם"), el("th", {}, "נכון"), el("th", {}, "עכשיו"),
+    ...Q.slice(0, asked).map((_, i) => el("th", { class: "q" + (i === cur ? " cur" : "") }, `ש${i + 1}`)));
+  const rows = ids.map((u) => {
+    let ok = 0;
+    const cells = Q.slice(0, asked).map((_, i) => {
+      const a = (answers["q" + i] || {})[u];
+      if (a && a.a === KEY[i].c) ok++;
+      const cls = "cell" + (a ? (a.a === KEY[i].c ? " ok" : " no") : "") + (i === cur ? " cur" : "");
+      return el("td", {}, el("span", { class: cls }, a ? LETTERS[a.a] : "–"));
+    });
+    const my = A[u];
+    const now = cur < 0 ? "" : my ? el("span", { class: "cur-ans " + (my.a === KEY[cur].c ? "ok" : "no") }, (my.a === KEY[cur].c ? "✅ " : "❌ ") + LETTERS[my.a]) : el("span", { class: "mut" }, "ממתין…");
+    return el("tr", {}, el("td", {}, players[u].name || "?"), el("td", { class: "n" }, `${ok}/${asked}`), el("td", {}, now), ...cells);
+  });
+  $("#tbl").replaceChildren(head, ...rows);
+}
+</script>
+</body>
+</html>
