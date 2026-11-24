@@ -30,6 +30,9 @@ table{border-collapse:collapse;width:100%;background:#fff;font-size:.95em}
 th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:start;white-space:nowrap}
 th{font-size:.8em;color:var(--mut)}
 td.n{font-weight:800;font-variant-numeric:tabular-nums}
+.showb{border:2px solid var(--poor);background:#fff;color:var(--poor);border-radius:30px;padding:2px 12px;font-weight:800;font-size:.85em}
+.showb.on{background:var(--poor);color:#fff}
+.ans.onb{border-color:var(--poor);box-shadow:0 0 0 2px rgba(36,87,197,.15)}
 .tabs{display:flex;gap:8px;flex-wrap:wrap}
 .tabs button{border:2px solid var(--ink);background:#fff;border-radius:30px;padding:4px 14px;font-weight:800;font-size:.85em}
 .tabs button.on{background:var(--ink);color:#fff}
@@ -64,7 +67,7 @@ import { connect } from "../fb.js";
 import { $, el, decryptKey } from "../common.js";
 import { Q, TOTAL, label } from "./oq.js";
 
-let KEY = null, api = null, G = null, st = null, players = {}, answers = {}, checks = {}, view = null, lastCur = null;
+let KEY = null, api = null, G = null, st = null, players = {}, answers = {}, checks = {}, shown = {}, view = null, lastCur = null;
 const params = new URLSearchParams(location.search);
 $("#gcode").value = params.get("g") || "";
 
@@ -82,6 +85,7 @@ $("#bGo").onclick = async () => {
     api.on(`games/${G}/players`, (v) => { players = v || {}; render(); });
     api.on(`games/${G}/answers`, (v) => { answers = v || {}; render(); });
     api.on(`games/${G}/checks`, (v) => { checks = v || {}; render(); });
+    api.on(`games/${G}/shown`, (v) => { shown = v || {}; render(); });
   } catch (e) { console.error(e); $("#err").textContent = "אין חיבור. בדקי את האינטרנט ונסי שוב."; }
 };
 $("#tcode").addEventListener("keydown", (e) => e.key === "Enter" && $("#bGo").click());
@@ -106,11 +110,16 @@ function render() {
   $("#selWrap").replaceChildren(...Q.slice(0, asked()).map((q, i) => { const b = el("button", { type: "button", class: i === view ? "on" : "" }, `${q.qn}${q.l}`); b.onclick = () => { view = i; render(); }; return b; }));
   if (view < 0) { $("#list").replaceChildren(el("p", { class: "mut" }, "עוד לא התחלנו.")); }
   else {
-    const k = "q" + view, q = Q[view], A = answers[k] || {}, C = checks[k] || {};
+    const k = "q" + view, q = Q[view], A = answers[k] || {}, C = checks[k] || {}, SH = shown[k] || {};
     $("#list").replaceChildren(...U.map((u) => {
-      const a = A[u], c = C[u];
-      return el("div", { class: "ans" },
-        el("div", { class: "h" }, el("b", {}, players[u].name || "?"), el("span", { class: "n" }, c ? `בדיקה עצמית: ${c.s} / ${q.pts}` : a ? "עוד לא בדק/ה" : "")),
+      const a = A[u], c = C[u], on = !!SH[u];
+      let btn = "";
+      if (a) {
+        btn = el("button", { type: "button", class: "showb" + (on ? " on" : "") }, on ? "✖ להוריד מהלוח" : "📢 להציג בלוח");
+        btn.onclick = () => api.set(`games/${G}/shown/${k}/${u}`, on ? null : api.stamp());
+      }
+      return el("div", { class: "ans" + (on ? " onb" : "") },
+        el("div", { class: "h" }, el("b", {}, players[u].name || "?"), el("span", { class: "n" }, c ? `בדיקה עצמית: ${c.s} / ${q.pts}` : a ? "עוד לא בדק/ה" : ""), btn),
         a ? el("div", { class: "t" }, a.txt) : el("div", { class: "t none" }, "לא ענה/תה"),
         c ? el("div", { class: "tags" }, KEY[view].comps.map((x, j) => el("span", { class: "tag" + (c.m && c.m[j] ? " on" : "") }, (c.m && c.m[j] ? "✔ " : "✗ ") + x.t.slice(0, 40) + (x.t.length > 40 ? "…" : "")))) : "");
     }));
