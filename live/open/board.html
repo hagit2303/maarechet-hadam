@@ -76,7 +76,7 @@ table.res td.n{font-variant-numeric:tabular-nums;font-weight:800}
 <div class="wrap">
   <div class="top">
     <h1>✍️ משחק חי · <span>מבחן רבעון א' · שאלות פתוחות</span></h1>
-    <div class="toggles"><button id="bNames" class="tbtn hide" type="button">🙈 שמות: מוסתרים</button><button id="bLead" class="tbtn on hide" type="button">🏆 מובילים: גלוי</button><button id="bSelf" class="tbtn on hide" type="button">✔ בדיקה עצמית: פועלת</button><button id="bTeacher" class="tbtn hide" type="button">📱 מסך מורה</button><div id="topinfo" class="pill hide"></div></div>
+    <div class="toggles"><button id="bNames" class="tbtn hide" type="button">🙈 שמות: מוסתרים</button><button id="bLead" class="tbtn on hide" type="button">🏆 מובילים: גלוי</button><button id="bMode" class="tbtn hide" type="button">🎮 מצב: תרגול</button><button id="bSelf" class="tbtn on hide" type="button">✔ בדיקה עצמית: פועלת</button><button id="bTeacher" class="tbtn hide" type="button">📱 מסך מורה</button><div id="topinfo" class="pill hide"></div></div>
   </div>
 
   <div id="tlink" class="card tlink hide"><b>📱 מסך מורה (רק לך)</b><p class="mut">פתחי בטלפון או במחשב שלך, והזיני את קוד המורה. שם רואים את כל התשובות עם השמות.</p><p id="tlinkUrl" class="url" style="margin-top:6px"></p><button id="bTclose" class="btn alt" type="button" style="margin-top:8px">סגירה</button></div>
@@ -158,7 +158,7 @@ import { Q, label, itemBody } from "./oq.js";
 
 const DEMO = new URLSearchParams(location.search).has("demo");
 const HK = "live-open-host";
-let KEY = null, api = null, G = null, st = null, players = {}, answers = {}, checks = {}, shown = {}, SELF = true;
+let KEY = null, api = null, G = null, st = null, players = {}, answers = {}, checks = {}, shown = {}, SELF = true, FIX = false;
 let NAMES = false, LEAD = true;
 const show = (id) => ["vLogin", "vLobby", "vGame", "vEnd"].forEach((v) => $("#" + v).classList.toggle("hide", v !== id));
 const prev = store.get(HK);
@@ -188,6 +188,7 @@ async function newGame() {
     await api.set(`games/${g}/host`, api.uid);
     await api.set(`games/${g}/kind`, "open");
     await api.set(`games/${g}/selfcheck`, true);
+    await api.set(`games/${g}/mode`, "play");
     await api.set(`games/${g}/created`, api.stamp());
     await api.set(`games/${g}/state`, { phase: "lobby", qi: -1 });
     G = g; store.set(HK, { g }); return attach();
@@ -203,8 +204,9 @@ function attach() {
   $("#qr").textContent = "";
   if (window.QRCode) new QRCode($("#qr"), { text: url, width: 280, height: 280, correctLevel: QRCode.CorrectLevel.M });
   $("#topinfo").textContent = `קוד משחק: ${G}`; $("#topinfo").classList.remove("hide");
-  ["#bTeacher", "#bNames", "#bLead", "#bSelf"].forEach((b) => $(b).classList.remove("hide"));
+  ["#bTeacher", "#bNames", "#bLead", "#bMode", "#bSelf"].forEach((b) => $(b).classList.remove("hide"));
   api.on(`games/${G}/selfcheck`, (v) => { SELF = v !== false; const b = $("#bSelf"); b.textContent = SELF ? "✔ בדיקה עצמית: פועלת" : "✖ בדיקה עצמית: כבויה"; b.classList.toggle("on", SELF); render(); });
+  api.on(`games/${G}/mode`, (v) => { FIX = v === "fix"; const b = $("#bMode"); b.textContent = FIX ? "📝 מצב: תיקון מבחן" : "🎮 מצב: תרגול"; b.classList.toggle("on", FIX); render(); });
   $("#tlinkUrl").textContent = `${base}teacher.html?g=${G}${DEMO ? "&demo=1" : ""}`.replace(/^https?:\/\//, "");
   api.on(`games/${G}/state`, (v) => { st = v; render(); });
   api.on(`games/${G}/players`, (v) => { players = v || {}; render(); });
@@ -230,7 +232,7 @@ function render() {
   const body = $("#qbody");
   if (body.dataset.q !== k) { body.replaceChildren(itemBody(q, i)); body.dataset.q = k; }
   $("#rv").classList.toggle("hide", !rev);
-  const SH = Object.entries(shown[k] || {}).filter(([u, t]) => t && A[u]).sort((a, b) => a[1] - b[1]);
+  const SH = Object.entries(shown[k] || {}).filter(([u, t]) => t && A[u] && A[u].txt).sort((a, b) => a[1] - b[1]);
   $("#disc").classList.toggle("hide", !SH.length);
   $("#discList").replaceChildren(...SH.map(([u], x) => el("div", { class: "disc" }, el("b", {}, `תשובה ${x + 1}`), el("div", { class: "dt" }, A[u].txt))));
   const chk = rev && SELF;
@@ -285,6 +287,7 @@ function ranked() {
 function setNames(v) { NAMES = v; const b = $("#bNames"); b.textContent = v ? "👁 שמות: גלויים" : "🙈 שמות: מוסתרים"; b.classList.toggle("on", v); render(); }
 $("#bNames").onclick = () => setNames(!NAMES);
 $("#bLead").onclick = () => { LEAD = !LEAD; const b = $("#bLead"); b.textContent = LEAD ? "🏆 מובילים: גלוי" : "🏆 מובילים: מוסתר"; b.classList.toggle("on", LEAD); render(); };
+$("#bMode").onclick = () => api.set(`games/${G}/mode`, FIX ? "play" : "fix");
 $("#bSelf").onclick = () => api.set(`games/${G}/selfcheck`, !SELF);
 const setState = (s) => api.set(`games/${G}/state`, s);
 $("#bStart").onclick = () => setState({ phase: "question", qi: 0 });

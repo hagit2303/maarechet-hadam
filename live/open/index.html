@@ -48,16 +48,24 @@ form{display:flex;flex-direction:column;gap:12px}
   <section id="vQ" class="card hide">
     <div id="qbody"></div>
     <div id="write">
-      <label class="mut" for="ans" style="display:block;margin-top:12px;font-size:.9em">התשובה שלי</label>
+      <div id="fixBar" class="fixbar hide">
+        <p class="mut" style="font-size:.9em">📄 הסתכלו על המבחן שלכם בסעיף הזה.</p>
+        <div class="fixbtns"><button id="bOk" class="btn alt" type="button">✅ קיבלתי ניקוד מלא</button><button id="bFull" class="btn alt" type="button">🔁 לכתוב את כל התשובה מחדש</button></div>
+      </div>
+      <label class="mut" for="ans" id="ansLbl" style="display:block;margin-top:12px;font-size:.9em">התשובה שלי</label>
       <textarea id="ans" maxlength="1500" placeholder="כתבו כאן את התשובה…"></textarea>
       <div class="row"><span id="sent" class="mut"></span><button id="bSend" class="btn red" type="button">שליחה</button></div>
     </div>
     <div id="check" class="hide">
-      <p style="margin-top:12px"><b>התשובה שלי:</b></p>
+      <p style="margin-top:12px"><b id="mineT">התשובה שלי:</b></p>
       <div id="mine" class="mybox"></div>
       <p style="margin-top:14px"><b id="chkT">✔ בדיקה עצמית לפי המחוון</b></p>
-      <p class="mut" style="font-size:.9em" id="chkS">סמנו כל רכיב שמופיע בתשובה שלכם. מותר גם במילים אחרות, אם הרעיון זהה.</p>
+      <p class="mut" style="font-size:.9em" id="chkS"></p>
       <div id="comps" class="comps"></div>
+      <div id="telWrap" class="hide">
+        <label class="comp tel" id="telRow"><input type="checkbox" id="tel"><span>🚫 יש בתשובה שלי ניסוח טלאולוגי או האנשה (בזכות, בשביל, כדי ש, רוצה, צריך)</span><span class="p">‎−1 נק'</span></label>
+        <div id="reWrap" class="hide"><label class="mut" for="re" style="display:block;margin-top:8px;font-size:.9em">נסחו מחדש את המשפט, בלי טלאולוגיה ובלי האנשה:</label><textarea id="re" maxlength="800" style="min-height:90px"></textarea></div>
+      </div>
       <div class="row" id="scRow"><span>הניקוד שלי:</span><span id="myScore" class="sc"></span></div>
       <div id="model" class="model"></div>
     </div>
@@ -77,7 +85,7 @@ import { $, el, store } from "../common.js";
 import { Q, TOTAL, label, itemBody, selfScore } from "./oq.js";
 
 const params = new URLSearchParams(location.search);
-let api = null, G = null, st = null, SELF = true, mine = {}, reveal = {}, checks = {}, offs = [], drafts = {};
+let api = null, G = null, st = null, SELF = true, FIX = false, mine = {}, reveal = {}, chk = {}, offs = [], drafts = {}, full = {};
 const show = (id) => ["vJoin", "vWait", "vQ", "vEnd"].forEach((v) => $("#" + v).classList.toggle("hide", v !== id));
 const SK = "live-open-player";
 const saved = store.get(SK);
@@ -110,80 +118,109 @@ function attach() {
     api.on(`games/${G}/state`, (v) => { st = v; render(); }),
     api.on(`games/${G}/reveal`, (v) => { reveal = v || {}; render(); }),
     api.on(`games/${G}/selfcheck`, (v) => { SELF = v !== false; $("#comps").dataset.q = ""; render(); }),
+    api.on(`games/${G}/mode`, (v) => { FIX = v === "fix"; $("#comps").dataset.q = ""; render(); }),
   ];
   for (let i = 0; i < Q.length; i++) {
-    offs.push(api.on(`games/${G}/answers/q${i}/${api.uid}`, (v) => { if (v) mine["q" + i] = v.txt; render(); }));
-    offs.push(api.on(`games/${G}/checks/q${i}/${api.uid}`, (v) => { if (v && !checks["q" + i]) { checks["q" + i] = v.m; render(); } }));
+    offs.push(api.on(`games/${G}/answers/q${i}/${api.uid}`, (v) => { if (v) mine["q" + i] = v; render(); }));
+    offs.push(api.on(`games/${G}/checks/q${i}/${api.uid}`, (v) => { if (v && !chk["q" + i]) { chk["q" + i] = { m: v.m || [], tel: v.tel || 0, re: v.re || "" }; $("#comps").dataset.q = ""; render(); } }));
   }
 }
+
+const score = (q, r, c) => (c ? Math.max(0, Math.round((selfScore(q, r.comps, c.m) - (q.ex && c.tel ? 1 : 0)) * 10) / 10) : 0);
 
 function render() {
   if (!st) return;
   if (st.phase === "lobby") return show("vWait");
   if (st.phase === "end") return renderEnd();
   show("vQ");
-  const i = st.qi, k = "q" + i, q = Q[i], r = st.phase === "reveal" ? reveal[k] : null;
+  const i = st.qi, k = "q" + i, q = Q[i], r = st.phase === "reveal" ? reveal[k] : null, my = mine[k];
   const body = $("#qbody");
   if (body.dataset.q !== k) {
     body.replaceChildren(itemBody(q, i)); body.dataset.q = k;
-    $("#ans").value = drafts[k] ?? mine[k] ?? "";
+    $("#ans").value = drafts[k] ?? (my && my.txt) ?? "";
     $("#comps").dataset.q = "";
   }
   const s = $("#qstat"); s.classList.add("hide");
   if (!r) {
     $("#write").classList.remove("hide"); $("#check").classList.add("hide");
     if (st.phase === "reveal") { $("#write").classList.add("hide"); s.classList.remove("hide"); s.textContent = "רגע, המחוון נפתח…"; return; }
-    $("#sent").textContent = mine[k] != null ? "✔ התשובה נשלחה. אפשר לתקן ולשלוח שוב עד שהמורה פותחת את המחוון." : "";
-    $("#bSend").textContent = mine[k] != null ? "עדכון התשובה" : "שליחה";
+    $("#fixBar").classList.toggle("hide", !FIX);
+    const isFull = full[k] ?? (my && my.kind === "full");
+    $("#bFull").textContent = isFull ? "➕ רק מה שהיה חסר" : "🔁 לכתוב את כל התשובה מחדש";
+    $("#bFull").classList.toggle("on", !!isFull);
+    $("#ansLbl").textContent = !FIX ? "התשובה שלי" : isFull ? "🔁 התשובה המלאה שלי, מחדש" : "➕ מה היה חסר בתשובה שלי?";
+    $("#ans").placeholder = !FIX || isFull ? "כתבו כאן את התשובה…" : "כתבו רק את מה שחסר בתשובה שכתבתם במבחן…";
+    const okDone = my && my.kind === "ok";
+    $("#bOk").classList.toggle("on", !!okDone);
+    $("#sent").textContent = okDone ? "✔ סימנת שקיבלת ניקוד מלא. כל הכבוד!" : my ? "✔ נשלח. אפשר לתקן ולשלוח שוב עד שהמורה פותחת את המחוון." : "";
+    $("#bSend").textContent = my && !okDone ? "עדכון" : "שליחה";
     return;
   }
   $("#write").classList.add("hide"); $("#check").classList.remove("hide");
-  const my = mine[k];
-  $("#mine").textContent = my != null ? my : "לא נשלחה תשובה לסעיף הזה.";
-  const marks = checks[k] || (checks[k] = r.comps.map(() => 0));
+  const ok = my && my.kind === "ok";
+  $("#mineT").textContent = !FIX ? "התשובה שלי:" : my && my.kind === "full" ? "🔁 התשובה החדשה שלי:" : "➕ מה שהוספתי:";
+  $("#mine").textContent = ok ? "✅ קיבלתי ניקוד מלא בסעיף הזה." : my ? my.txt : "לא נשלחה תשובה לסעיף הזה.";
+  const c = chk[k] || (chk[k] = { m: r.comps.map(() => 0), tel: 0, re: "" });
+  if (ok && !c.m.some(Boolean)) { c.m = r.comps.map(() => 1); saveCheck(i, true); }
+  const can = SELF && my && !ok;
   if ($("#comps").dataset.q !== k) {
     $("#comps").dataset.q = k;
-    $("#comps").replaceChildren(...r.comps.map((c, j) => {
-      const cb = el("input", { type: "checkbox" }); cb.checked = !!marks[j]; cb.disabled = my == null;
+    $("#comps").replaceChildren(...r.comps.map((x, j) => {
+      const cb = el("input", { type: "checkbox" }); cb.checked = !!c.m[j]; cb.disabled = !can;
       if (!SELF) cb.classList.add("hide");
-      const row = el("label", { class: "comp" + (marks[j] ? " on" : "") }, cb, el("span", {}, c.t), el("span", { class: "p" }, `${Math.round((q.pts * c.p) / 10) / 10} נק'`));
-      cb.onchange = () => { marks[j] = cb.checked ? 1 : 0; row.classList.toggle("on", cb.checked); saveCheck(i); };
+      const row = el("label", { class: "comp" + (c.m[j] ? " on" : "") }, cb, el("span", {}, x.t), el("span", { class: "p" }, `${Math.round((q.pts * x.p) / 10) / 10} נק'`));
+      cb.onchange = () => { c.m[j] = cb.checked ? 1 : 0; row.classList.toggle("on", cb.checked); saveCheck(i); };
       return row;
     }));
+    $("#tel").checked = !!c.tel; $("#tel").disabled = !can; $("#re").value = c.re || "";
   }
+  const telOn = SELF && FIX && q.ex && my && !ok;
+  $("#telWrap").classList.toggle("hide", !telOn);
+  $("#telRow").classList.toggle("on", !!c.tel);
+  $("#reWrap").classList.toggle("hide", !c.tel);
   $("#chkT").textContent = SELF ? "✔ בדיקה עצמית לפי המחוון" : "📋 רכיבי המחוון";
-  $("#chkS").textContent = SELF ? "סמנו כל רכיב שמופיע בתשובה שלכם. מותר גם במילים אחרות, אם הרעיון זהה." : "השוו את התשובה שלכם לרכיבים האלה.";
+  $("#chkS").textContent = !SELF ? "השוו את התשובה שלכם לרכיבים האלה." : ok ? "קיבלת ניקוד מלא, אז כל הרכיבים מסומנים." : FIX ? "סמנו כל רכיב שמופיע עכשיו בתשובה שלכם: מה שכתבתם במבחן יחד עם התיקון." : "סמנו כל רכיב שמופיע בתשובה שלכם. מותר גם במילים אחרות, אם הרעיון זהה.";
   $("#scRow").classList.toggle("hide", !SELF);
-  $("#myScore").textContent = `${selfScore(q, r.comps, marks)} / ${q.pts}`;
+  $("#myScore").textContent = `${score(q, r, c)} / ${q.pts}`;
   $("#model").replaceChildren(el("b", {}, "תשובה לדוגמה: "), r.m);
 }
 
 let saveT = null;
-function saveCheck(i) {
-  const k = "q" + i, q = Q[i];
-  $("#myScore").textContent = `${selfScore(q, reveal[k].comps, checks[k])} / ${q.pts}`;
+function saveCheck(i, now) {
+  const k = "q" + i, q = Q[i], c = chk[k], r = reveal[k];
+  $("#myScore").textContent = `${score(q, r, c)} / ${q.pts}`;
   clearTimeout(saveT);
-  saveT = setTimeout(() => api.set(`games/${G}/checks/${k}/${api.uid}`, { m: checks[k], s: selfScore(q, reveal[k].comps, checks[k]) }).catch(console.error), 400);
+  const go = () => api.set(`games/${G}/checks/${k}/${api.uid}`, { m: c.m, s: score(q, r, c), tel: q.ex && c.tel ? 1 : 0, re: c.tel ? c.re : "" }).catch(console.error);
+  if (now) go(); else saveT = setTimeout(go, 500);
 }
+$("#tel").onchange = () => { const k = "q" + st.qi; chk[k].tel = $("#tel").checked ? 1 : 0; render(); saveCheck(st.qi); };
+$("#re").addEventListener("input", () => { const k = "q" + st.qi; chk[k].re = $("#re").value; saveCheck(st.qi); });
 
 $("#ans").addEventListener("input", () => { if (st) drafts["q" + st.qi] = $("#ans").value; });
-$("#bSend").onclick = async () => {
-  const i = st.qi, k = "q" + i, txt = $("#ans").value.trim();
-  if (txt.length < 1) return ($("#sent").textContent = "כתבו תשובה לפני השליחה.");
+$("#bFull").onclick = () => { const k = "q" + st.qi, my = mine[k]; full[k] = !(full[k] ?? (my && my.kind === "full")); render(); };
+async function send(kind, txt) {
+  const i = st.qi, k = "q" + i;
   $("#bSend").disabled = true;
-  try { await api.set(`games/${G}/answers/${k}/${api.uid}`, { txt, t: api.stamp() }); mine[k] = txt; delete drafts[k]; }
-  catch (e) { console.error(e); $("#sent").textContent = "התשובה לא נשלחה. נסו שוב."; }
+  try { const v = { txt, t: api.stamp(), kind }; await api.set(`games/${G}/answers/${k}/${api.uid}`, v); mine[k] = v; delete drafts[k]; }
+  catch (e) { console.error(e); $("#sent").textContent = "לא נשלח. נסו שוב."; }
   $("#bSend").disabled = false; render();
+}
+$("#bOk").onclick = () => { $("#ans").value = ""; send("ok", ""); };
+$("#bSend").onclick = () => {
+  const k = "q" + st.qi, txt = $("#ans").value.trim();
+  if (txt.length < 1) return ($("#sent").textContent = "כתבו משהו לפני השליחה.");
+  const my = mine[k];
+  send(!FIX ? "ans" : (full[k] ?? (my && my.kind === "full")) ? "full" : "missing", txt);
 };
 
 function renderEnd() {
   show("vEnd");
   let s = 0;
   const rows = Q.map((q, i) => {
-    const k = "q" + i, r = reveal[k];
-    const has = r && mine[k] != null && checks[k] && checks[k].some(Boolean);
-    const v = has ? selfScore(q, r.comps, checks[k]) : 0; s += v;
-    return el("tr", {}, el("td", {}, label(q)), el("td", { class: "n" }, has ? `${v} / ${q.pts}` : "–"));
+    const k = "q" + i, r = reveal[k], c = chk[k];
+    const has = r && mine[k] && c;
+    const v = has ? score(q, r, c) : 0; s += v;
+    return el("tr", {}, el("td", {}, label(q)), el("td", { class: "n" }, has ? `${v} / ${q.pts}` + (q.ex && c.tel ? " 🚫" : "") : "–"));
   });
   $("#fScore").textContent = `${Math.round(s * 10) / 10} / ${TOTAL}`;
   $("#fTable").replaceChildren(...rows);

@@ -22,6 +22,7 @@ body{padding-inline:16px}
 .ans .h{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .ans .t{white-space:pre-wrap;margin-top:6px}
 .ans .none{color:var(--mut)}
+.telw{background:#fdecea;border-radius:8px;padding:6px 8px;margin-top:6px}
 .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .tag{font-size:.78em;border-radius:8px;padding:1px 8px;background:var(--nobg);color:var(--no);font-weight:700}
 .tag.on{background:var(--okbg);color:var(--ok)}
@@ -67,6 +68,7 @@ import { connect } from "../fb.js";
 import { $, el, decryptKey } from "../common.js";
 import { Q, TOTAL, label } from "./oq.js";
 
+const KL = { missing: "➕ השלמה:", full: "🔁 כתב/ה מחדש:", ok: "✅" };
 let KEY = null, api = null, G = null, st = null, players = {}, answers = {}, checks = {}, shown = {}, view = null, lastCur = null;
 const params = new URLSearchParams(location.search);
 $("#gcode").value = params.get("g") || "";
@@ -120,7 +122,8 @@ function render() {
       }
       return el("div", { class: "ans" + (on ? " onb" : "") },
         el("div", { class: "h" }, el("b", {}, players[u].name || "?"), el("span", { class: "n" }, c ? `בדיקה עצמית: ${c.s} / ${q.pts}` : a ? "עוד לא בדק/ה" : ""), btn),
-        a ? el("div", { class: "t" }, a.txt) : el("div", { class: "t none" }, "לא ענה/תה"),
+        a ? (a.kind === "ok" ? el("div", { class: "t" }, "✅ קיבל/ה ניקוד מלא במבחן") : el("div", { class: "t" }, KL[a.kind] ? el("b", {}, KL[a.kind] + " ") : "", a.txt)) : el("div", { class: "t none" }, "לא ענה/תה"),
+        c && c.tel ? el("div", { class: "t telw" }, el("b", {}, "🚫 סימן/ה טלאולוגיה (−1). ניסוח מחדש: "), c.re || "עוד לא נכתב") : "",
         c ? el("div", { class: "tags" }, KEY[view].comps.map((x, j) => el("span", { class: "tag" + (c.m && c.m[j] ? " on" : "") }, (c.m && c.m[j] ? "✔ " : "✗ ") + x.t.slice(0, 40) + (x.t.length > 40 ? "…" : "")))) : "");
     }));
   }
@@ -136,11 +139,11 @@ function render() {
 }
 
 $("#bCsv").onclick = () => {
-  const head = ["שם", "סעיף", "תשובה", "ניקוד עצמי", "מתוך", "רכיבים שסומנו"];
+  const head = ["שם", "סעיף", "תשובה", "ניקוד עצמי", "מתוך", "רכיבים שסומנו", "סוג", "טלאולוגיה", "ניסוח מחדש"];
   const rows = [];
   ids().forEach((u) => Q.forEach((q, i) => {
     const a = (answers["q" + i] || {})[u], c = (checks["q" + i] || {})[u];
-    rows.push([players[u].name || "?", `${q.qn}${q.l}`, a ? a.txt : "", c ? c.s : "", q.pts, c && c.m ? KEY[i].comps.filter((_, j) => c.m[j]).map((x) => x.t).join(" | ") : ""]);
+    rows.push([players[u].name || "?", `${q.qn}${q.l}`, a ? a.txt : "", c ? c.s : "", q.pts, c && c.m ? KEY[i].comps.filter((_, j) => c.m[j]).map((x) => x.t).join(" | ") : "", a ? { ans: "תרגול", missing: "השלמה", full: "כתיבה מחדש", ok: "ניקוד מלא" }[a.kind] || "" : "", c && c.tel ? "כן" : "", c && c.re ? c.re : ""]);
   }));
   const csv = "﻿" + [head, ...rows].map((r) => r.map((x) => `"${String(x).replace(/"/g, '""')}"`).join(",")).join("\n");
   const a = el("a", { href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })), download: `שאלות-פתוחות-${G}.csv` });

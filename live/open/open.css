@@ -12,3 +12,10 @@ textarea:focus{outline:none;border-color:var(--poor)}
 .mybox{background:var(--soft);border-radius:12px;padding:10px 14px;white-space:pre-wrap;margin-top:8px}
 .model{background:#fff7e0;border:1px solid #f0d78a;border-radius:12px;padding:10px 14px;margin-top:10px}
 .sc{font-size:1.3em;font-weight:800;color:var(--ok);font-variant-numeric:tabular-nums}
+.fixbar{margin-top:12px;background:var(--soft);border-radius:12px;padding:10px 12px}
+.fixbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.fixbtns .btn{flex:1 1 160px;font-size:.9em;padding:10px 12px}
+.fixbtns .btn.on{background:var(--ink);color:#fff}
+.comp.tel{margin-top:8px;border-color:#f0b4ad}
+.comp.tel.on{border-color:var(--no);background:var(--nobg)}
+.comp.tel input{accent-color:var(--no)}
