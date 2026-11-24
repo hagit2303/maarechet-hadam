@@ -101,20 +101,29 @@ async function gameCtx(g) {
 
 // מתחברים לשני הממסרים במקביל, שולחים לשניהם ומקשיבים לשניהם.
 // כך לוח ותלמיד נפגשים גם אם רשת אחת חוסמת את אחד הממסרים.
-async function connectBrokers(m) {
-  const tries = BROKERS.map((url) => new Promise((ok) => {
+async function connectBrokers(m, onLate) {
+  const clients = [];
+  let first;
+  const ready = new Promise((ok) => (first = ok));
+  let pending = BROKERS.length;
+  BROKERS.forEach((url) => {
     const client = m.connect(url, { clean: true, reconnectPeriod: 2000, connectTimeout: 8000, clientId: "bl_" + Math.random().toString(16).slice(2, 12) });
-    const t = setTimeout(() => { client.end(true); ok(null); }, 9000);
-    client.once("connect", () => { clearTimeout(t); ok(client); });
-  }));
-  const clients = (await Promise.all(tries)).filter(Boolean);
+    const t = setTimeout(() => { if (!clients.includes(client)) client.end(true); if (--pending === 0) first(); }, 9000);
+    client.once("connect", () => {
+      clearTimeout(t); clients.push(client);
+      if (clients.length === 1) first(); else onLate(client);
+      if (--pending === 0) first();
+    });
+  });
+  await ready;
   if (!clients.length) throw new Error("no broker");
   return clients;
 }
 
 async function mqttConnect() {
   const m = await loadMqtt();
-  const clients = await connectBrokers(m);
+  const topics = new Set();
+  const clients = await connectBrokers(m, (c) => { c.on("message", (t, p) => onMsg(t, p)); topics.forEach((tp) => c.subscribe(tp, { qos: 1 })); });
   const tester = params.get("tester");
   const uid = persistentId(localStorage, "live-uid") + (tester ? "_" + tester : "");
   const leaves = new Map(), listeners = new Set(), subs = new Map(); // g -> Promise(ready)
@@ -144,6 +153,7 @@ async function mqttConnect() {
   const ensure = (g) => {
     if (!subs.has(g)) subs.set(g, (async () => {
       const { h } = await gameCtx(g);
+      topics.add(`${ROOT}/${h}/#`);
       await Promise.all(clients.map((c) => new Promise((ok) => c.subscribe(`${ROOT}/${h}/#`, { qos: 1 }, () => ok()))));
       await new Promise((r) => setTimeout(r, 2000));
       await chain;
