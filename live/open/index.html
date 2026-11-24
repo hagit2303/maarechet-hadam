@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>משחק חי · שאלות פתוחות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../live.css">
+<link rel="stylesheet" href="open.css">
+<style>
+body{padding-inline:16px}
+.wrap{max-width:680px;margin:auto;padding-block:16px 40px;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.me{background:#fff;border:1px solid var(--line);border-radius:30px;padding:2px 12px;font-weight:700;font-size:.9em;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+form{display:flex;flex-direction:column;gap:12px}
+.err{color:var(--no);font-weight:700}
+.wait{text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;padding-block:30px}
+.wait .e{font-size:48px;line-height:1}
+.status{text-align:center;font-weight:800;border-radius:14px;padding:10px;margin-top:10px;background:var(--soft)}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:10px}
+.score{font-size:56px;font-weight:800;color:var(--rich);line-height:1;font-variant-numeric:tabular-nums}
+.sum{width:100%;border-collapse:collapse;font-size:.95em;margin-top:8px}
+.sum td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:start}
+.sum td.n{font-weight:800;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><b>✍️ משחק חי · שאלות פתוחות</b><span id="me" class="me hide"></span></div>
+
+  <section id="vJoin" class="card">
+    <form id="fJoin">
+      <h1 style="font-size:1.4em">הצטרפות למשחק</h1>
+      <label>קוד המשחק (מהלוח)<input id="gcode" inputmode="numeric" maxlength="4" autocomplete="off" required></label>
+      <label>שם מלא<input id="pname" type="text" maxlength="40" autocomplete="name" required></label>
+      <button class="btn red" type="submit">הצטרפות ←</button>
+      <p id="jErr" class="err" role="alert"></p>
+    </form>
+  </section>
+
+  <section id="vWait" class="card wait hide">
+    <div class="e">⏳</div>
+    <b>נרשמת! מחכים שהמורה תתחיל</b>
+    <p class="mut">הסעיפים יופיעו כאן אחד אחד. כותבים תשובה ושולחים.</p>
+  </section>
+
+  <section id="vQ" class="card hide">
+    <div id="qbody"></div>
+    <div id="write">
+      <label class="mut" for="ans" style="display:block;margin-top:12px;font-size:.9em">התשובה שלי</label>
+      <textarea id="ans" maxlength="1500" placeholder="כתבו כאן את התשובה…"></textarea>
+      <div class="row"><span id="sent" class="mut"></span><button id="bSend" class="btn red" type="button">שליחה</button></div>
+    </div>
+    <div id="check" class="hide">
+      <p style="margin-top:12px"><b>התשובה שלי:</b></p>
+      <div id="mine" class="mybox"></div>
+      <p style="margin-top:14px"><b>✔ בדיקה עצמית לפי המחוון</b></p>
+      <p class="mut" style="font-size:.9em">סמנו כל רכיב שמופיע בתשובה שלכם. מותר גם במילים אחרות, אם הרעיון זהה.</p>
+      <div id="comps" class="comps"></div>
+      <div class="row"><span>הניקוד שלי:</span><span id="myScore" class="sc"></span></div>
+      <div id="model" class="model"></div>
+    </div>
+    <div id="qstat" class="status hide" role="status"></div>
+  </section>
+
+  <section id="vEnd" class="card hide">
+    <div class="wait" style="padding-block:10px"><div class="e">🏁</div><b>סיימנו!</b><div class="score" id="fScore"></div><p class="mut">לפי הבדיקה העצמית שלכם</p></div>
+    <table class="sum" id="fTable"></table>
+  </section>
+</div>
+
+<script src="questions.js"></script>
+<script type="module">
+import { connect } from "../fb.js";
+import { $, el, store } from "../common.js";
+import { Q, TOTAL, label, itemBody, selfScore } from "./oq.js";
+
+const params = new URLSearchParams(location.search);
+let api = null, G = null, st = null, mine = {}, reveal = {}, checks = {}, offs = [], drafts = {};
+const show = (id) => ["vJoin", "vWait", "vQ", "vEnd"].forEach((v) => $("#" + v).classList.toggle("hide", v !== id));
+const SK = "live-open-player";
+const saved = store.get(SK);
+$("#gcode").value = params.get("g") || (saved && saved.g) || "";
+if (saved && saved.name) $("#pname").value = saved.name;
+
+$("#fJoin").onsubmit = async (e) => {
+  e.preventDefault();
+  const g = $("#gcode").value.trim(), n = $("#pname").value.trim().replace(/\s+/g, " ");
+  $("#jErr").textContent = "";
+  if (!/^\d{4}$/.test(g)) return ($("#jErr").textContent = "קוד המשחק הוא 4 ספרות.");
+  if (n.length < 2) return ($("#jErr").textContent = "כתבו שם מלא.");
+  try {
+    api = api || (await connect());
+    let host = await api.get(`games/${g}/host`);
+    for (let i = 0; !host && i < 8; i++) { await new Promise((r) => setTimeout(r, 1000)); host = await api.get(`games/${g}/host`); }
+    if (!host) return ($("#jErr").textContent = "לא נמצא משחק עם הקוד הזה. בדקו את 4 הספרות שעל הלוח.");
+    if ((await api.get(`games/${g}/kind`)) !== "open") return ($("#jErr").textContent = "הקוד הזה שייך למשחק של שאלות אמריקאיות. פתחו את הקישור שעל הלוח.");
+    await api.set(`games/${g}/players/${api.uid}`, { name: n });
+    G = g; store.set(SK, { g, name: n });
+    $("#me").textContent = n; $("#me").classList.remove("hide");
+    attach();
+  } catch (err) { console.error(err); $("#jErr").textContent = "אין חיבור לשרת המשחק. אם אתם על ה-Wi-Fi של בית הספר, עברו לגלישה סלולרית ונסו שוב."; }
+};
+
+function attach() {
+  offs.forEach((f) => typeof f === "function" && f());
+  show("vWait");
+  offs = [
+    api.on(`games/${G}/state`, (v) => { st = v; render(); }),
+    api.on(`games/${G}/reveal`, (v) => { reveal = v || {}; render(); }),
+  ];
+  for (let i = 0; i < Q.length; i++) {
+    offs.push(api.on(`games/${G}/answers/q${i}/${api.uid}`, (v) => { if (v) mine["q" + i] = v.txt; render(); }));
+    offs.push(api.on(`games/${G}/checks/q${i}/${api.uid}`, (v) => { if (v && !checks["q" + i]) { checks["q" + i] = v.m; render(); } }));
+  }
+}
+
+function render() {
+  if (!st) return;
+  if (st.phase === "lobby") return show("vWait");
+  if (st.phase === "end") return renderEnd();
+  show("vQ");
+  const i = st.qi, k = "q" + i, q = Q[i], r = st.phase === "reveal" ? reveal[k] : null;
+  const body = $("#qbody");
+  if (body.dataset.q !== k) {
+    body.replaceChildren(itemBody(q, i)); body.dataset.q = k;
+    $("#ans").value = drafts[k] ?? mine[k] ?? "";
+    $("#comps").dataset.q = "";
+  }
+  const s = $("#qstat"); s.classList.add("hide");
+  if (!r) {
+    $("#write").classList.remove("hide"); $("#check").classList.add("hide");
+    if (st.phase === "reveal") { $("#write").classList.add("hide"); s.classList.remove("hide"); s.textContent = "רגע, המחוון נפתח…"; return; }
+    $("#sent").textContent = mine[k] != null ? "✔ התשובה נשלחה. אפשר לתקן ולשלוח שוב עד שהמורה פותחת את המחוון." : "";
+    $("#bSend").textContent = mine[k] != null ? "עדכון התשובה" : "שליחה";
+    return;
+  }
+  $("#write").classList.add("hide"); $("#check").classList.remove("hide");
+  const my = mine[k];
+  $("#mine").textContent = my != null ? my : "לא נשלחה תשובה לסעיף הזה.";
+  const marks = checks[k] || (checks[k] = r.comps.map(() => 0));
+  if ($("#comps").dataset.q !== k) {
+    $("#comps").dataset.q = k;
+    $("#comps").replaceChildren(...r.comps.map((c, j) => {
+      const cb = el("input", { type: "checkbox" }); cb.checked = !!marks[j]; cb.disabled = my == null;
+      const row = el("label", { class: "comp" + (marks[j] ? " on" : "") }, cb, el("span", {}, c.t), el("span", { class: "p" }, `${Math.round((q.pts * c.p) / 10) / 10} נק'`));
+      cb.onchange = () => { marks[j] = cb.checked ? 1 : 0; row.classList.toggle("on", cb.checked); saveCheck(i); };
+      return row;
+    }));
+  }
+  $("#myScore").textContent = `${selfScore(q, r.comps, marks)} / ${q.pts}`;
+  $("#model").replaceChildren(el("b", {}, "תשובה לדוגמה: "), r.m);
+}
+
+let saveT = null;
+function saveCheck(i) {
+  const k = "q" + i, q = Q[i];
+  $("#myScore").textContent = `${selfScore(q, reveal[k].comps, checks[k])} / ${q.pts}`;
+  clearTimeout(saveT);
+  saveT = setTimeout(() => api.set(`games/${G}/checks/${k}/${api.uid}`, { m: checks[k], s: selfScore(q, reveal[k].comps, checks[k]) }).catch(console.error), 400);
+}
+
+$("#ans").addEventListener("input", () => { if (st) drafts["q" + st.qi] = $("#ans").value; });
+$("#bSend").onclick = async () => {
+  const i = st.qi, k = "q" + i, txt = $("#ans").value.trim();
+  if (txt.length < 1) return ($("#sent").textContent = "כתבו תשובה לפני השליחה.");
+  $("#bSend").disabled = true;
+  try { await api.set(`games/${G}/answers/${k}/${api.uid}`, { txt, t: api.stamp() }); mine[k] = txt; delete drafts[k]; }
+  catch (e) { console.error(e); $("#sent").textContent = "התשובה לא נשלחה. נסו שוב."; }
+  $("#bSend").disabled = false; render();
+};
+
+function renderEnd() {
+  show("vEnd");
+  let s = 0;
+  const rows = Q.map((q, i) => {
+    const k = "q" + i, r = reveal[k];
+    const v = r && mine[k] != null ? selfScore(q, r.comps, checks[k]) : 0; s += v;
+    return el("tr", {}, el("td", {}, label(q)), el("td", { class: "n" }, r ? `${v} / ${q.pts}` : "–"));
+  });
+  $("#fScore").textContent = `${Math.round(s * 10) / 10} / ${TOTAL}`;
+  $("#fTable").replaceChildren(...rows);
+}
+
+if (saved && saved.g && saved.name && (!params.get("g") || params.get("g") === saved.g)) {
+  (async () => {
+    try {
+      api = await connect();
+      const p = await api.get(`games/${saved.g}/players/${api.uid}`);
+      const ph = await api.get(`games/${saved.g}/state/phase`);
+      if (p && ph && ph !== "end") { G = saved.g; $("#me").textContent = p.name; $("#me").classList.remove("hide"); attach(); }
+    } catch {}
+  })();
+}
+</script>
+</body>
+</html>

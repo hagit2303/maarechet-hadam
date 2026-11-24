@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>משחק חי · שאלות פתוחות · מסך מורה</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../live.css">
+<link rel="stylesheet" href="open.css">
+<style>
+body{padding-inline:16px}
+.wrap{max-width:1100px;margin:auto;padding-block:16px 40px;display:flex;flex-direction:column;gap:14px}
+.login{display:flex;flex-direction:column;gap:12px;max-width:420px}
+.err{color:var(--no);font-weight:700}
+.now{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stats span{background:var(--soft);border-radius:30px;padding:2px 12px;font-weight:700;font-size:.9em}
+.list{display:flex;flex-direction:column;gap:10px}
+.ans{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+.ans .h{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.ans .t{white-space:pre-wrap;margin-top:6px}
+.ans .none{color:var(--mut)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.tag{font-size:.78em;border-radius:8px;padding:1px 8px;background:var(--nobg);color:var(--no);font-weight:700}
+.tag.on{background:var(--okbg);color:var(--ok)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;background:#fff;font-size:.95em}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:start;white-space:nowrap}
+th{font-size:.8em;color:var(--mut)}
+td.n{font-weight:800;font-variant-numeric:tabular-nums}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs button{border:2px solid var(--ink);background:#fff;border-radius:30px;padding:4px 14px;font-weight:800;font-size:.85em}
+.tabs button.on{background:var(--ink);color:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <b>✍️ שאלות פתוחות · מסך מורה <span class="mut" style="font-weight:600">(לא להציג במקרן)</span></b>
+
+  <section id="vLogin" class="card login">
+    <label>קוד המשחק (מהלוח)<input id="gcode" inputmode="numeric" maxlength="4" autocomplete="off"></label>
+    <label>קוד מורה<input id="tcode" type="password" autocomplete="current-password"></label>
+    <button id="bGo" class="btn">כניסה</button>
+    <p id="err" class="err" role="alert"></p>
+  </section>
+
+  <section id="vMain" class="hide" style="display:flex;flex-direction:column;gap:14px">
+    <div class="card now">
+      <b id="nowT"></b>
+      <div class="stats"><span id="sJoined"></span><span id="sAns"></span><span id="sChk"></span></div>
+    </div>
+    <div class="tabs"><button id="tNow" class="on" type="button">✍️ התשובות לסעיף</button><button id="tAll" type="button">📊 טבלת ציונים</button><button id="bCsv" type="button">⬇️ הורדת כל התשובות (CSV)</button></div>
+    <div id="pNow" class="card"><div id="selWrap" class="tabs" style="margin-bottom:10px"></div><div id="list" class="list"></div></div>
+    <div id="pAll" class="card scroll hide"><table id="tbl"></table><p class="mut" style="font-size:.85em;margin-top:8px">הניקוד הוא לפי הבדיקה העצמית של התלמידים, לא ציון סופי.</p></div>
+  </section>
+</div>
+
+<script src="questions.js"></script>
+<script src="key.enc.js"></script>
+<script type="module">
+import { connect } from "../fb.js";
+import { $, el, decryptKey } from "../common.js";
+import { Q, TOTAL, label } from "./oq.js";
+
+let KEY = null, api = null, G = null, st = null, players = {}, answers = {}, checks = {}, view = null, lastCur = null;
+const params = new URLSearchParams(location.search);
+$("#gcode").value = params.get("g") || "";
+
+$("#bGo").onclick = async () => {
+  $("#err").textContent = "";
+  const g = $("#gcode").value.trim();
+  if (!/^\d{4}$/.test(g)) return ($("#err").textContent = "קוד המשחק הוא 4 ספרות.");
+  try { KEY = await decryptKey($("#tcode").value.trim()); } catch { return ($("#err").textContent = "קוד המורה שגוי."); }
+  try {
+    api = api || (await connect());
+    if (!(await api.get(`games/${g}/host`))) return ($("#err").textContent = "לא נמצא משחק עם הקוד הזה.");
+    G = g;
+    $("#vLogin").classList.add("hide"); $("#vMain").classList.remove("hide");
+    api.on(`games/${G}/state`, (v) => { st = v; render(); });
+    api.on(`games/${G}/players`, (v) => { players = v || {}; render(); });
+    api.on(`games/${G}/answers`, (v) => { answers = v || {}; render(); });
+    api.on(`games/${G}/checks`, (v) => { checks = v || {}; render(); });
+  } catch (e) { console.error(e); $("#err").textContent = "אין חיבור. בדקי את האינטרנט ונסי שוב."; }
+};
+$("#tcode").addEventListener("keydown", (e) => e.key === "Enter" && $("#bGo").click());
+$("#tNow").onclick = () => { $("#tNow").classList.add("on"); $("#tAll").classList.remove("on"); $("#pNow").classList.remove("hide"); $("#pAll").classList.add("hide"); };
+$("#tAll").onclick = () => { $("#tAll").classList.add("on"); $("#tNow").classList.remove("on"); $("#pAll").classList.remove("hide"); $("#pNow").classList.add("hide"); };
+
+const ids = () => Object.keys(players).sort((a, b) => (players[a].name || "").localeCompare(players[b].name || "", "he"));
+const asked = () => !st ? 0 : st.phase === "end" ? Q.length : Math.max(st.qi + 1, 0);
+
+function render() {
+  if (!st) return;
+  const cur = st.phase === "question" || st.phase === "reveal" ? st.qi : -1;
+  if (cur !== lastCur) { lastCur = cur; if (cur >= 0) view = cur; }
+  if (view == null || view >= asked()) view = cur >= 0 ? cur : asked() - 1;
+  $("#nowT").textContent = st.phase === "lobby" ? "ממתינים להתחלה" : st.phase === "end" ? "המשחק הסתיים" : `${label(Q[cur])} (${cur + 1} מתוך ${Q.length})` + (st.phase === "reveal" ? " · המחוון פתוח" : "");
+  const U = ids();
+  $("#sJoined").textContent = `👥 ${U.length} מחוברים`;
+  $("#sAns").textContent = cur >= 0 ? `✍️ ${Object.keys(answers["q" + cur] || {}).length} ענו` : "";
+  $("#sChk").textContent = cur >= 0 && st.phase === "reveal" ? `✔ ${Object.keys(checks["q" + cur] || {}).length} בדקו את עצמם` : "";
+
+  // בחירת סעיף
+  $("#selWrap").replaceChildren(...Q.slice(0, asked()).map((q, i) => { const b = el("button", { type: "button", class: i === view ? "on" : "" }, `${q.qn}${q.l}`); b.onclick = () => { view = i; render(); }; return b; }));
+  if (view < 0) { $("#list").replaceChildren(el("p", { class: "mut" }, "עוד לא התחלנו.")); }
+  else {
+    const k = "q" + view, q = Q[view], A = answers[k] || {}, C = checks[k] || {};
+    $("#list").replaceChildren(...U.map((u) => {
+      const a = A[u], c = C[u];
+      return el("div", { class: "ans" },
+        el("div", { class: "h" }, el("b", {}, players[u].name || "?"), el("span", { class: "n" }, c ? `בדיקה עצמית: ${c.s} / ${q.pts}` : a ? "עוד לא בדק/ה" : "")),
+        a ? el("div", { class: "t" }, a.txt) : el("div", { class: "t none" }, "לא ענה/תה"),
+        c ? el("div", { class: "tags" }, KEY[view].comps.map((x, j) => el("span", { class: "tag" + (c.m && c.m[j] ? " on" : "") }, (c.m && c.m[j] ? "✔ " : "✗ ") + x.t.slice(0, 40) + (x.t.length > 40 ? "…" : "")))) : "");
+    }));
+  }
+  // טבלת ציונים
+  const n = asked();
+  $("#tbl").replaceChildren(
+    el("tr", {}, el("th", {}, "שם"), el("th", {}, "סה\"כ"), ...Q.slice(0, n).map((q) => el("th", {}, `${q.qn}${q.l} (${q.pts})`))),
+    ...U.map((u) => {
+      let s = 0;
+      const cells = Q.slice(0, n).map((q, i) => { const c = (checks["q" + i] || {})[u], a = (answers["q" + i] || {})[u]; if (c) s += c.s || 0; return el("td", { class: "n" }, c ? String(c.s) : a ? "?" : "–"); });
+      return el("tr", {}, el("td", {}, players[u].name || "?"), el("td", { class: "n" }, `${Math.round(s * 10) / 10} / ${Q.slice(0, n).reduce((x, q) => x + q.pts, 0)}`), ...cells);
+    }));
+}
+
+$("#bCsv").onclick = () => {
+  const head = ["שם", "סעיף", "תשובה", "ניקוד עצמי", "מתוך", "רכיבים שסומנו"];
+  const rows = [];
+  ids().forEach((u) => Q.forEach((q, i) => {
+    const a = (answers["q" + i] || {})[u], c = (checks["q" + i] || {})[u];
+    rows.push([players[u].name || "?", `${q.qn}${q.l}`, a ? a.txt : "", c ? c.s : "", q.pts, c && c.m ? KEY[i].comps.filter((_, j) => c.m[j]).map((x) => x.t).join(" | ") : ""]);
+  }));
+  const csv = "﻿" + [head, ...rows].map((r) => r.map((x) => `"${String(x).replace(/"/g, '""')}"`).join(",")).join("\n");
+  const a = el("a", { href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })), download: `שאלות-פתוחות-${G}.csv` });
+  document.body.append(a); a.click(); a.remove();
+};
+</script>
+</body>
+</html>

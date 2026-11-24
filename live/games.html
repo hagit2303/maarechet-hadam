@@ -20,6 +20,9 @@ h1{font-size:1.6em}
 .acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
 .acts a,.acts button{display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;text-align:center;min-height:52px}
 .note{font-size:.85em}
+.modes{display:flex;gap:6px;background:var(--soft);border-radius:14px;padding:4px}
+.modes button{flex:1;border:0;background:transparent;border-radius:10px;padding:10px;font-weight:800}
+.modes button.on{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .copied{color:var(--ok);font-weight:700;font-size:.9em;min-height:1.4em}
 </style>
 </head>
@@ -36,27 +39,34 @@ h1{font-size:1.6em}
 <script>
 const base = new URL(".", location.href).href;
 const list = document.getElementById("list");
+const mk = (t, a = {}, txt = "") => { const e = document.createElement(t); Object.entries(a).forEach(([k, v]) => e.setAttribute(k, v)); if (txt) e.textContent = txt; return e; };
 (window.GAMES || []).forEach((g) => {
-  const root = base + (g.path ? g.path.replace(/\/?$/, "/") : "");
-  const card = document.createElement("section");
-  card.className = "card game";
-  card.innerHTML = `
-    <h2></h2>
-    <div class="meta"><span class="k"></span><span>📅 ${g.date}</span><span>❓ ${g.n} שאלות</span></div>
-    <div class="acts">
-      <a class="btn red" href="${root}board.html">🖥️ פתיחת הלוח</a>
-      <a class="btn alt" href="${root}">📱 דף התלמידים</a>
-      <a class="btn alt" href="${root}teacher.html">👩‍🏫 מסך מורה</a>
-      <button class="btn alt" type="button">🔗 העתקת קישור לתלמידים</button>
-    </div>
-    <div class="copied" role="status"></div>`;
-  card.querySelector("h2").textContent = g.title;
-  card.querySelector(".k").textContent = g.kind;
-  const msg = card.querySelector(".copied");
-  card.querySelector("button").onclick = async () => {
-    try { await navigator.clipboard.writeText(root); msg.textContent = "✔ הקישור הועתק"; }
-    catch { msg.textContent = root; }
+  const modes = g.modes || [{ name: "", n: g.n ? g.n + " שאלות" : "", path: g.path || "" }];
+  const card = mk("section", { class: "card game" });
+  card.append(mk("h2", {}, g.title));
+  const meta = mk("div", { class: "meta" });
+  meta.append(mk("span", { class: "k" }, g.kind), mk("span", {}, "📅 " + g.date));
+  const info = mk("span"); meta.append(info);
+  card.append(meta);
+  const tabs = mk("div", { class: "modes" });
+  if (modes.length > 1) card.append(tabs);
+  const acts = mk("div", { class: "acts" }); card.append(acts);
+  const msg = mk("div", { class: "copied", role: "status" }); card.append(msg);
+  const pick = (m) => {
+    const root = base + (m.path ? m.path.replace(/\/?$/, "/") : "");
+    info.textContent = "❓ " + m.n;
+    [...tabs.children].forEach((b) => b.classList.toggle("on", b.dataset.p === m.path));
+    msg.textContent = "";
+    acts.replaceChildren(
+      mk("a", { class: "btn red", href: root + "board.html" }, "🖥️ פתיחת הלוח"),
+      mk("a", { class: "btn alt", href: root }, "📱 דף התלמידים"),
+      mk("a", { class: "btn alt", href: root + "teacher.html" }, "👩‍🏫 מסך מורה"));
+    const cp = mk("button", { class: "btn alt", type: "button" }, "🔗 העתקת קישור לתלמידים");
+    cp.onclick = async () => { try { await navigator.clipboard.writeText(root); msg.textContent = "✔ הקישור הועתק"; } catch { msg.textContent = root; } };
+    acts.append(cp);
   };
+  modes.forEach((m) => { const b = mk("button", { type: "button", "data-p": m.path }, m.name); b.onclick = () => pick(m); tabs.append(b); });
+  pick(modes[0]);
   list.append(card);
 });
 if (!list.children.length) list.innerHTML = '<p class="card mut">עוד אין משחקים.</p>';
