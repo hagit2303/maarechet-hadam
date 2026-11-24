@@ -35,7 +35,7 @@ h1{font-size:1.6em}
   <div id="list" style="display:flex;flex-direction:column;gap:14px"></div>
   <p class="mut note">🖥️ לוח = למקרן · 📱 תלמידים = הקישור לשלוח לכיתה (או סריקת ה-QR שעל הלוח) · 👩‍🏫 מסך מורה = רק בטלפון או במחשב שלך, לא במקרן.</p>
 </div>
-<script src="games.js"></script>
+<script>document.write('<script src="games.js?v='+Date.now()+'"><\/script>')</script>
 <script>
 const base = new URL(".", location.href).href;
 const list = document.getElementById("list");
