@@ -35,6 +35,13 @@ body{font-size:clamp(18px,1.45vw,26px)}
 .nchip.done{background:#e6edff;border-color:var(--poor)}
 .nchip.ok{background:var(--okbg);border-color:var(--ok)}
 .nchip.no{background:#fff;border-color:var(--line)}
+.nav{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:10px 14px;margin-bottom:12px}
+.nav .grp{display:flex;align-items:center;gap:4px}
+.nav .grp b{font-size:.85em;margin-inline-end:2px}
+.nav button{border:2px solid var(--line);background:#fff;border-radius:8px;min-width:30px;height:30px;font:inherit;font-weight:800;font-size:.8em;cursor:pointer}
+.nav button.done{background:var(--soft)}
+.nav button.cur{background:var(--ink);color:#fff;border-color:var(--ink)}
+.nav button.fin{padding:0 12px}
 .who{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
 .qcard .qimg{max-height:28vh;width:auto}
@@ -77,6 +84,7 @@ details.q summary{cursor:pointer;font-weight:800}
   </section>
 
   <section id="vGame" class="hide">
+    <div class="card nav" id="nav"></div>
     <div class="stage">
       <div class="side">
         <div class="card qcard"><div id="qbody"></div></div>
@@ -116,7 +124,7 @@ details.q summary{cursor:pointer;font-weight:800}
     <p class="mut">כמה התלמידים קלעו לניקוד הנכון בכל תשובה</p>
     <table class="res" id="resT" style="margin-top:12px;width:100%;border-collapse:collapse"></table>
     <div id="endNames" class="hide" style="margin-top:18px"><b>🏆 השופטים המדויקים (כמה פעמים קלעו בדיוק)</b><table class="res" id="resN" style="margin-top:8px;width:100%;border-collapse:collapse"></table></div>
-    <div class="ctrl" style="margin-top:16px;justify-content:center"><button id="bNew" class="btn alt" type="button">משחק חדש</button></div>
+    <div class="ctrl" style="margin-top:16px;justify-content:center"><button id="bBack" class="btn alt" type="button">↩ חזרה לתשובות</button><button id="bNew" class="btn alt" type="button">משחק חדש</button></div>
   </section>
 </div>
 
@@ -235,6 +243,15 @@ function render() {
   $("#bModel").classList.toggle("hide", !rev || st.model);
   $("#bNext").classList.toggle("hide", !rev || k >= R.length - 1);
   $("#bEnd").classList.toggle("hide", !rev || k < R.length - 1);
+  const grps = [];
+  R.forEach(({ it, j }, kk) => {
+    if (j === 0) grps.push(el("div", { class: "grp" }, el("b", {}, `${Q[it.qi].qn}${Q[it.qi].l}`)));
+    const b = el("button", { type: "button", class: (kk === k ? "cur" : Object.keys(judges["r" + kk] || {}).length ? "done" : ""), title: "מעבר לתשובה" }, j + 1);
+    b.onclick = () => kk !== st.r && go(kk);
+    grps[grps.length - 1].append(b);
+  });
+  const fin = el("button", { type: "button", class: "fin" }, "🏁 סיום"); fin.onclick = () => api.set(`games/${G}/state`, { phase: "end", r: st.r });
+  $("#nav").replaceChildren(el("span", { class: "mut" }, "🧭 מעבר חופשי:"), ...grps, fin);
   $("#topinfo").textContent = `קוד משחק: ${G} · ${label(q)} · תשובה ${j + 1}/${it.rounds.length}`;
 }
 
@@ -273,6 +290,7 @@ $("#bModel").onclick = async () => {
   await api.set(`games/${G}/state`, { ...st, model: true });
 };
 $("#bNext").onclick = () => go(st.r + 1);
+$("#bBack").onclick = () => go(st.r || 0);
 $("#bEnd").onclick = () => api.set(`games/${G}/state`, { phase: "end", r: st.r });
 $("#bNew").onclick = () => { store.del(HK); newGame(); };
 </script>
