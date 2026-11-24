@@ -118,7 +118,7 @@ function attach() {
 }
 
 const score = (q, c) => {
-  const pct = round.comps.reduce((s, x, j) => s + (c.m[j] ? x.p : 0), 0);
+  const pct = round.comps.reduce((s, x, j) => s + x.p * (c.m[j] || 0), 0);
   return Math.max(0, Math.round(q.pts * pct - (c.tel ? 200 : 0)) / 100);
 };
 
@@ -140,16 +140,21 @@ function render() {
     $("#ansT").textContent = `📝 תשובה ${round.num} מתוך ${round.of} של "תלמיד"`;
     $("#ansTx").textContent = round.txt;
     $("#comps").replaceChildren(...round.comps.map((x, j) => {
-      const cb = el("input", { type: "checkbox" }); cb.checked = !!c.m[j];
-      const row = el("label", { class: "comp" + (c.m[j] ? " on" : "") }, cb, el("span", { class: "num" }, `${j + 1}.`), el("span", {}, x.t), el("span", { class: "p" }, `${fmt((q.pts * x.p) / 100)} נק'`));
-      cb.onchange = () => { c.m[j] = cb.checked ? 1 : 0; row.classList.toggle("on", cb.checked); upd(); };
+      const opts = [[1, "✔ מלא"], [0.5, "½ חלקי"], [0, "✗ אין"]];
+      const seg = el("div", { class: "seg" }, ...opts.map(([v, t]) => {
+        const b = el("button", { type: "button", "data-v": v, class: c.m[j] === v ? "sel" : "" }, t);
+        b.onclick = () => { if (b.disabled) return; c.m[j] = v; seg.querySelectorAll("button").forEach((y) => y.classList.toggle("sel", y === b)); row.classList.toggle("on", v === 1); row.classList.toggle("half", v === 0.5); upd(); };
+        return b;
+      }));
+      const row = el("div", { class: "comp" + (c.m[j] === 1 ? " on" : c.m[j] === 0.5 ? " half" : "") }, el("span", { class: "num" }, `${j + 1}.`),
+        el("div", { class: "ct" }, el("span", {}, x.t), el("div", { class: "crow" }, seg, el("span", { class: "p" }, `${fmt((q.pts * x.p) / 100)} נק'`))));
       return row;
     }));
     $("#tel").checked = !!c.tel;
     $("#note").textContent = round.n ? "💡 " + round.n : ""; $("#note").classList.toggle("hide", !round.n);
   }
   const lock = !!R;
-  $("#comps").querySelectorAll("input").forEach((x) => (x.disabled = lock));
+  $("#comps").querySelectorAll("button").forEach((x) => (x.disabled = lock));
   $("#tel").disabled = lock;
   $("#telRow").classList.toggle("on", !!c.tel);
   $("#myScore").textContent = `${fmt(score(q, c))} מתוך ${q.pts}`;
@@ -159,7 +164,7 @@ function render() {
   $("#sent").textContent = lock ? "" : my ? `✔ נשלח: ${fmt(my.s)}. אפשר לשנות עד החשיפה.` : "";
   $("#revBox").classList.toggle("hide", !R);
   if (R) {
-    $("#comps").querySelectorAll(".comp").forEach((row, j) => { row.classList.toggle("good", !!R.mk[j]); row.classList.toggle("bad", !R.mk[j]); row.classList.toggle("diff", !!c.m[j] !== !!R.mk[j]); });
+    $("#comps").querySelectorAll(".comp").forEach((row, j) => { row.classList.toggle("good", !!R.mk[j]); row.classList.toggle("bad", !R.mk[j]); row.classList.toggle("diff", (c.m[j] || 0) !== (R.mk[j] || 0)); });
     $("#telRow").classList.toggle("telon", !!R.tel); $("#telRow").classList.toggle("diff", !!c.tel !== !!R.tel);
     $("#mine").textContent = my ? fmt(my.s) : "–";
     $("#right").textContent = `${fmt(R.s)} מתוך ${q.pts}`;

@@ -194,9 +194,9 @@ function render() {
   $("#ansTx").textContent = r.txt;
   const n = Object.keys(J).length;
   $("#rub").replaceChildren(...it.comps.map((c, x) => {
-    const pc = n ? Math.round((100 * Object.values(J).filter((v) => v.m && v.m[x]).length) / n) : 0;
-    return el("div", { class: "comp" + (rev ? (r.mk[x] ? " good" : " bad") : "") }, el("span", { class: "num" }, x + 1), el("span", {}, c.t),
-      el("span", { class: "p" }, rev ? `${r.mk[x] ? "✔" : "✗"} · ${pc}% סימנו` : `${cpts(it, c)} נק'`));
+    const per = (w) => (n ? Math.round((100 * Object.values(J).filter((v) => v.m && v.m[x] === w).length) / n) : 0), pf = per(1), ph = per(0.5);
+    return el("div", { class: "comp" + (rev ? (r.mk[x] === 1 ? " good" : r.mk[x] === 0.5 ? " halfok" : " bad") : "") }, el("span", { class: "num" }, x + 1), el("span", {}, c.t),
+      el("span", { class: "p" }, rev ? `${r.mk[x] === 1 ? "✔ מלא" : r.mk[x] === 0.5 ? "½ חלקי" : "✗ אין"} · סימנו: ${pf}% מלא, ${ph}% חלקי` : `${cpts(it, c)} נק'`));
   }), el("div", { class: "comp tel" + (rev && r.tel ? " telon" : "") }, el("span", { class: "num" }, "🚫"), el("span", {}, "האנשה או טלאולוגיה (בזכות, בשביל, כדי ש, רוצה, צריך)"),
     el("span", { class: "p" }, rev ? `${r.tel ? "✔ יש" : "✗ אין"} · ${n ? Math.round((100 * Object.values(J).filter((v) => v.tel).length) / n) : 0}% סימנו` : "−2 נק'")));
   $("#note").textContent = it.n ? "💡 " + it.n : ""; $("#note").classList.toggle("hide", !it.n);
