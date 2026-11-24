@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>המשחקים שלי · משחק חי</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="live.css">
+<style>
+body{padding-inline:16px}
+.wrap{max-width:900px;margin:auto;padding-block:20px 40px;display:flex;flex-direction:column;gap:16px}
+h1{font-size:1.6em}
+.game{display:flex;flex-direction:column;gap:12px}
+.game h2{font-size:1.25em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.meta span{background:var(--soft);border-radius:30px;padding:2px 12px;font-weight:700;font-size:.85em}
+.meta .k{background:var(--rich);color:#fff}
+.acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.acts a,.acts button{display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;text-align:center;min-height:52px}
+.note{font-size:.85em}
+.copied{color:var(--ok);font-weight:700;font-size:.9em;min-height:1.4em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <h1>🎮 המשחקים שלי</h1>
+    <p class="mut">בוחרים משחק, ופותחים את הלוח במקרן. כל משחק נשמר כאן, גם אחרי שמוסיפים חדשים.</p>
+  </div>
+  <div id="list" style="display:flex;flex-direction:column;gap:14px"></div>
+  <p class="mut note">🖥️ לוח = למקרן · 📱 תלמידים = הקישור לשלוח לכיתה (או סריקת ה-QR שעל הלוח) · 👩‍🏫 מסך מורה = רק בטלפון או במחשב שלך, לא במקרן.</p>
+</div>
+<script src="games.js"></script>
+<script>
+const base = new URL(".", location.href).href;
+const list = document.getElementById("list");
+(window.GAMES || []).forEach((g) => {
+  const root = base + (g.path ? g.path.replace(/\/?$/, "/") : "");
+  const card = document.createElement("section");
+  card.className = "card game";
+  card.innerHTML = `
+    <h2></h2>
+    <div class="meta"><span class="k"></span><span>📅 ${g.date}</span><span>❓ ${g.n} שאלות</span></div>
+    <div class="acts">
+      <a class="btn red" href="${root}board.html">🖥️ פתיחת הלוח</a>
+      <a class="btn alt" href="${root}">📱 דף התלמידים</a>
+      <a class="btn alt" href="${root}teacher.html">👩‍🏫 מסך מורה</a>
+      <button class="btn alt" type="button">🔗 העתקת קישור לתלמידים</button>
+    </div>
+    <div class="copied" role="status"></div>`;
+  card.querySelector("h2").textContent = g.title;
+  card.querySelector(".k").textContent = g.kind;
+  const msg = card.querySelector(".copied");
+  card.querySelector("button").onclick = async () => {
+    try { await navigator.clipboard.writeText(root); msg.textContent = "✔ הקישור הועתק"; }
+    catch { msg.textContent = root; }
+  };
+  list.append(card);
+});
+if (!list.children.length) list.innerHTML = '<p class="card mut">עוד אין משחקים.</p>';
+</script>
+</body>
+</html>
